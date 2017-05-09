@@ -1,0 +1,361 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Testing|Win32">
+      <Configuration>Testing</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Testing|Win32">
+      <Configuration>Testing</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{44B11E0B-D6E6-4D14-A756-D79D0647F007}</ProjectGuid>
+    <RootNamespace>Cossacks</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Testing|Win32'">
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Testing|Win32'">
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Testing|Win32'">
+    <OutDir>../Testing/</OutDir>
+    <IntDir>../Temp/dmcr/</IntDir>
+    <TargetName>dmcr</TargetName>
+    <LinkIncremental>
+    </LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>../Testing/</OutDir>
+    <IntDir>../Temp/dmcr/</IntDir>
+    <TargetName>dmcr</TargetName>
+    <LinkIncremental />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Testing|Win32'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+      <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
+      <XMLDocumentationFileName>$(IntDir)</XMLDocumentationFileName>
+      <BrowseInformationFile>$(IntDir)</BrowseInformationFile>
+      <DisableSpecificWarnings>4035;4055;4100;4127;4152;4189;4244;4456;4459;4595;4715;4731;4996;</DisableSpecificWarnings>
+      <MultiProcessorCompilation>
+      </MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <ProgramDatabaseFile>../Temp/dmcr.pdb</ProgramDatabaseFile>
+      <ProfileGuidedDatabase>../Temp/dmcr.pgd</ProfileGuidedDatabase>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <TargetMachine>MachineX86</TargetMachine>
+      <IgnoreSpecificDefaultLibraries>libc.lib;libcd.lib;msvcrtd.lib;msvcrt.lib;</IgnoreSpecificDefaultLibraries>
+      <AdditionalDependencies>libcmtd.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>Debug</GenerateDebugInformation>
+      <ShowProgress>NotSet</ShowProgress>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <LinkStatus>
+      </LinkStatus>
+      <AdditionalOptions>/ignore:4049 /ignore:4217</AdditionalOptions>
+      <ImportLibrary>../Temp/dmcr.lib</ImportLibrary>
+    </Link>
+    <ProjectReference>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+      <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
+      <XMLDocumentationFileName>$(IntDir)</XMLDocumentationFileName>
+      <BrowseInformationFile>$(IntDir)</BrowseInformationFile>
+      <DisableSpecificWarnings>4035;4055;4100;4127;4152;4189;4244;4456;4459;4595;4715;4731;4996;</DisableSpecificWarnings>
+      <MultiProcessorCompilation>
+      </MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+    </ClCompile>
+    <Link>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <ProgramDatabaseFile>../Temp/dmcr.pdb</ProgramDatabaseFile>
+      <ProfileGuidedDatabase>../Temp/dmcr.pgd</ProfileGuidedDatabase>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <TargetMachine>MachineX86</TargetMachine>
+      <IgnoreSpecificDefaultLibraries>libc.lib</IgnoreSpecificDefaultLibraries>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>Debug</GenerateDebugInformation>
+      <ShowProgress>NotSet</ShowProgress>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <LinkStatus>
+      </LinkStatus>
+      <AdditionalOptions>/ignore:4049 /ignore:4217</AdditionalOptions>
+      <ImportLibrary>../Temp/dmcr.lib</ImportLibrary>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <ProjectReference>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Image Include="icon1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="3DBars.cpp" />
+    <ClCompile Include="3DGraph.cpp" />
+    <ClCompile Include="3DMapEd.cpp" />
+    <ClCompile Include="3DRandMap.cpp" />
+    <ClCompile Include="3DSurf.cpp" />
+    <ClCompile Include="ActiveScenary.cpp" />
+    <ClCompile Include="ActiveZone.cpp" />
+    <ClCompile Include="AntiBug.cpp" />
+    <ClCompile Include="ArchTool.cpp" />
+    <ClCompile Include="Arc\GSCarch.cpp" />
+    <ClCompile Include="Arc\GSCset.cpp" />
+    <ClCompile Include="Arc\isiMasks.cpp" />
+    <ClCompile Include="bmptool.cpp" />
+    <ClCompile Include="Brigade.cpp" />
+    <ClCompile Include="Build.cpp" />
+    <ClCompile Include="Cdirsnd.cpp" />
+    <ClCompile Include="Chkinet.cpp" />
+    <ClCompile Include="ConstStr.cpp" />
+    <ClCompile Include="Cwave.cpp" />
+    <ClCompile Include="Danger.cpp" />
+    <ClCompile Include="Ddex1.cpp" />
+    <ClCompile Include="Ddini.cpp" />
+    <ClCompile Include="DeviceCD.cpp" />
+    <ClCompile Include="Dialogs.cpp" />
+    <ClCompile Include="DrawForms.cpp" />
+    <ClCompile Include="Economy.cpp" />
+    <ClCompile Include="EinfoClass.cpp" />
+    <ClCompile Include="ExConst.cpp" />
+    <ClCompile Include="Fastdraw.cpp" />
+    <ClCompile Include="fog.cpp" />
+    <ClCompile Include="Fractal.cpp" />
+    <ClCompile Include="GameSound.cpp" />
+    <ClCompile Include="GP_Draw.cpp" />
+    <ClCompile Include="Graphs.cpp" />
+    <ClCompile Include="Groups.cpp" />
+    <ClCompile Include="gText.cpp" />
+    <ClCompile Include="GVClass.cpp" />
+    <ClCompile Include="Hint.cpp" />
+    <ClCompile Include="HTTP\HttpComm.cpp" />
+    <ClCompile Include="Icontool.cpp" />
+    <ClCompile Include="Interface.cpp" />
+    <ClCompile Include="IR_Main.cpp" />
+    <ClCompile Include="Lines.cpp" />
+    <ClCompile Include="LoadSave.cpp" />
+    <ClCompile Include="mapa.cpp" />
+    <ClCompile Include="MapSprites.cpp" />
+    <ClCompile Include="Masks.cpp" />
+    <ClCompile Include="Megapolis.cpp" />
+    <ClCompile Include="menu.cpp" />
+    <ClCompile Include="Mine.cpp" />
+    <ClCompile Include="Motion.cpp" />
+    <ClCompile Include="Mouse_X.cpp" />
+    <ClCompile Include="MousZone.cpp" />
+    <ClCompile Include="MPlayer.cpp" />
+    <ClCompile Include="Multi.cpp" />
+    <ClCompile Include="Nation.cpp" />
+    <ClCompile Include="Nature.cpp" />
+    <ClCompile Include="Navorots.cpp" />
+    <ClCompile Include="NewAI.cpp" />
+    <ClCompile Include="NewCode\MapOptionsEncoder.cpp" />
+    <ClCompile Include="NewCode\QueueManagement.cpp" />
+    <ClCompile Include="NewCode\SecureDivision.cpp" />
+    <ClCompile Include="NewCode\UdpHolePuncher.cpp" />
+    <ClCompile Include="NewILogin.cpp" />
+    <ClCompile Include="NewMon.cpp" />
+    <ClCompile Include="NewUpgrade.cpp" />
+    <ClCompile Include="Nuclear.cpp" />
+    <ClCompile Include="OnWater.cpp" />
+    <ClCompile Include="path.cpp" />
+    <ClCompile Include="RealWater.cpp" />
+    <ClCompile Include="Recorder.cpp" />
+    <ClCompile Include="Report.cpp" />
+    <ClCompile Include="Resfile.cpp" />
+    <ClCompile Include="River.cpp" />
+    <ClCompile Include="SafeNet.cpp" />
+    <ClCompile Include="SaveNewMap.cpp" />
+    <ClCompile Include="Select.cpp" />
+    <ClCompile Include="SelProp.cpp" />
+    <ClCompile Include="ShipTrace.cpp" />
+    <ClCompile Include="StrategyResearch.cpp" />
+    <ClCompile Include="stRecog.cpp" />
+    <ClCompile Include="Stringshash.cpp" />
+    <ClCompile Include="testserver.cpp" />
+    <ClCompile Include="Timing.cpp" />
+    <ClCompile Include="Tmixer.cpp" />
+    <ClCompile Include="TopoGraf.cpp" />
+    <ClCompile Include="Transport.cpp" />
+    <ClCompile Include="UnRar.cpp" />
+    <ClCompile Include="UnSyncro.cpp" />
+    <ClCompile Include="Upgrade.cpp" />
+    <ClCompile Include="VirtScr.cpp" />
+    <ClCompile Include="walls.cpp" />
+    <ClCompile Include="Waves.cpp" />
+    <ClCompile Include="Weapon.cpp" />
+    <ClCompile Include="ZBuffer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="3DBars.h" />
+    <ClInclude Include="3DGraph.h" />
+    <ClInclude Include="3dlow.h" />
+    <ClInclude Include="3dmaped.h" />
+    <ClInclude Include="3drandmap.h" />
+    <ClInclude Include="3DSurf.h" />
+    <ClInclude Include="Activescenary.h" />
+    <ClInclude Include="Activezone.h" />
+    <ClInclude Include="Antibug.h" />
+    <ClInclude Include="Archtool.h" />
+    <ClInclude Include="Arc\GSCarch.h" />
+    <ClInclude Include="Arc\Gscset.h" />
+    <ClInclude Include="Arc\GSCtypes.h" />
+    <ClInclude Include="Arc\Isimasks.h" />
+    <ClInclude Include="Bmptool.h" />
+    <ClInclude Include="Cdirsnd.h" />
+    <ClInclude Include="CEngine\Goaceng.h" />
+    <ClInclude Include="Chat\Chat.h" />
+    <ClInclude Include="CommCore.h" />
+    <ClInclude Include="common.h" />
+    <ClInclude Include="Conststr.h" />
+    <ClInclude Include="Ctables.h" />
+    <ClInclude Include="Curve.h" />
+    <ClInclude Include="Cwave.h" />
+    <ClInclude Include="Danger.h" />
+    <ClInclude Include="Dbgint.h" />
+    <ClInclude Include="Ddini.h" />
+    <ClInclude Include="Devicecd.h" />
+    <ClInclude Include="Dialogs.h" />
+    <ClInclude Include="Dialogs\InitFonts.h" />
+    <ClInclude Include="Dpchat.h" />
+    <ClInclude Include="Dplay.h" />
+    <ClInclude Include="Dplobby.h" />
+    <ClInclude Include="Drawform.h" />
+    <ClInclude Include="Dsound.h" />
+    <ClInclude Include="EinfoClass.h" />
+    <ClInclude Include="Event.h" />
+    <ClInclude Include="Fastdraw.h" />
+    <ClInclude Include="File2.h" />
+    <ClInclude Include="Fog.h" />
+    <ClInclude Include="Fonts.h" />
+    <ClInclude Include="gFile.h" />
+    <ClInclude Include="GP_Draw.h" />
+    <ClInclude Include="Graphs.h" />
+    <ClInclude Include="Gsinc.h" />
+    <ClInclude Include="GSound.h" />
+    <ClInclude Include="Hash.h" />
+    <ClInclude Include="HTTP\HttpComm.h" />
+    <ClInclude Include="Icons.h" />
+    <ClInclude Include="Icontool.h" />
+    <ClInclude Include="Ir.h" />
+    <ClInclude Include="Lines.h" />
+    <ClInclude Include="Loadsave.h" />
+    <ClInclude Include="MapDiscr.h" />
+    <ClInclude Include="Mapsprites.h" />
+    <ClInclude Include="Masks.h" />
+    <ClInclude Include="Megapolis.h" />
+    <ClInclude Include="Menu.h" />
+    <ClInclude Include="Mgraph.h" />
+    <ClInclude Include="Mode.h" />
+    <ClInclude Include="Mouse.h" />
+    <ClInclude Include="Mplayer.h" />
+    <ClInclude Include="Multipl.h" />
+    <ClInclude Include="Nature.h" />
+    <ClInclude Include="Newai.h" />
+    <ClInclude Include="NewCode\UdpHolePuncher.h" />
+    <ClInclude Include="NewMon.h" />
+    <ClInclude Include="Newupgrade.h" />
+    <ClInclude Include="Nonport.h" />
+    <ClInclude Include="Nucl.h" />
+    <ClInclude Include="Path.h" />
+    <ClInclude Include="Pinger.h" />
+    <ClInclude Include="PlayerInfo.h" />
+    <ClInclude Include="Process.h" />
+    <ClInclude Include="queryreporting\Gqueryreporting.h" />
+    <ClInclude Include="Realwater.h" />
+    <ClInclude Include="Recorder.h" />
+    <ClInclude Include="Resfile.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="Safety.h" />
+    <ClInclude Include="Sort.h" />
+    <ClInclude Include="Stdafx.h" />
+    <ClInclude Include="Stdarg.h" />
+    <ClInclude Include="Strategyresearch.h" />
+    <ClInclude Include="Stringhash.h" />
+    <ClInclude Include="Tmixer.h" />
+    <ClInclude Include="Tntfileio.h" />
+    <ClInclude Include="TopoGraf.h" />
+    <ClInclude Include="Transport.h" />
+    <ClInclude Include="Unrar.h" />
+    <ClInclude Include="UnSyncro.h" />
+    <ClInclude Include="Upgrade.h" />
+    <ClInclude Include="Virtscreen.h" />
+    <ClInclude Include="Wall.h" />
+    <ClInclude Include="Walls.h" />
+    <ClInclude Include="Weaponid.h" />
+    <ClInclude Include="Zbuffer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\Temp\CommCore.lib" />
+    <Library Include="..\Temp\IChat.lib" />
+    <Library Include="libraries\Ddraw.lib" />
+    <Library Include="libraries\dplayx.lib" />
+    <Library Include="libraries\dsound.lib" />
+    <Library Include="libraries\Pinger.lib" />
+    <Library Include="libraries\ProTest.lib" />
+    <Library Include="libraries\tntFileIO.lib" />
+    <Library Include="libraries\Winmm.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Script1.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

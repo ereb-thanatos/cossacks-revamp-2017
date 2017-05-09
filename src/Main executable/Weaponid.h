@@ -1,0 +1,12 @@
+extern word ID_FIRE;
+extern word ID_FIRE1;
+extern word ID_MAGW;
+extern word ID_EXPL1;
+extern word ID_EXPL2;
+extern word ID_GLASSFLY;
+extern word ID_GLASSBROKEN;
+extern word ID_FLYFIRE;
+extern word ID_MAGEXP;
+extern word ID_FOG;
+extern word ID_FOG1;
+extern word ID_FIREX;

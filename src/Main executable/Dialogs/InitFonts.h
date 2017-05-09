@@ -1,0 +1,75 @@
+RLCFont  BigBlackFont;
+RLCFont  BigWhiteFont;
+RLCFont  BigYellowFont;
+RLCFont  BigRedFont;
+RLCFont  BlackFont;
+RLCFont  YellowFont;
+RLCFont  WhiteFont;
+RLCFont  RedFont;
+RLCFont  SmallBlackFont;
+RLCFont  SmallWhiteFont;
+RLCFont  SmallYellowFont;
+RLCFont  SmallRedFont;
+RLCFont  SmallBlackFont1;
+RLCFont  SmallWhiteFont1;
+RLCFont  SmallYellowFont1;
+RLCFont  SmallRedFont1;
+RLCFont  SpecialWhiteFont;
+RLCFont  SpecialYellowFont;
+RLCFont  SpecialRedFont;
+RLCFont  SpecialBlackFont;
+RLCFont  fn10;
+RLCFont  fn8;
+
+void InitFonts()
+{
+	int GPID = GPS.PreLoadGPImage( "MainFont" );
+	WhiteFont.SetGPIndex( GPID );
+	WhiteFont.SetWhiteColor();
+	YellowFont.SetGPIndex( GPID );
+	YellowFont.SetColorTable( 3 );
+	RedFont.SetGPIndex( GPID );
+	RedFont.SetRedColor();
+	BlackFont.SetGPIndex( GPID );
+	GPID = GPS.PreLoadGPImage( "romBig" );
+	BigWhiteFont.SetGPIndex( GPID );
+	BigWhiteFont.SetWhiteColor();
+	BigYellowFont.SetGPIndex( GPID );
+	BigYellowFont.SetColorTable( 3 );
+	BigRedFont.SetGPIndex( GPID );
+	BigRedFont.SetRedColor();
+	BigBlackFont.SetGPIndex( GPID );
+	GPID = GPS.PreLoadGPImage( "rom10" );
+	SmallWhiteFont.SetGPIndex( GPID );
+	SmallWhiteFont.SetWhiteColor();
+	SmallRedFont.SetGPIndex( GPID );
+	SmallRedFont.SetRedColor();
+	SmallBlackFont.SetGPIndex( GPID );
+	SmallYellowFont.SetGPIndex( GPID );
+	SmallYellowFont.SetColorTable( 3 );
+
+	GPID = GPS.PreLoadGPImage( "serif" );
+	SmallWhiteFont1.SetGPIndex( GPID );
+	SmallWhiteFont1.SetWhiteColor();
+	SmallRedFont1.SetGPIndex( GPID );
+	SmallRedFont1.SetRedColor();
+	SmallBlackFont1.SetGPIndex( GPID );
+	SmallYellowFont1.SetGPIndex( GPID );
+	SmallYellowFont1.SetColorTable( 3 );
+
+	GPID = GPS.PreLoadGPImage( "Special" );
+	SpecialWhiteFont.SetGPIndex( GPID );
+	SpecialWhiteFont.SetWhiteColor();
+	SpecialYellowFont.SetGPIndex( GPID );
+	SpecialYellowFont.SetColorTable( 3 );
+	SpecialRedFont.SetGPIndex( GPID );
+	SpecialRedFont.SetRedColor();
+	SpecialBlackFont.SetGPIndex( GPID );
+
+	int s1 = GPS.PreLoadGPImage( "fn8" );
+	int s2 = GPS.PreLoadGPImage( "fn10" );
+	fn8.SetGPIndex( s1 );
+	fn8.SetWhiteColor();
+	fn10.SetGPIndex( s2 );
+	fn10.SetWhiteColor();
+};

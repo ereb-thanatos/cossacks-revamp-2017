@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CommCore library", "CommCore library\CommCore library.vcxproj", "{41643FD4-FCB7-4FD2-8A6D-219C11DC2693}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IChat library", "IChat library\IChat library.vcxproj", "{1A70B6C5-C01F-4BBE-98A6-4B6B289B4EC8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IntExplorer library", "IntExplorer library\IntExplorer library.vcxproj", "{90C182BD-A329-4672-9BD6-D8D40C937DA3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Cossacks", "Main executable\Cossacks.vcxproj", "{44B11E0B-D6E6-4D14-A756-D79D0647F007}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Release|x86 = Release|x86
+		Testing|x86 = Testing|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{41643FD4-FCB7-4FD2-8A6D-219C11DC2693}.Release|x86.ActiveCfg = Release|Win32
+		{41643FD4-FCB7-4FD2-8A6D-219C11DC2693}.Release|x86.Build.0 = Release|Win32
+		{41643FD4-FCB7-4FD2-8A6D-219C11DC2693}.Testing|x86.ActiveCfg = Release|Win32
+		{41643FD4-FCB7-4FD2-8A6D-219C11DC2693}.Testing|x86.Build.0 = Release|Win32
+		{1A70B6C5-C01F-4BBE-98A6-4B6B289B4EC8}.Release|x86.ActiveCfg = Release|Win32
+		{1A70B6C5-C01F-4BBE-98A6-4B6B289B4EC8}.Release|x86.Build.0 = Release|Win32
+		{1A70B6C5-C01F-4BBE-98A6-4B6B289B4EC8}.Testing|x86.ActiveCfg = Release|Win32
+		{1A70B6C5-C01F-4BBE-98A6-4B6B289B4EC8}.Testing|x86.Build.0 = Release|Win32
+		{90C182BD-A329-4672-9BD6-D8D40C937DA3}.Release|x86.ActiveCfg = Release|Win32
+		{90C182BD-A329-4672-9BD6-D8D40C937DA3}.Release|x86.Build.0 = Release|Win32
+		{90C182BD-A329-4672-9BD6-D8D40C937DA3}.Testing|x86.ActiveCfg = Release|Win32
+		{90C182BD-A329-4672-9BD6-D8D40C937DA3}.Testing|x86.Build.0 = Release|Win32
+		{44B11E0B-D6E6-4D14-A756-D79D0647F007}.Release|x86.ActiveCfg = Release|Win32
+		{44B11E0B-D6E6-4D14-A756-D79D0647F007}.Release|x86.Build.0 = Release|Win32
+		{44B11E0B-D6E6-4D14-A756-D79D0647F007}.Testing|x86.ActiveCfg = Release|Win32
+		{44B11E0B-D6E6-4D14-A756-D79D0647F007}.Testing|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
