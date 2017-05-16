@@ -59,7 +59,7 @@ You could stumble upon an archive somewhere on the net… If you do, those could
 
 File|Size|SHA-1
 :-|-:|:-
-Cossacks142.zip|310,729,118|5b0dc863549db8a9d832c915dbc0d240681e82f3
+[Cossacks142.zip](https://github.com/ereb-thanatos/cossacks-revamp-2017/releases/download/1.42/Cossacks142.zip)|310,729,118|5b0dc863549db8a9d832c915dbc0d240681e82f3
 dmcr.exe|1,975,296|3bb7d0c722d232b08033fa78ad5d4aefe3fc8900
 IChat.dll|108,544|bcd17e3fe3fc242dfec5ec89497ba5863fe40729
 IntExplorer.dll|114,176|310c721dfd259dd49c5905694981e9ebd78aa43c
@@ -133,7 +133,7 @@ You should also get the [Microsoft Visual C++ 2015 Redistributable (x86)](https:
 
 Файл|Размер|SHA-1
 :-|-:|:-
-Cossacks142.zip|310.729.118|5b0dc863549db8a9d832c915dbc0d240681e82f3
+[Cossacks142.zip](https://github.com/ereb-thanatos/cossacks-revamp-2017/releases/download/1.42/Cossacks142.zip)|310.729.118|5b0dc863549db8a9d832c915dbc0d240681e82f3
 dmcr.exe|1.975.296|3bb7d0c722d232b08033fa78ad5d4aefe3fc8900
 IChat.dll|108.544|bcd17e3fe3fc242dfec5ec89497ba5863fe40729
 IntExplorer.dll|114.176|310c721dfd259dd49c5905694981e9ebd78aa43c
