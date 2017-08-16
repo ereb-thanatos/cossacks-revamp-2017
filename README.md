@@ -41,7 +41,7 @@ Other improvements:
   * Game starts without UAC prompt
   * Menu resolution is fixed at original 1024x768, no more stretching
   * Upon clicking "Ready" in the lobby a list of all selected options is displayed
-  * Screen resolutions fitting to your aspect ration are marked with an asterisk
+  * Screen resolutions fitting to your aspect ratio are marked with an asterisk
   * Confirm prompt added for surrendering and game exiting
   * Correct handling of DPI scaling settings
   * Upgrade research is canceled upon building capture
@@ -102,7 +102,7 @@ You should also get the [Microsoft Visual C++ 2015 Redistributable (x86)](https:
   * Новая опция: верфь (без кораблей, только рыболовные, только рыболовные и транспорт, только корабли 17 века)
   * Дополнительная опция: совсем без артиллерии
   * Скорость игры настраивается в лобби и остаётся неизменной
-  * Модификаторы очередей: 5, 15, 20, 36, 50, 250
+  * Модификаторы очередей: Shift (5), Alt (20), Tab (50), F1 (15), F2 (36) and F5 (250)
   * Изменение настроек в лобби сбрасывает флаги готовности
   * Исправлен баг, позволяющий прокликивать сквозь туман войны
   * Убраны холмы из генерации ландшафта типа «равнины»
