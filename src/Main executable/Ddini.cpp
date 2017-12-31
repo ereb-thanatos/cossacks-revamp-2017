@@ -261,7 +261,7 @@ int BestBPP = 32;
 HRESULT CALLBACK ModeCallback( LPDDSURFACEDESC pdds, LPVOID lParam )
 {
 	if (1024 > pdds->dwWidth || 768 > pdds->dwHeight)
-	{//Don't allow for resolutions less than 1024 x 768 ot bigger than 1920x[...]
+	{//Don't allow for resolutions less than 1024 x 768 or bigger than 1920x[...]
 		return S_FALSE;
 	}
 

@@ -214,6 +214,7 @@ extern int RealLx;
 extern int RealLy;
 
 void ShowCharUNICODE( int x, int y, byte* strptr, lpRLCFont lpr );
+int DecodeOptionsToGameSettings(const int options);
 
 void ShowProgStr( char* ss, int prog )
 {
@@ -2974,8 +2975,8 @@ bool MPL_WaitingGame( bool Host, bool SINGLE )
 	bool GMREADY = true;
 
 	//---------------Page 1 - designed map--------------
-	VScrollBar* VSB = MENU.addNewGP_VScrollBar( nullptr, 778, 152, 221, 1, 0, SCROL.GPID, 0 );
-	ListBox* LBMaps = MENU.addGP_ListBox( nullptr, 494, 161, 8, BTNS.GPID, 18, 26, &WhiteFont, &YellowFont, VSB );
+	VScrollBar* VSB = MENU.addNewGP_VScrollBar( nullptr, 778, 152, 140, 1, 0, SCROL.GPID, 0 );
+	ListBox* LBMaps = MENU.addGP_ListBox( nullptr, 494, 161, 5, BTNS.GPID, 18, 26, &WhiteFont, &YellowFont, VSB );
 
 	//---------------Page 2 - random map----------------
 	int y = 161;
@@ -3619,8 +3620,11 @@ ffe2:
 
 		DYL = CHSCR->SPos;
 
+		// Page 1 Enabled = Design Page
 		P1E = 0 == GPP->CurPage;
+		// Page 2 Enabled = Random Map
 		P2E = 1 == GPP->CurPage;
+		// Page 3 Enabled = Saved game
 		P3E = 2 == GPP->CurPage;
 
 		Exam->Visible = P2E;
@@ -3637,12 +3641,12 @@ ffe2:
 		LBSav->Visible = P3E;
 		RMS->Visible = P2E;
 
-		ADD_OPT->Visible = P2E;
-		ADD_OPT->Enabled = P2E;
-		ADD_OPT_VAL->Visible = P2E && Host;
-		ADD_OPT_VAL->Enabled = P2E && Host;
-		AOPPIC->Visible = P2E && Host;
-		AOPTB->Visible = P2E && Host;
+		ADD_OPT->Visible = P2E || P1E ;
+		ADD_OPT->Enabled = P2E || P1E;
+		ADD_OPT_VAL->Visible = (P2E && Host) || (P1E && Host);
+		ADD_OPT_VAL->Enabled = (P2E && Host) || (P1E && Host);
+		AOPPIC->Visible = (P2E && Host) || (P1E && Host);
+		AOPTB->Visible = (P2E && Host) || (P1E && Host);
 
 		StdKeys();
 
@@ -3862,163 +3866,182 @@ ffe2:
 				//Always get speed mode from host
 				PINFO[HostID].speed_mode = speed_mode->CurLine;
 
+				//Game options
+				//Encode 10 option values in a 7-digit number
+				int options = EncodeOptionsInNumber(selected_opt_values);
+
 				if ( GPP->CurPage == 0 )
-				{//Designed map with already existing filename
+				{
+					//Designed map with already existing filename
 					if ( LBMaps->CurItem >= 0 && LBMaps->NItems )
 					{
 						strcpy( PINFO[HostID].MapName, LBMaps->GetItem( LBMaps->CurItem )->Message );
 					}
-					strcpy( CurrentMap, PINFO[HostID].MapName );
-				}
-				else
-				{
-					if ( GPP->CurPage == 1 )
-					{//Random generated map, need new filename
-						PINFO[HostID].MapStyle = CMGRP1[0]->CurLine;
-						PINFO[HostID].HillType = CMGRP1[1]->CurLine;
-						PINFO[HostID].StartRes = CMGRP1[2]->CurLine;
-						PINFO[HostID].ResOnMap = CMGRP1[3]->CurLine;
-						PINFO[HostID].VictCond = VICT->CurLine;
-						PINFO[HostID].GameTime = TIME->CurLine;
-						for ( int i = 0; i < kNumberOfAdditionalOptions; i++ )
+					if (strcmp(CurrentMap, LBMaps->GetItem(LBMaps->CurItem)->Message) != 0) {
+						//Map actually changed
+						strcpy( CurrentMap, PINFO[HostID].MapName );
+						if (Host) 
 						{
-							if ( i < 7 )
-							{//Compatibility with old memory layout (see comment to PlayerInfo)
-								PINFO[HostID].UserParam[i] = selected_opt_values[i];
-							}
-							else
-							{
-								PINFO[HostID].UserParam2[i - 7] = selected_opt_values[i];
-							}
+						CreateNationalMaskForMap(CurrentMap);
+						for (int i = 0; i < 8; i++)
+						{
+							//Loading nation
+							LoadAllNations(i);
 						}
 
-						char Nats[9];
-						char Nats1[9];
-						strcpy( Nats, "00000000" );
-						strcpy( Nats1, "00000000" );
-						char* NTCHAR = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-						int NP = 0;
-						for ( int q = 0; q < NPlayers; q++ )
+						Load3DMap(CurrentMap);
+
+						DecodeOptionsToGameSettings(options);
+						Save3DMap(CurrentMap);
+						}
+						
+					}
+					
+
+				}
+				else if ( GPP->CurPage == 1 )
+				{
+					//Random generated map, need new filename
+					PINFO[HostID].MapStyle = CMGRP1[0]->CurLine;
+					PINFO[HostID].HillType = CMGRP1[1]->CurLine;
+					PINFO[HostID].StartRes = CMGRP1[2]->CurLine;
+					PINFO[HostID].ResOnMap = CMGRP1[3]->CurLine;
+					PINFO[HostID].VictCond = VICT->CurLine;
+					PINFO[HostID].GameTime = TIME->CurLine;
+					for ( int i = 0; i < kNumberOfAdditionalOptions; i++ )
+					{
+						if ( i < 7 )
+						{//Compatibility with old memory layout (see comment to PlayerInfo)
+							PINFO[HostID].UserParam[i] = selected_opt_values[i];
+						}
+						else
+						{
+							PINFO[HostID].UserParam2[i - 7] = selected_opt_values[i];
+						}
+					}
+
+					char Nats[9];
+					char Nats1[9];
+					strcpy( Nats, "00000000" );
+					strcpy( Nats1, "00000000" );
+					char* NTCHAR = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+					int NP = 0;
+					for ( int q = 0; q < NPlayers; q++ )
+					{
+						Nats[7 - PINFO[q].ColorID] = NTCHAR[MNATION[q]->CurLine + 1];
+					}
+
+					for ( int q = NPlayers; q < 7; q++ )
+					{
+						if ( PINFO[HostID].COMPINFO[q] )
+						{
+							word W = PINFO[HostID].COMPINFO[q];
+							int Nat = W >> 11;
+							int Color = W & 15;
+							int Diff = ( W >> 8 ) & 7;
+							int Team = ( W >> 4 ) & 15;
+							Nats[7 - Color] = NTCHAR[Nat + 1];
+						}
+					}
+
+					for ( int u = 0; u < 8; u++ )
+					{
+						if ( Nats[u] != '0' )
+						{
+							NP++;
+						}
+					}
+
+					//Time generated random number
+					int r = r0 % 65536;
+
+					//Map style
+					int s = CMGRP1[0]->CurLine
+						+ ( ( NP - 2 ) << 4 )
+						+ ( CMGRP1[1]->CurLine << 8 )
+						+ ( CMGRP1[2]->CurLine << 12 )
+						+ ( CMGRP1[3]->CurLine << 16 );
+
+					//Assemble the name of generated random map, the 1st?
+					//For syntax details look ~70 lines below
+					sprintf( PINFO[HostID].MapName, "RN%d %X %X %s %07d.m3d",
+						CMGRP1[4]->CurLine,//map size
+						r,//random time number
+						s,//map style
+						Nats,//player nations
+						options//game options
+					);
+
+					//Landscape
+					int sty = CMGRP1[0]->CurLine == RSTYID ? rand() % RSTYID : CMGRP1[0]->CurLine;
+					//Mountains
+					int rel = CMGRP1[1]->CurLine == RRELID ? rand() % RRELID : CMGRP1[1]->CurLine;
+					//Initial resources
+					int res = CMGRP1[2]->CurLine == RRESID ? rand() % RRESID : CMGRP1[2]->CurLine;
+					//Minerals
+					int min = CMGRP1[3]->CurLine == RMINEID ? rand() % RMINEID : CMGRP1[3]->CurLine;
+
+					//Nations of all players as a 8-digit hex string
+					strcpy( Nats, "00000000" );
+
+					for ( int q = 0; q < NPlayers; q++ )
+					{
+						if ( MNATION[q]->CurLine == RNATID )
+						{
+							Nats[7 - PINFO[q].ColorID] = NTCHAR[1 + ( rand() % RNATID )];
+						}
+						else
 						{
 							Nats[7 - PINFO[q].ColorID] = NTCHAR[MNATION[q]->CurLine + 1];
 						}
+					}
 
-						for ( int q = NPlayers; q < 7; q++ )
+					for ( int q = NPlayers; q < 7; q++ )
+					{
+						if ( PINFO[HostID].COMPINFO[q] )
 						{
-							if ( PINFO[HostID].COMPINFO[q] )
-							{
-								word W = PINFO[HostID].COMPINFO[q];
-								int Nat = W >> 11;
-								int Color = W & 15;
-								int Diff = ( W >> 8 ) & 7;
-								int Team = ( W >> 4 ) & 15;
-								Nats[7 - Color] = NTCHAR[Nat + 1];
-							}
-						}
-
-						for ( int u = 0; u < 8; u++ )
-						{
-							if ( Nats[u] != '0' )
-							{
-								NP++;
-							}
-						}
-
-						//Time generated random number
-						int r = r0 % 65536;
-
-						//Map style
-						int s = CMGRP1[0]->CurLine
-							+ ( ( NP - 2 ) << 4 )
-							+ ( CMGRP1[1]->CurLine << 8 )
-							+ ( CMGRP1[2]->CurLine << 12 )
-							+ ( CMGRP1[3]->CurLine << 16 );
-
-						//Game options
-						//Encode 10 option values in a 7-digit number
-						int options = EncodeOptionsInNumber( selected_opt_values );
-
-						//Assemble the name of generated random map, the 1st?
-						//For syntax details look ~70 lines below
-						sprintf( PINFO[HostID].MapName, "RN%d %X %X %s %07d.m3d",
-							CMGRP1[4]->CurLine,//map size
-							r,//random time number
-							s,//map style
-							Nats,//player nations
-							options//game options
-						);
-
-						//Landscape
-						int sty = CMGRP1[0]->CurLine == RSTYID ? rand() % RSTYID : CMGRP1[0]->CurLine;
-						//Mountains
-						int rel = CMGRP1[1]->CurLine == RRELID ? rand() % RRELID : CMGRP1[1]->CurLine;
-						//Initial resources
-						int res = CMGRP1[2]->CurLine == RRESID ? rand() % RRESID : CMGRP1[2]->CurLine;
-						//Minerals
-						int min = CMGRP1[3]->CurLine == RMINEID ? rand() % RMINEID : CMGRP1[3]->CurLine;
-
-						//Nations of all players as a 8-digit hex string
-						strcpy( Nats, "00000000" );
-
-						for ( int q = 0; q < NPlayers; q++ )
-						{
+							word W = PINFO[HostID].COMPINFO[q];
+							int Nat = W >> 11;
+							int Color = W & 15;
+							int Diff = ( W >> 8 ) & 7;
+							int Team = ( W >> 4 ) & 15;
 							if ( MNATION[q]->CurLine == RNATID )
 							{
-								Nats[7 - PINFO[q].ColorID] = NTCHAR[1 + ( rand() % RNATID )];
+								Nats[7 - Color] = NTCHAR[1 + ( rand() % RNATID )];
 							}
 							else
 							{
-								Nats[7 - PINFO[q].ColorID] = NTCHAR[MNATION[q]->CurLine + 1];
+								Nats[7 - Color] = NTCHAR[MNATION[q]->CurLine + 1];
 							}
 						}
-
-						for ( int q = NPlayers; q < 7; q++ )
-						{
-							if ( PINFO[HostID].COMPINFO[q] )
-							{
-								word W = PINFO[HostID].COMPINFO[q];
-								int Nat = W >> 11;
-								int Color = W & 15;
-								int Diff = ( W >> 8 ) & 7;
-								int Team = ( W >> 4 ) & 15;
-								if ( MNATION[q]->CurLine == RNATID )
-								{
-									Nats[7 - Color] = NTCHAR[1 + ( rand() % RNATID )];
-								}
-								else
-								{
-									Nats[7 - Color] = NTCHAR[MNATION[q]->CurLine + 1];
-								}
-							}
-						}
-
-						if ( NP < 2 )
-						{
-							NP = 2;
-						}
-
-						//Map ID with all map style options except size, 5 digits
-						s = sty + ( ( NP - 2 ) << 4 ) + ( rel << 8 ) + ( res << 12 ) + ( min << 16 );
-
-						//Assemble the name of generated random map, the 2nd?
-						//RN			prefix
-						//[0-2]			map size
-						//[0-F]{1-4}	random time number
-						//[0-9]{5}		map style
-						//[0-F]{8}		player nations
-						//[0-9]{7}		game options
-						//.m3d			ending
-						sprintf( CurrentMap, "RN%d %X %X %s %07d.m3d", CMGRP1[4]->CurLine, r, s, Nats, options );
 					}
-					else
+
+					if ( NP < 2 )
 					{
-						//Saved game, existing filename
-						if ( LBSav->CurItem >= 0 && LBSav->NItems )
-						{
-							strcpy( PINFO[HostID].MapName, LBSav->GetItem( LBSav->CurItem )->Message );
-						}
-						strcpy( CurrentMap, PINFO[HostID].MapName );
+						NP = 2;
 					}
+
+					//Map ID with all map style options except size, 5 digits
+					s = sty + ( ( NP - 2 ) << 4 ) + ( rel << 8 ) + ( res << 12 ) + ( min << 16 );
+
+					//Assemble the name of generated random map, the 2nd?
+					//RN			prefix
+					//[0-2]			map size
+					//[0-F]{1-4}	random time number
+					//[0-9]{5}		map style
+					//[0-F]{8}		player nations
+					//[0-9]{7}		game options
+					//.m3d			ending
+					sprintf( CurrentMap, "RN%d %X %X %s %07d.m3d", CMGRP1[4]->CurLine, r, s, Nats, options );
+				}
+				else
+				{
+					//Saved game, existing filename
+					if ( LBSav->CurItem >= 0 && LBSav->NItems )
+					{
+						strcpy( PINFO[HostID].MapName, LBSav->GetItem( LBSav->CurItem )->Message );
+					}
+					strcpy( CurrentMap, PINFO[HostID].MapName );
 				}
 			}
 		}
@@ -6183,6 +6206,7 @@ bool ProcessMenuOptions()
 
 	//Resloutions drop down list in main menu
 	ComboBox* VMode = MMenu.addGP_ComboBox( nullptr, 240, 240 - 16 - 13, BTNS.GPID, 0, 9, 0, &WhiteFont, &YellowFont, nullptr );
+	
 	VMode->CurLine = 100;
 	for ( int i = 0; i < NModes; i++ )
 	{
@@ -7334,6 +7358,7 @@ void MemScreenPart( int x, int y, int lx, int ly, byte* Ptr )
 		Ptr += lx;
 	};
 };
+//Combobox to enter action of "draw action line" mode
 int EnterHi( int * val, int Type )
 {
 
@@ -11541,10 +11566,13 @@ extern byte SaveState;
 extern byte DipCentreState;
 extern byte ShipyardState;
 extern byte MarketState;
+extern int PeaceTimeLeft;
+extern int MaxPeaceTime;
+extern int PeaceTimeStage;
 
-void GetOptionsFromMap( char* Name )
+void GetOptionsFromMap(char* Name)
 {
-	if ( Name[0] == 'R' && Name[1] == 'N' && Name[3] == ' ' )
+	if (Name[0] == 'R' && Name[1] == 'N' && Name[3] == ' ')
 	{
 		/*
 		int v1, v2, v3, options;
@@ -11558,25 +11586,75 @@ void GetOptionsFromMap( char* Name )
 		{
 		*/
 		int options = 0;
-		int z = sscanf( Name, "%*s %*s %*s %*s %d", &options );//BUGFIX: proper parsing
-		if ( 1 == z )
+		int z = sscanf(Name, "%*s %*s %*s %*s %d", &options);//BUGFIX: proper parsing
+		if (1 == z)
 		{
-			//Decode 7-digit number into game settings
-			int option_values[11] = { 0 };
-
-			DecodeOptionsFromNumber( options, option_values );
-
-			BalloonState = option_values[0];
-			CannonState = option_values[1];
-			NoArtilleryState = option_values[2];
-			XVIIIState = option_values[4];
-			CaptState = option_values[5];
-			SaveState = option_values[6];
-			DipCentreState = option_values[7];
-			ShipyardState = option_values[8];
-			MarketState = option_values[9];
+			int x = DecodeOptionsToGameSettings(options);
 		}
 	}
+}
+
+#define NATLX (TopLx>>1)
+extern byte* NatDeals;
+//Decodes 7-digit number into game settings
+//Saves settings values in the corresponding global variables
+//Will also try to set the peacetime to the max peace time
+//Returns 'Start options' value
+int DecodeOptionsToGameSettings(const int options) 
+{
+	//Decode 7-digit number into game settings
+	int option_values[11] = { 0 };
+
+	int GenIndex = DecodeOptionsFromNumber(options, option_values);
+	BalloonState = option_values[0];
+	CannonState = option_values[1];
+	NoArtilleryState = option_values[2];
+	int peace_time_opt = option_values[3];
+	XVIIIState = option_values[4];
+	CaptState = option_values[5];
+	SaveState = option_values[6];
+	DipCentreState = option_values[7];
+	ShipyardState = option_values[8];
+	MarketState = option_values[9];
+
+	switch (peace_time_opt)
+	{
+	case 0:
+		PeaceTimeLeft = 0;
+		break;
+	case 1:
+		PeaceTimeLeft = 600;
+		break;
+	case 2:
+		PeaceTimeLeft = 1200;
+		break;
+	case 3:
+		PeaceTimeLeft = 1800;
+		break;
+	case 4:
+		PeaceTimeLeft = 45 * 60;
+		break;
+	case 5:
+		PeaceTimeLeft = 3600;
+		break;
+	case 6:
+		PeaceTimeLeft = 5400;
+		break;
+	case 7:
+		PeaceTimeLeft = 7200;
+		break;
+	case 8:
+		PeaceTimeLeft = 3600 * 3;
+		break;
+	case 9:
+		PeaceTimeLeft = 3600 * 4;
+		break;
+	}
+
+	MaxPeaceTime = PeaceTimeLeft;
+	PeaceTimeStage = PeaceTimeLeft / 60;
+
+	return GenIndex;
 }
 
 void PrepareGameMedia( byte myid, bool SaveNR )
@@ -11734,6 +11812,7 @@ void PrepareGameMedia( byte myid, bool SaveNR )
 		}
 
 		Load3DMap( CurrentMap );
+		
 		GetOptionsFromMap( CurrentMap );
 
 		for ( int i = 0; i < 8; i++ )
@@ -14423,6 +14502,7 @@ extern int HiStyle;
 extern bool RiverEditMode;
 extern int Inform;
 extern bool OptHidden;
+// Map Editor Tool Set
 bool ON_TOOL_CLICK( SimpleDialog* SD )
 {
 	GP_Button* GB = (GP_Button*) SD;
@@ -14544,6 +14624,7 @@ void CreateTotalLocking();
 void ResearchIslands();
 void Reset3D();
 extern bool PeaceMode;
+// Map Editor Dialog Tools
 bool TBOX_DIALOGS( SimpleDialog* SD )
 {
 	switch ( SD->UserParam )

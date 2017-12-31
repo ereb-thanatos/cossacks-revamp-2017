@@ -1166,6 +1166,7 @@ bool CheckCurveLinked(int x, int y) {
 	}
 	else return false;
 };
+// Used when left or right clicking in "draw action line" mode in editor
 void AddPointToCurve(int x, int y, bool Final, byte Type) {
 	if (NCurves && !Final) {
 		if (Norma(x - CurveX[NCurves - 1], y - CurveY[NCurves - 1]) < 4)return;
@@ -1197,16 +1198,13 @@ void AddPointToCurve(int x, int y, bool Final, byte Type) {
 				{
 					SoftRegion();
 				}
+				else if (p >= 4 && p <= 6)
+				{
+					SetRoadInCurve(p);
+				}
 				else
 				{
-					if (p >= 4)
-					{
-						SetRoadInCurve(p);
-					}
-					else
-					{
-						SetPlatoInCurve();
-					}
+					SetPlatoInCurve();
 				}
 			}
 		}
@@ -1281,7 +1279,6 @@ void DrawCurves1() {
 	NCurves = NC;
 	memcpy(CurveX, CurveXt, sizeof CurveX);
 	memcpy(CurveY, CurveYt, sizeof CurveY);
-
 };
 bool CheckPointInside(int x, int y) {
 	int NCross = 0;

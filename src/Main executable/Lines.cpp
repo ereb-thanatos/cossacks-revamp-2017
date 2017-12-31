@@ -1,4 +1,4 @@
-/* Horisontal and vertical lines,rectangles*/
+/* Horizontal and vertical lines,rectangles*/
 #include "ddini.h"
 #include "ResFile.h"
 #include "FastDraw.h"

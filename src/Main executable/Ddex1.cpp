@@ -1125,7 +1125,7 @@ extern word NPlayers;
 bool CheckFlagsNeed();
 void SetGameDisplayModeAnyway( int SizeX, int SizeY );
 
-//Many diffirent key checks for various game modes
+//Many different key checks for various game modes
 void GameKeyCheck()
 {
 	if (PlayGameMode == 1)
@@ -2014,7 +2014,8 @@ void EditorKeyCheck()
 		case VK_NUMPAD8:
 			SetMyNation( 7 );
 			MEditMode = false;
-			HeightEditMode = false; PlayerMask = 128;
+			HeightEditMode = false; 
+			PlayerMask = 128;
 			break;
 		case 'I':
 			if (GetKeyState( VK_CONTROL ) & 0x8000)InfoMode = !InfoMode;
@@ -2468,7 +2469,7 @@ void PreDrawGameProcess()
 	//NDestn = 0
 	InitDestn();
 
-	//Many diffirent key checks for various game modes
+	//Many different key checks for various game modes
 	GameKeyCheck();
 
 	//Take a guess...

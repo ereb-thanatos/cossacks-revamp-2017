@@ -73,7 +73,8 @@ LPGSCfile CGSCset::gOpenFile( LPCSTR lpcsFileName, bool Only )
 			FILE_ATTRIBUTE_NORMAL,
 			0 ) );
 
-		if (gFile->m_FileHandle == (DWORD) INVALID_HANDLE_VALUE)  // На всякий случай
+		// just in case
+		if (gFile->m_FileHandle == (DWORD) INVALID_HANDLE_VALUE) 
 		{
 			delete gFile;
 			return NULL;
@@ -85,7 +86,8 @@ LPGSCfile CGSCset::gOpenFile( LPCSTR lpcsFileName, bool Only )
 
 VOID CGSCset::gCloseFile( LPGSCfile gFile )
 {
-	if (nullptr == gFile)//BUGFIX: Exception when closing game via Alt+F4
+	//BUGFIX: Exception when closing game via Alt+F4
+	if (nullptr == gFile)
 	{
 		return;
 	}

@@ -3321,7 +3321,7 @@ byte DipCentreState = 0;
 byte ShipyardState = 0;
 byte MarketState = 0;
 
-int DecodeOptionsFromNumber( const int number, int *result );
+int DecodeOptionsToGameSettings(const int number);
 
 bool CreateRandomTerrain( char* Name, int NPlay, int MountStyle,
 	int Ng, int NI, int Nc, word * Units, int options )
@@ -3558,6 +3558,7 @@ bool CreateRandomTerrain( char* Name, int NPlay, int MountStyle,
 			}
 		}
 
+		// Calculate spawn Points ?
 		for ( int s = 0; s < TERR->NIDS; s++ )
 		{
 			int pid = ( int( mrand() )*NPlc[s] ) >> 15;
@@ -3601,55 +3602,7 @@ bool CreateRandomTerrain( char* Name, int NPlay, int MountStyle,
 		}
 
 		//Decode 7-digit number into game settings
-		int option_values[11] = { 0 };
-		int GenIndex = DecodeOptionsFromNumber( options, option_values );
-		BalloonState = option_values[0];
-		CannonState = option_values[1];
-		NoArtilleryState = option_values[2];
-		int peace_time_opt = option_values[3];
-		XVIIIState = option_values[4];
-		CaptState = option_values[5];
-		SaveState = option_values[6];
-		DipCentreState = option_values[7];
-		ShipyardState = option_values[8];
-		MarketState = option_values[9];
-
-		switch ( peace_time_opt )
-		{
-		case 0:
-			PeaceTimeLeft = 0;
-			break;
-		case 1:
-			PeaceTimeLeft = 600;
-			break;
-		case 2:
-			PeaceTimeLeft = 1200;
-			break;
-		case 3:
-			PeaceTimeLeft = 1800;
-			break;
-		case 4:
-			PeaceTimeLeft = 45 * 60;
-			break;
-		case 5:
-			PeaceTimeLeft = 3600;
-			break;
-		case 6:
-			PeaceTimeLeft = 5400;
-			break;
-		case 7:
-			PeaceTimeLeft = 7200;
-			break;
-		case 8:
-			PeaceTimeLeft = 3600 * 3;
-			break;
-		case 9:
-			PeaceTimeLeft = 3600 * 4;
-			break;
-		}
-
-		MaxPeaceTime = PeaceTimeLeft;
-		PeaceTimeStage = PeaceTimeLeft / 60;
+		int GenIndex = DecodeOptionsToGameSettings(options);
 
 		GenerateNationalResources( "Pieces\\MINA0.LST",
 			"Pieces\\TRSS.LST", "Pieces\\STNN0.LST",
@@ -3831,7 +3784,7 @@ void InitNatDeal()
 
 	for ( int x = 1; x < NdMaxX; x++ )
 		for ( int y = 1; y < NdMaxX; y++ )
-		{
+		{  
 			int ofs = ( x << 2 ) + 1 + ( ( ( y << 2 ) + 1 )*MaxWX );
 			if ( WaterDeep[ofs] > 128 )NatDeals[x + ( y << NATSH )] = 0xFF;
 		};
@@ -3861,13 +3814,14 @@ void ExtendNatDealing()
 	memcpy( TMP, NatDeals, NATLX*NATLX );
 	int CenterX[16] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 	int CenterY[16] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
-	byte c;
+
 	for ( int iy = 2; iy < MAX; iy++ )
 	{
 		for ( int ix = 2; ix < MAX; ix++ )
 		{
 			int ofs = ix + ( iy << SH0 );
-			c = TMP[ofs];
+			byte c = TMP[ofs];
+			// 128dec = 0x80
 			if ( c < 128 )
 			{
 				c >>= 4;
@@ -4135,6 +4089,13 @@ PieceList::PieceList( char* Name )
 	MaxNames = 0;
 	Load( Name );
 };
+/**
+	Creates the National Division Dealing of territory for all nations
+	@param N Amount of possible nations on this map
+	@param N Constant array, containing 0-7
+	@param Nx Starting X of the Nation Deal ?
+	@param Ny Starting Y of the Nation Deal ?
+*/
 void CreateNatDealing( int N, byte* Nats, short* Nx, short* Ny )
 {
 	InitNatDeal();
@@ -4144,7 +4105,7 @@ void CreateNatDealing( int N, byte* Nats, short* Nx, short* Ny )
 		SetNatDealPoint( Nx[i], Ny[i], Nats[i] );
 	}
 
-	ExtendNatDealing();
+	//ExtendNatDealing();
 }
 
 void LimitZones()

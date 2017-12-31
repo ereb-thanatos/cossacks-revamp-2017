@@ -2883,7 +2883,7 @@ void PreSaveGame( SaveBuf* SB, char* Messtr, int ID )
 	xBlockWrite( SB, &sfHeader, 4 );
 	xBlockWrite( SB, &sfVersion, 4 );
 	xBlockWrite( SB, &ID, 4 );
-
+	  
 	int NNN = 0;
 	for (int i = 0; i < 7; i++)
 	{

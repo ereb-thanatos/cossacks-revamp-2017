@@ -1848,6 +1848,7 @@ extern byte* NatDeals;
 #define NATLX (TopLx>>1)
 extern int PeaceTimeLeft;
 extern byte CordonIDX[8];
+extern byte CordonIDX[8];
 
 extern byte BalloonState;
 extern byte CannonState;
@@ -1856,33 +1857,52 @@ extern byte XVIIIState;
 extern byte DipCentreState;
 extern byte ShipyardState;
 extern byte MarketState;
+extern byte CaptState;
+extern byte SaveState;
 
 extern int MaxPeaceTime;
 extern int PeaceTimeStage;
 
 void SavePeaceTimeInfo( ResFile f1 )
 {
-	if ( NatDeals )
+	int i = 'PEAC';
+	RBlockWrite( f1, &i, 4 );
+	// Size will not be even, when:
+	// - the map is from a old btw version (<= 1.4.2)
+	// - or the natdeals are saved in this file (> 1.4.2)
+	// This hack will ensure compatibility with older maps
+	// This offset makes sure that the initial size is even
+	int offset = 1;
+	int sz = 4 + NATLX*NATLX + 4 + 8 + 9;
+	if (NatDeals)
 	{
-		int i = 'PEAC';
-		RBlockWrite( f1, &i, 4 );
-		int sz = 4 + NATLX*NATLX + 4 + 8 + 3;
-		RBlockWrite( f1, &sz, 4 );
-		RBlockWrite( f1, NatDeals, NATLX*NATLX );
-		RBlockWrite( f1, &PeaceTimeLeft, 4 );
-		MaxPeaceTime = PeaceTimeLeft;
-		PeaceTimeStage = PeaceTimeLeft / 60;
+		offset++;
+	}
+	sz += offset;
 
-		RBlockWrite( f1, CordonIDX, 8 );
+	RBlockWrite( f1, &sz, 4 );
+	if (NatDeals)
+	{
+		RBlockWrite(f1, NatDeals, NATLX*NATLX);
+	}
+	RBlockWrite( f1, &PeaceTimeLeft, 4 );
+	MaxPeaceTime = PeaceTimeLeft;
+	PeaceTimeStage = PeaceTimeLeft / 60;
 
-		RBlockWrite( f1, &BalloonState, 1 );
-		RBlockWrite( f1, &CannonState, 1 );
-		RBlockWrite( f1, &NoArtilleryState, 1 );
-		RBlockWrite( f1, &XVIIIState, 1 );
-		RBlockWrite( f1, &DipCentreState, 1 );
-		RBlockWrite( f1, &ShipyardState, 1 );
-		RBlockWrite( f1, &MarketState, 1 );
-	};
+	RBlockWrite( f1, CordonIDX, 8 );
+
+	RBlockWrite( f1, &BalloonState, 1 );
+	RBlockWrite( f1, &CannonState, 1 );
+	RBlockWrite( f1, &NoArtilleryState, 1 );
+	RBlockWrite( f1, &XVIIIState, 1 );
+	RBlockWrite( f1, &DipCentreState, 1 );
+	RBlockWrite( f1, &ShipyardState, 1 );
+	RBlockWrite( f1, &MarketState, 1 );
+	RBlockWrite(f1, &CaptState, 1);
+	RBlockWrite(f1, &SaveState, 1);
+
+	// Fill the remaining offset with some garbage
+	RBlockWrite(f1, &BalloonState, offset);
 };
 extern int RivNX;
 extern byte* RivVol;
@@ -1902,24 +1922,23 @@ void LoadRivers( ResFile f1 )
 	RBlockRead( f1, RivVol, RivNX*RivNX );
 }
 
-void LoadPeaceTimeInfo( ResFile f1 )
+void LoadPeaceTimeInfo( ResFile f1, const int size)
 {
-	if ( NatDeals )
-	{
-		free( NatDeals );
+	if (size % 2 == 1) {
+		NatDeals = new byte[NATLX*NATLX];
+		RBlockRead(f1, NatDeals, NATLX*NATLX);
 	}
-
-	NatDeals = new byte[NATLX*NATLX];
-	RBlockRead( f1, NatDeals, NATLX*NATLX );
 	RBlockRead( f1, &PeaceTimeLeft, 4 );
 	RBlockRead( f1, CordonIDX, 8 );
-	RBlockWrite( f1, &BalloonState, 1 );
-	RBlockWrite( f1, &CannonState, 1 );
-	RBlockWrite( f1, &NoArtilleryState, 1 );
-	RBlockWrite( f1, &XVIIIState, 1 );
-	RBlockWrite( f1, &DipCentreState, 1 );
-	RBlockWrite( f1, &ShipyardState, 1 );
-	RBlockWrite( f1, &MarketState, 1 );
+	RBlockRead( f1, &BalloonState, 1 );
+	RBlockRead( f1, &CannonState, 1 );
+	RBlockRead( f1, &NoArtilleryState, 1 );
+	RBlockRead( f1, &XVIIIState, 1 );
+	RBlockRead( f1, &DipCentreState, 1 );
+	RBlockRead( f1, &ShipyardState, 1 );
+	RBlockRead( f1, &MarketState, 1 );
+	RBlockRead(f1, &CaptState, 1);
+	RBlockRead(f1, &SaveState, 1);
 }
 
 void Save3DMap( char* Map )
@@ -2158,7 +2177,7 @@ void Load3DMap( char* Map )
 			break;
 
 		case 'PEAC':
-			LoadPeaceTimeInfo( f1 );
+			LoadPeaceTimeInfo( f1, size);
 			break;
 
 		case '1VIR':
@@ -2285,7 +2304,7 @@ void Load3DMapLandOnly( char* Map )
 			LoadAIParam( f1 );
 			break;
 		case 'PEAC':
-			LoadPeaceTimeInfo( f1 );
+			LoadPeaceTimeInfo( f1, size);
 			break;
 			//case 'USER':
 			//	LoadRES(f1);
