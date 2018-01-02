@@ -2,12 +2,6 @@
 # Diese .gitignore-Datei wurde von Microsoft(R) Visual Studio automatisch erstellt.
 ################################################################################
 
-/src/.vs/Cossacks/v15
+/src/.vs/
 /src/Testing
-/src/Temp/CommCore/CommCore library.tlog
-/src/Temp/CommCore
-/src/Temp/dmcr/Cossacks.tlog
-/src/Temp/dmcr
-/src/Temp/IChat/IChat library.tlog
-/src/Temp/IChat
-/src/Temp/IntExplorer
+/src/Temp/
