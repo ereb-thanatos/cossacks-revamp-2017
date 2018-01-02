@@ -102,6 +102,20 @@ void DeleteAllSprites()
 	ObjTimer.NMembers = 0;
 }
 
+void DeleteAllSpritesOfGroup(SprGroup* group) 
+{
+	for (int i = 0; i < MaxSprt; i++)
+	{
+		OneSprite* OS = Sprites + i;
+		if (OS->Enabled && OS->SG == group)
+		{
+			OS->Enabled = false;
+			UnregisterSprite(OS->Index);
+			ObjTimer.Del(OS->Index, 0);
+		};
+	};
+}
+
 void CHKS();
 
 void RegisterSprite( int N )
@@ -820,6 +834,7 @@ void delTrees( int x, int y1, int r )
 		};
 	};
 };
+
 //searces place for peasant near the resource
 //px,py-coordinates of peasant(unit: 16*unit=1pix)
 //tx,ty-coordintes of resource(unit : pixel)

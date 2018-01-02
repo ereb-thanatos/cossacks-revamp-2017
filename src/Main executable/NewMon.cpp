@@ -9892,6 +9892,7 @@ extern byte LockGrid;
 extern bool VHMode;
 void TopShow();
 
+// Show Lock Grid
 void LShow()
 {
 	if ( !LockGrid )

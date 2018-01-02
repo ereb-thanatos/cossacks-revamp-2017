@@ -14484,6 +14484,7 @@ void CreateTOOL_PARAM_PIECES();
 void CreateTOOL_PARAM_WATER();
 void CreateTOOL_PARAM_BRIGHTNESS( byte type );
 void CreateTOOL_PARAM_RELIEF( byte );
+void CreateTOOL_PARAM_NATDEAL();
 void PressCurrentEdModeButton( int cn )
 {
 	if ( !EditMapMode )return;
@@ -14516,6 +14517,7 @@ bool ON_TOOL_CLICK( SimpleDialog* SD )
 	GB->ActiveFrame = GB->PassiveFrame;
 	CurrentEditMode = GB->UserParam;
 	ClearModes();
+	Creator = 4096 + 255;
 	Creator = 4096 + 255;
 	OptHidden = 0;
 	Inform = 0;
@@ -14609,6 +14611,12 @@ bool ON_TOOL_CLICK( SimpleDialog* SD )
 	case 21://create group
 		CreateTOOL_PARAM_DEFAULT();
 		ZoneCmd = 2;
+		break;
+	case 29://Edit Nation Territy Division
+		CreateTOOL_PARAM_NATDEAL();
+		HeightEditMode = 50;
+		MEditMode = false;
+		EditMedia = 5;
 		break;
 	};
 	Lpressed = 0;
@@ -14708,6 +14716,11 @@ void CreateMapInterface()
 	B2->OnUserClick = &TBOX_DIALOGS;
 	B2->UserParam = 6;
 	B2->Hint = GetTextByID( "$EHIN__5" );
+
+	B2 = MAPTOOLS.addGP_Button(nullptr, 13, 279 + 90 + DYY, MapGP, 84, 83);
+	B2->OnUserClick = &ON_TOOL_CLICK;
+	B2->UserParam = 29;
+	B2->Hint = GetTextByID("National Terrritory Division");
 
 	GP_Button* HIDE = MAPTOOLS.addGP_Button( nullptr, 48, 13 + 32, MapGP, 85, 86 );
 	HIDE->OnUserClick = &HideTool;
@@ -15744,10 +15757,54 @@ void CreateTOOL_PARAM_RELIEF( byte type )
 	TP_BRS = TOOL_PARAM.addGP_ScrollBarL( nullptr, 10 + 34, Y0 + 12, 110, ReliefBrush, MapGP + 1, 4, 195, 12, 0, 0 );
 	Y0 += 26;
 };
+
 void ProcessTOOL_PARAM_RELIEF()
 {
 	StdWheel();
 	if ( ReliefBrush != PrevRelBr )
+	{
+		PrevRelBr = ReliefBrush;
+		TP_BRS->SPos = ReliefBrush;
+	};
+	ReliefBrush = TP_BRS->SPos;
+};
+
+void CreateTOOL_PARAM_NATDEAL()
+{
+	CUR_TOOL_MODE = 8;
+
+	int DY = 16 + UNI_LINEDLY1;
+	int DDY = UNI_LINEDY1;
+	ClearModes();
+
+	TOOL_PARAM.CloseDialogs();
+	int DD1 = 75;
+	int D = 18;
+	int x0 = RealLx - InfDX;
+	int y0 = InfDY;
+	TOOL_PARAM.HintFont = &SmallBlackFont;
+	TOOL_PARAM.HintX = -1;
+	TOOL_PARAM.HintY = 450;
+	TOOL_PARAM.BaseX = x0 - 1;
+	TOOL_PARAM.BaseY = y0 + 31;
+	int DL = 24;
+	TOOL_PARAM.addBorder(0, -31, InfDX - 10, 95, 0, 1);
+	int Y0 = 36;
+
+	TOOL_PARAM.addTextButton(nullptr, 10, -24, "Edit Nat. Deal", &YellowFont, &YellowFont, &YellowFont, 0);
+	TOOL_PARAM.addTextButton(nullptr, 5, Y0, GetTextByID("ED_PARM01"), &YellowFont, &YellowFont, &YellowFont, 0);
+	CreateFlags(10, 10);
+	Y0 += 24;
+	TOOL_PARAM.addGP_Button(nullptr, 10, Y0, MapGP + 1, 0, 0);
+	TOOL_PARAM.addGP_Button(nullptr, 10 + 34, Y0, MapGP + 1, 3, 2);
+	TP_BRS = TOOL_PARAM.addGP_ScrollBarL(nullptr, 10 + 34, Y0 + 12, 110, ReliefBrush, MapGP + 1, 4, 195, 12, 0, 0);
+	Y0 += 26;
+};
+
+void ProcessTOOL_PARAM_NATDEAL()
+{
+	StdWheel();
+	if (ReliefBrush != PrevRelBr)
 	{
 		PrevRelBr = ReliefBrush;
 		TP_BRS->SPos = ReliefBrush;
@@ -15869,6 +15926,10 @@ void ProcessTOOL_PARAM()
 			CreateTOOL_PARAM_PIECES();
 			PressCurrentEdModeButton( 15 );
 			break;
+		case 29://Edit Nation Territy Division
+			CreateTOOL_PARAM_NATDEAL();
+			PressCurrentEdModeButton(23);
+			break;
 		};
 		NeedToPopUp = 0;
 	};
@@ -15901,6 +15962,9 @@ void ProcessTOOL_PARAM()
 		case 7:
 			CreateTOOL_PARAM_RELIEF( 0 );
 			break;
+		case 8:
+			CreateTOOL_PARAM_NATDEAL();
+			break;
 		};
 		TP_Made = 1;
 	};
@@ -15928,6 +15992,9 @@ void ProcessTOOL_PARAM()
 		break;
 	case 7:
 		ProcessTOOL_PARAM_RELIEF();
+		break;
+	case 8:
+		ProcessTOOL_PARAM_NATDEAL();
 		break;
 	};
 	if ( !OptHidden )

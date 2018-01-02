@@ -3257,6 +3257,7 @@ int VAL_MAPSX;
 
 int MapShift;
 int WLX;
+// Max amount of water ?
 int WMPSIZE;
 int MaxWX;
 int MaxWY;

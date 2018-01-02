@@ -167,7 +167,7 @@ int	smapy;
 
 //Some additional offsets
 //Proportional to display resolution
-//Observed values: 25, 32, 40, 60
+//Observed values: 25, 32, 48, 40, 60
 int	smaplx, smaply;
 
 //Coordinates of the view window of the player
@@ -1572,6 +1572,56 @@ void AddRecordAndRatingSymbols( char* s )
 	strcpy( s, ccc );
 }
 
+extern byte* NatDeals;
+void InitNatDeal();
+#define NATSH (TopSH-1)
+void DrawNatDealOverlay()
+{
+	if (HeightEditMode != 50 || !NatDeals) return;
+
+	if (!NatDeals)
+	{
+		InitNatDeal();
+	}
+
+	int dx = mapx;
+	int dy = mapy;
+
+	int MAX = (60 << ADDSH);
+	bool changed = false;
+	for (int iy = 0; iy < MAX; iy++)
+	{
+		for (int ix = 0; ix < MAX; ix++)
+		{
+			int ofs = ix + (iy << NATSH);
+			byte value = NatDeals[ofs];
+			if (value == 0xFF || value == 0xEE) {
+				continue;
+			}
+
+			byte nation = value >> 4;
+			byte color = CLRT[nation];
+			int sx = ix << 2;
+			int sy = iy << 2;
+
+			int rx = sx - dx;
+			int ry = sy - dy;
+			
+			rx = rx << 5;
+			ry = ry << 4;
+			if (Mode3D)ry -= GetHeight(sx << 5, sy << 5);
+			for (int cx = 0; cx < 8; cx++)
+			{
+				for (int cy = 0; cy < 8; cy++)
+				{
+					DrawLine(rx + cx * 16, ry + cy * 8, rx + cx * 16 + 16, ry + cy * 8 + 8, color);
+					DrawLine(rx + cx * 16, ry + cy * 8 + 8, rx + cx * 16 + 16, ry + cy * 8, color);
+				}
+			}
+		}
+	}
+}
+
 extern bool CanProduce;
 
 void ProcessHints();
@@ -1654,6 +1704,8 @@ void GFieldShow()
 				}
 			}
 		}
+
+		DrawNatDealOverlay();
 	}
 
 	int v1 = 3;
@@ -2013,6 +2065,12 @@ void GFieldShow()
 	if (HeightEditMode == 3)
 	{
 		ShowString( xxx0, yyy0, DELSPOB, &YellowFont );//"Удалить объекты."
+		yyy0 -= 20;
+	}
+
+	if (HeightEditMode == 50)
+	{
+		ShowString(xxx0, yyy0, "Edit Nat. Deals", &YellowFont);
 		yyy0 -= 20;
 	}
 
@@ -2695,6 +2753,7 @@ void AddHi( int x, int y1, int r, int h );
 void AverageHi( int x, int y1, int r );
 void PlanarHi( int x, int y1, int r );
 void delTrees( int x, int y, int r );
+void EditNatDeals( int x, int y, int r, const bool add);
 void addTrees( int x, int y, int r );
 extern int HiStyle;
 int Prop43( int y );
@@ -3616,6 +3675,13 @@ void HandleMouse( int x, int y )
 			HiStyle = 0;
 			if (LockKey)return;
 		};
+
+		if (!mini && HeightEditMode == 50 && (Lpressed || Rpressed))
+		{
+			EditNatDeals(xmx, ysy, ReliefBrush << 4, Lpressed);
+			CreateMiniMap();
+		}
+
 		if (HeightEditMode == 2)
 		{//Add tree mode
 			ShowPen( xmx, ysy, ReliefBrush << 4, 0xFA );
@@ -3628,6 +3694,11 @@ void HandleMouse( int x, int y )
 		{
 			//Lock mode
 			ShowPen( xmx, ysy, 32, 0xDC );//ReliefBrush<<4,0xDC);
+		};
+		if (HeightEditMode == 50)
+		{
+			//Nat Deal Mode
+			ShowPen(xmx, ysy, ReliefBrush << 4, CLRT[MyNation]);
 		};
 		if (LockMode == 2)
 		{
@@ -3722,6 +3793,10 @@ void HandleMouse( int x, int y )
 				AddDefaultBar( xmx >> 6, yreal >> 6 );
 				goto Edgetest;
 			};
+			if (HeightEditMode == 50) 
+			{
+				goto Edgetest;
+			}
 			if (Creator < 4096 + 200)
 			{
 				//for(int i=0;i<2;i++)for(int j=0;j<2;j++)

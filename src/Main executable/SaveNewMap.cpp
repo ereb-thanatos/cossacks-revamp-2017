@@ -1848,7 +1848,6 @@ extern byte* NatDeals;
 #define NATLX (TopLx>>1)
 extern int PeaceTimeLeft;
 extern byte CordonIDX[8];
-extern byte CordonIDX[8];
 
 extern byte BalloonState;
 extern byte CannonState;

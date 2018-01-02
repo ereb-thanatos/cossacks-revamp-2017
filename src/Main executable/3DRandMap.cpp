@@ -3904,6 +3904,101 @@ void ExtendNatDealing()
 		}
 	}
 }
+void PictureCordons();
+// Initialize this array so by default no one can built anywhere
+byte CordonIDX[8] = {
+	0xFF,
+	0xFF,
+	0xFF,
+	0xFF,
+	0xFF,
+	0xFF,
+	0xFF,
+	0xFF,
+};
+
+void InitCordonIDX()
+{
+	// Figure out if no previous change to the nat to natdeal mapping occured
+	bool changed = false;
+	// test
+	for (int i = 0; i < 8; i++)
+	{
+		if (CordonIDX[i] != 0xFF)
+		{
+			changed = true;
+		}
+	}
+
+	if (changed)
+	{
+		// For now, just initialize this array with nation = natdeal
+		// Support for having multiple nations on one natdeal can come later
+
+		CordonIDX[0] = 0;//red
+		CordonIDX[1] = 1;//blue
+		CordonIDX[2] = 2;//cyan
+		CordonIDX[3] = 3;//purple
+		CordonIDX[4] = 4;//orange
+		CordonIDX[5] = 5;//black
+		CordonIDX[6] = 6;//white
+		CordonIDX[7] = 7;//brown (rogue mercs)
+	}
+}
+
+void EditNatDeals(int x, int y1, int r, const bool add)
+{
+	if (!NatDeals)
+	{
+		InitNatDeal();
+	}
+	
+	InitCordonIDX();
+
+	int y = (y1 * 2) >> 7;
+	x = x >> 7;
+
+	if (x <= 0 || y <= 0 || x >= NATLX || y >= NATLX)
+	{
+		return;
+	}
+
+	r = r >> 6;
+	int r2 = r * r;
+	r2 = r2;
+	int MAX = (60 << ADDSH);
+	bool changed = false;
+	for (int iy = 0; iy < MAX; iy++)
+	{
+		for (int ix = 0; ix < MAX; ix++)
+		{
+			int ofs = ix + (iy << NATSH);
+			byte prevValue = NatDeals[ofs];
+			if (prevValue == 0xFF) {
+				continue;
+			}
+
+			int cy = iy - y;
+			int cx = ix - x;
+			if (cx*cx + cy*cy <= r2)
+			{
+				NatDeals[ofs] = add ? MyNation << 4 : 0xFF;
+				if (prevValue != NatDeals[ofs]) 
+				{
+					changed = true;
+				}
+				
+			};
+		}
+	}
+
+	if (changed) 
+	{
+		PeaceTimeLeft = 1;
+		PictureCordons();
+		PeaceTimeLeft = 0;
+	}
+};
 
 bool GetRandomPoint( short* x, short* y, byte TypeStart, byte TypeEnd )
 {
@@ -4105,7 +4200,7 @@ void CreateNatDealing( int N, byte* Nats, short* Nx, short* Ny )
 		SetNatDealPoint( Nx[i], Ny[i], Nats[i] );
 	}
 
-	//ExtendNatDealing();
+	ExtendNatDealing();
 }
 
 void LimitZones()
@@ -4178,12 +4273,11 @@ int NCRound;
 int CRoundX[8];
 int CRoundY[8];
 bool GenerateStartUnits( char* NationID, byte NI, int x, int y, int GenIndex );
-void PictureCordons();
-byte CordonIDX[8];
 int PeaceTimeLeft = 300;
 int MaxPeaceTime = 0;
 int PeaceTimeStage = 0;
 
+// Decides if this unit is allowed to be active
 int GetUnitActivity( OneObject* OB )
 {
 	if ( !( PeaceTimeLeft && NatDeals ) )
@@ -4222,6 +4316,7 @@ bool CheckBuildPossibility( byte NI, int x, int y )
 		return false;
 	}
 	byte Deal = NatDeals[xm + ( ym << ( TopSH - 1 ) )];
+	
 	if ( Deal >= 128 )
 	{
 		return true;
@@ -4460,9 +4555,11 @@ void DrawCordonPoint( int x, int y )
 	}
 }
 
+void DeleteAllSpritesOfGroup(SprGroup* group);
 void PictureCordons()
 {
 	if ( !PeaceTimeLeft )return;
+	DeleteAllSpritesOfGroup(&HOLES);
 	//1. extending on water
 	int MAX = ( 60 << ADDSH ) - 2;
 	bool change;
