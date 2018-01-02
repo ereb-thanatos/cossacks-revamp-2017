@@ -2311,7 +2311,7 @@ void Load3DMapLandOnly( char* Map )
 		default:
 			RSeek( f1, posit );
 		};
-	} while ( sign != 'MDNE' );
+	} while ( sign != 'MDNE' && (sign != 0 && size != 0));
 	if ( !WTopMap )CreateWTopMap();
 	RClose( f1 );
 	ClearRender();
