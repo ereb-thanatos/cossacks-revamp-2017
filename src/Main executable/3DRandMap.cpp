@@ -3946,7 +3946,7 @@ void InitCordonIDX()
 	}
 }
 
-void EditNatDeals(int x, int y1, int r, const bool add)
+void EditNatDeals(int x, const int y1, int r, const bool add)
 {
 	if (!NatDeals)
 	{
@@ -3955,7 +3955,7 @@ void EditNatDeals(int x, int y1, int r, const bool add)
 	
 	InitCordonIDX();
 
-	int y = (y1 * 2) >> 7;
+	const int y = (y1 * 2) >> 7;
 	x = x >> 7;
 
 	if (x <= 0 || y <= 0 || x >= NATLX || y >= NATLX)
@@ -3966,28 +3966,27 @@ void EditNatDeals(int x, int y1, int r, const bool add)
 	r = r >> 6;
 	int r2 = r * r;
 	r2 = r2;
-	int MAX = (60 << ADDSH);
+	const int MAX = (60 << ADDSH);
 	bool changed = false;
 	for (int iy = 0; iy < MAX; iy++)
 	{
 		for (int ix = 0; ix < MAX; ix++)
 		{
 			int ofs = ix + (iy << NATSH);
-			byte prevValue = NatDeals[ofs];
+			const byte prevValue = NatDeals[ofs];
 			if (prevValue == 0xFF) {
 				continue;
 			}
 
-			int cy = iy - y;
-			int cx = ix - x;
+			const int cy = iy - y;
+			const int cx = ix - x;
 			if (cx*cx + cy*cy <= r2)
 			{
-				NatDeals[ofs] = add ? MyNation << 4 : 0xFF;
+				NatDeals[ofs] = add ? MyNation << 4 : 0xEE;
 				if (prevValue != NatDeals[ofs]) 
 				{
 					changed = true;
 				}
-				
 			};
 		}
 	}
@@ -4565,45 +4564,41 @@ void PictureCordons()
 	bool change;
 	int SH0 = 6 + ADDSH;
 	byte* TMP = new byte[NATLX*NATLX];
-	memcpy( TMP, NatDeals, NATLX*NATLX );
 	do
 	{
 		memcpy( TMP, NatDeals, NATLX*NATLX );
-		change = 0;
+		change = false;
 		for ( int iy = 2; iy < MAX; iy++ )
 		{
 			for ( int ix = 2; ix < MAX; ix++ )
 			{
 				int ofs = ix + ( iy << SH0 );
 				byte c = TMP[ofs];
-				if ( c == 0xFF )
+				if (c != 0xFF)
 				{
-					if ( TMP[ofs + 1] != 0xFF )
-					{
-						NatDeals[ofs] = TMP[ofs + 1];
-						change = 1;
-					}
-					else
-						if ( TMP[ofs - 1] != 0xFF )
-						{
-							NatDeals[ofs] = TMP[ofs - 1];
-							change = 1;
-						}
-						else
-							if ( TMP[ofs + NATLX] != 0xFF )
-							{
-								NatDeals[ofs] = TMP[ofs + NATLX];
-								change = 1;
-							}
-							else
-								if ( TMP[ofs - NATLX] != 0xFF )
-								{
-									NatDeals[ofs] = TMP[ofs - NATLX];
-									change = 1;
-								};
-				};
-			};
-		};
+					continue;
+				}
+
+				if ( TMP[ofs + 1] != 0xFF )
+				{
+					NatDeals[ofs] = TMP[ofs + 1];
+					change = true;
+				}
+				else if ( TMP[ofs - 1] != 0xFF )
+				{
+					NatDeals[ofs] = TMP[ofs - 1];
+					change = true;
+				} else if ( TMP[ofs + NATLX] != 0xFF )
+				{
+					NatDeals[ofs] = TMP[ofs + NATLX];
+					change = true;
+				} else if ( TMP[ofs - NATLX] != 0xFF )
+				{
+					NatDeals[ofs] = TMP[ofs - NATLX];
+					change = true;
+				}
+			}
+		}
 		ProcessMessages();
 	} while ( change );
 	free( TMP );
@@ -6817,19 +6812,7 @@ void Draw1( int x, int y )
 		mov[eax], dl
 	};
 };
-void Draw_GRASS()
-{
-	/*
-	int pp=0;
-	for(int iy=0;iy<400;iy+=2)
-		for(int ix=0;ix<400;ix++){
-			int r=200-Norma(ix-200,iy-200);
-			int p=randoma[pp&8191]%200;
-			if(p<r)Draw1(ix+200,(iy>>1)+200);
-			pp++;
-		};
-	*/
-};
+
 byte GrassMask[256] = {
 	0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
 	0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
@@ -6982,7 +6965,7 @@ GlobalProgress::GlobalProgress()
 	Setup();
 };
 GlobalProgress GPROG;
-byte ExchangeTex( byte tex )
+byte ExchangeDesertTexture( byte tex )
 {
 	switch ( tex )
 	{
@@ -7007,7 +6990,7 @@ void MakeDesert()
 	int N = ( MaxTH + 1 )*MaxTH;
 	for ( int i = 0; i < N; i++ )
 	{
-		TexMap[i] = ExchangeTex( TexMap[i] );
+		TexMap[i] = ExchangeDesertTexture( TexMap[i] );
 	};
 	int TRDES[8] = { 79,80,81,82,84,79,80,82 };
 	for ( int i = 0; i < MaxSprt; i++ )

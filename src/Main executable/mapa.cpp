@@ -1581,14 +1581,13 @@ void DrawNatDealOverlay()
 
 	if (!NatDeals)
 	{
-		InitNatDeal();
+		// No national territory deal existing, don't even try to render something.
+		return;
 	}
-
-	int dx = mapx;
-	int dy = mapy;
-
-	int MAX = (60 << ADDSH);
-	bool changed = false;
+	
+	const int MAX = (60 << ADDSH);
+	const int width = 64;
+	const int height = 32;
 	for (int iy = 0; iy < MAX; iy++)
 	{
 		for (int ix = 0; ix < MAX; ix++)
@@ -1599,23 +1598,23 @@ void DrawNatDealOverlay()
 				continue;
 			}
 
-			byte nation = value >> 4;
-			byte color = CLRT[nation];
-			int sx = ix << 2;
-			int sy = iy << 2;
+			const byte nation = value >> 4;
+			const byte color = CLRT[nation];
+			const int sx = ix << 2;
+			const int sy = iy << 2;
 
-			int rx = sx - dx;
-			int ry = sy - dy;
+			int rx = sx - mapx;
+			int ry = sy - mapy;
 			
 			rx = rx << 5;
 			ry = ry << 4;
 			if (Mode3D)ry -= GetHeight(sx << 5, sy << 5);
-			for (int cx = 0; cx < 8; cx++)
+			for (int cx = 0; cx < 2; cx++)
 			{
-				for (int cy = 0; cy < 8; cy++)
+				for (int cy = 0; cy < 2; cy++)
 				{
-					DrawLine(rx + cx * 16, ry + cy * 8, rx + cx * 16 + 16, ry + cy * 8 + 8, color);
-					DrawLine(rx + cx * 16, ry + cy * 8 + 8, rx + cx * 16 + 16, ry + cy * 8, color);
+					DrawLine(rx + cx * width, ry + cy * height, rx + cx * width + width, ry + cy * height + height, color);
+					DrawLine(rx + cx * width, ry + cy * height + height, rx + cx * width + width, ry + cy * height, color);
 				}
 			}
 		}
