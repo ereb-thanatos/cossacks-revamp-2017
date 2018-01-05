@@ -85,7 +85,8 @@ bool GFILE::Open(char* Name)
 	GlobalPos = 0;
 	NBytesRead = Size - GlobalPos;
 	if (NBytesRead > 16384)
-	{//16 KB read buffer size?
+	{
+		//16 KB read buffer size?
 		NBytesRead = 16384;
 	}
 	RBlockRead(F, &Buf, NBytesRead);
@@ -99,7 +100,8 @@ void GFILE::Close()
 	F = nullptr;
 }
 
-int GFILE::ReadByte() {
+int GFILE::ReadByte()
+{
 	if (F != INVALID_HANDLE_VALUE)
 	{
 		if (BufPos < NBytesRead)
@@ -190,112 +192,130 @@ int GFILE::Gscanf(char* Mask, va_list args)
 			{
 			case 's':
 			case 'S':
-			{
-				v_char = va_arg(args, char*);
-				int cc = 0;
-				int NL = 0;
-				bool exit = 0;
-				do {
-					cc = CheckByte();
-					if (!NL) {
-						if (!(cc == 0x0D || cc == 0x0A || cc == ' ' || cc == 9 || cc == -1)) {
-							v_char[NL] = cc;
-							NL++;
-						}
-						if (cc == -1) {
-							exit = 1;
-						}
-						ReadByte();
-					}
-					else {
-						if (cc == 0x0D || cc == 0x0A || cc == ' ' || cc == 9 || cc == -1) {
-							exit = 1;
-						}
-						else {
-							v_char[NL] = cc;
-							NL++;
-							ReadByte();
-						}
-					}
-				} while (!exit);
-				v_char[NL] = 0;
-				if (NL) {
-					nargret++;
-				}
-				else {
-					return nargret;
-				}
-			}
-			break;
-			case 'd':
-			case 'D':
-			case 'g':
-			{
-				int cc = 0;
-				int NL = 0;
-				char vcr[32];
-				bool exit = 0;
-				do {
-					cc = CheckByte();
-					if (!NL) {
-						if (!(cc == 0x0D || cc == 0x0A || cc == ' ' || cc == 9)) {
-							if ((cc >= '0'&&cc <= '9') || cc == '.' || cc == '-') {
-								vcr[NL] = cc;
+				{
+					v_char = va_arg(args, char*);
+					int cc = 0;
+					int NL = 0;
+					bool exit = 0;
+					do
+					{
+						cc = CheckByte();
+						if (!NL)
+						{
+							if (!(cc == 0x0D || cc == 0x0A || cc == ' ' || cc == 9 || cc == -1))
+							{
+								v_char[NL] = cc;
 								NL++;
 							}
-							else exit = 1;
-						};
-						if (cc == -1)exit = 1;
-						ReadByte();
-					}
-					else {
-						if (NL < 20) {
-							if ((cc<'0' || cc>'9') && cc != '.'&&cc != '-')exit = 1;
-							else {
-								vcr[NL] = cc;
-								NL++;
-								ReadByte();
-							};
-						}
-						else exit = 1;
-					};
-				} while (!exit);
-				vcr[NL] = 0;
-				if (vcr[0])
-				{
-					if (c == 'g')
-					{
-						float* darg = va_arg(args, float*);
-						int z = sscanf(vcr, "%g", darg);
-						if (z != 1)
-						{
-							return nargret;
+							if (cc == -1)
+							{
+								exit = 1;
+							}
+							ReadByte();
 						}
 						else
 						{
-							nargret++;
+							if (cc == 0x0D || cc == 0x0A || cc == ' ' || cc == 9 || cc == -1)
+							{
+								exit = 1;
+							}
+							else
+							{
+								v_char[NL] = cc;
+								NL++;
+								ReadByte();
+							}
+						}
+					}
+					while (!exit);
+					v_char[NL] = 0;
+					if (NL)
+					{
+						nargret++;
+					}
+					else
+					{
+						return nargret;
+					}
+				}
+				break;
+			case 'd':
+			case 'D':
+			case 'g':
+				{
+					int cc = 0;
+					int NL = 0;
+					char vcr[32];
+					bool exit = 0;
+					do
+					{
+						cc = CheckByte();
+						if (!NL)
+						{
+							if (!(cc == 0x0D || cc == 0x0A || cc == ' ' || cc == 9))
+							{
+								if ((cc >= '0' && cc <= '9') || cc == '.' || cc == '-')
+								{
+									vcr[NL] = cc;
+									NL++;
+								}
+								else exit = 1;
+							};
+							if (cc == -1)exit = 1;
+							ReadByte();
+						}
+						else
+						{
+							if (NL < 20)
+							{
+								if ((cc < '0' || cc > '9') && cc != '.' && cc != '-')exit = 1;
+								else
+								{
+									vcr[NL] = cc;
+									NL++;
+									ReadByte();
+								};
+							}
+							else exit = 1;
+						};
+					}
+					while (!exit);
+					vcr[NL] = 0;
+					if (vcr[0])
+					{
+						if (c == 'g')
+						{
+							float* darg = va_arg(args, float*);
+							int z = sscanf(vcr, "%g", darg);
+							if (z != 1)
+							{
+								return nargret;
+							}
+							else
+							{
+								nargret++;
+							}
+						}
+						else
+						{
+							v_int = va_arg(args, int*);
+							int z = sscanf(vcr, "%d", v_int);
+							if (z != 1)
+							{
+								return nargret;
+							}
+							else
+							{
+								nargret++;
+							}
 						}
 					}
 					else
 					{
-						v_int = va_arg(args, int*);
-						int z = sscanf(vcr, "%d", v_int);
-						if (z != 1)
-						{
-							return nargret;
-						}
-						else
-						{
-							nargret++;
-						}
+						return nargret;
 					}
 				}
-				else
-				{
-					return nargret;
-				}
-			}
-			break;
+				break;
 			case 'l':
 				c = Mask[spos];
 				assert(c == 'c');
@@ -303,7 +323,8 @@ int GFILE::Gscanf(char* Mask, va_list args)
 					v_char = va_arg(args, char*);
 					int cc;
 					cc = ReadByte();
-					if (cc != -1) {
+					if (cc != -1)
+					{
 						v_char[0] = cc;
 						nargret++;
 					}
@@ -315,7 +336,8 @@ int GFILE::Gscanf(char* Mask, va_list args)
 			};
 		}
 		else spos++;
-	} while (c != '\0');
+	}
+	while (c != '\0');
 	return nargret;
 }
 
@@ -331,24 +353,31 @@ GFSYSTEM GFILES;
 GFILE* Gopen(char* Name, char* Mode)
 {
 	GFILE* F = GFILES.GetFile();
-	if (F) {
-		if (Mode[0] == 'w') {
+	if (F)
+	{
+		if (Mode[0] == 'w')
+		{
 			FILE* tf = fopen(Name, "w");
-			if (tf) {
+			if (tf)
+			{
 				F->RealText = 1;
 				F->rf = tf;
 				return F;
 			}
-			else {
+			else
+			{
 				GFILES.FreeFile(F);
 				return nullptr;
 			}
 		}
-		else {
-			if (F->Open(Name)) {
+		else
+		{
+			if (F->Open(Name))
+			{
 				return F;
 			}
-			else {
+			else
+			{
 				GFILES.FreeFile(F);
 				return nullptr;
 			}
@@ -374,13 +403,14 @@ __declspec(dllexport) int Ggetch(GFILE* F)
 	return F->Ggetch();
 }
 
-__declspec(dllexport) void Gprintf(GFILE* F, const char *format, ...)
+__declspec(dllexport) void Gprintf(GFILE* F, const char* format, ...)
 {
 	va_list args;
 	va_start(args, format);
 	vfprintf(F->rf, format, args);
 	va_end(args);
 }
+
 __declspec(dllexport) void Gclose(GFILE* F)
 {
 	if (F->RealText)

@@ -26,8 +26,8 @@
 
 static int StackSize = 8192;
 
-short HiMap[256][256];//Height of surface
-word RefMap[256][256];//Reference to cell being rendered
+short HiMap[256][256]; //Height of surface
+word RefMap[256][256]; //Reference to cell being rendered
 
 byte RXCoor[MaxStackSize];
 byte RYCoor[MaxStackSize];
@@ -79,7 +79,7 @@ void ClearRender();
 
 void SetLight(int Ldx, int Ldy, int Ldz)
 {
-	int Ab = sqrt(Ldx*Ldx + Ldy*Ldy + Ldz*Ldz);
+	int Ab = sqrt(Ldx * Ldx + Ldy * Ldy + Ldz * Ldz);
 	LightDX = div(Ldx << 8, Ab).quot;
 	LightDY = div(Ldy << 8, Ab).quot;
 	LightDZ = div(Ldz << 8, Ab).quot;
@@ -89,9 +89,9 @@ void SetLight(int Ldx, int Ldy, int Ldz)
 
 void SetAngLight(int Theta, int Phi)
 {
-	double teta = Theta*3.1415 / 180;
-	double phi = Phi*3.1415 / 180;
-	SetLight(100 * sin(teta)*cos(phi), 100 * sin(teta)*cos(phi), 100 * cos(teta));
+	double teta = Theta * 3.1415 / 180;
+	double phi = Phi * 3.1415 / 180;
+	SetLight(100 * sin(teta) * cos(phi), 100 * sin(teta) * cos(phi), 100 * cos(teta));
 }
 
 void RotateTeta()
@@ -100,7 +100,7 @@ void RotateTeta()
 	SetAngLight(Theta, Phi);
 }
 
-void RotateTetaI() 
+void RotateTetaI()
 {
 	Theta -= 2;
 	SetAngLight(Theta, Phi);
@@ -145,13 +145,13 @@ void CreateBlob(int x, int y, int h, int r)
 	int y0 = y - (r << 1);
 	int x1 = x + (r << 1);
 	int y1 = y + (r << 1);
-	int r2 = r*r;
+	int r2 = r * r;
 
 	for (int i = x0; i < x1; i++)
 	{
 		for (int j = y0; j < y1; j++)
 		{
-			AddHeight(i, j, h*exp(-double((x - i)*(x - i) + (y - j)*(y - j)) / r2));
+			AddHeight(i, j, h * exp(-double((x - i) * (x - i) + (y - j) * (y - j)) / r2));
 		}
 	}
 }

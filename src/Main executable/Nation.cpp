@@ -3,11 +3,11 @@
  *  MAIN COMMAND MODULE. (Andrew)
  *
  */
- /* 1) Загрузка образов монстров из списка в файле monsters.lst
-  * 2)Создание нации - загрузка:
-  * nation.gac - Global Animation Collection
-  * nation.gmc - Global Monsters Collection
-  */
+/* 1) Загрузка образов монстров из списка в файле monsters.lst
+ * 2)Создание нации - загрузка:
+ * nation.gac - Global Animation Collection
+ * nation.gmc - Global Monsters Collection
+ */
 #include "ddini.h"
 #include "ResFile.h"
 #include "FastDraw.h"
@@ -41,9 +41,9 @@ extern int tmtmt;
 extern int HREQRADIUS;
 extern word FlyMops[256][256];
 extern byte* NPresence;
-void ShowFog( OneObject* ZZ );
+void ShowFog(OneObject* ZZ);
 
-word MAXOBJECT;//<= 65536
+word MAXOBJECT; //<= 65536
 
 //Если поступает приказ уровня<16 и тварь, которую
 //нужно атаковать стоит дальше этого расстояния, то
@@ -51,10 +51,10 @@ word MAXOBJECT;//<= 65536
 static int MaxReplyDistance = 50;
 
 int PathAsks;
-const int drr[9] = { 7,6,5,0,0,4,1,2,3 };
-const byte drrb[9] = { 7,6,5,0,0,4,1,2,3 };
-const int idrx[8] = { 0,1,1,1,0,-1,-1,-1 };
-const int idry[8] = { -1,-1,0,1,1,1,0,-1 };
+const int drr[9] = {7, 6, 5, 0, 0, 4, 1, 2, 3};
+const byte drrb[9] = {7, 6, 5, 0, 0, 4, 1, 2, 3};
+const int idrx[8] = {0, 1, 1, 1, 0, -1, -1, -1};
+const int idry[8] = {-1, -1, 0, 1, 1, 1, 0, -1};
 
 //Массив для оптимизации пути
 static int OptA[256][256];
@@ -74,7 +74,7 @@ word ComStc[StSize];
 word StHead;
 word StTile;
 
-bool CheckAttAbility( OneObject* OB, word Patient )
+bool CheckAttAbility(OneObject* OB, word Patient)
 {
 	if (OB && Patient != 0xFFFF)
 	{
@@ -110,13 +110,14 @@ bool CheckAttAbility( OneObject* OB, word Patient )
 RLCTable MImage[maximage];
 RLCTable miniMImage[maximage];
 int MaxImage;
-void Err( LPCSTR s )
+
+void Err(LPCSTR s)
 {
-	MessageBox( hwnd, s, "Nation loading failed...", MB_ICONWARNING | MB_OK );
+	MessageBox(hwnd, s, "Nation loading failed...", MB_ICONWARNING | MB_OK);
 }
 
 //Загрузка нации из файла
-void Nation::CreateNation( byte Mask, byte NI )
+void Nation::CreateNation(byte Mask, byte NI)
 {
 	NMask = Mask;
 	CITY = nullptr;
@@ -139,24 +140,24 @@ word LastObject;
 //запрос на перемещение
 struct AskMove
 {
-	word ReqID;//индекс перемещаемого
-	word PreID;//индекс жаждущего дорваться в эту клетку
+	word ReqID; //индекс перемещаемого
+	word PreID; //индекс жаждущего дорваться в эту клетку
 	byte x;
 	byte y;
 	char dx;
 	char dy;
 };
 
-int NAsk;//Количество запросов
-AskMove Ask[8192];//Массив запросов
-bool FailLink[8192];//Массив неразрешенных перемещений
+int NAsk; //Количество запросов
+AskMove Ask[8192]; //Массив запросов
+bool FailLink[8192]; //Массив неразрешенных перемещений
 word CurInd;
 word IDMap[256][256];
-word RQMap[256][256];//:3-запещенное направление ..
-					 //:13-номер в таблице запросов
+word RQMap[256][256]; //:3-запещенное направление ..
+//:13-номер в таблице запросов
 
 //Добавить запрос в систему запросов на перемещение
-void AddAsk( word ReqID, byte x, byte y, char zdx, char zdy )
+void AddAsk(word ReqID, byte x, byte y, char zdx, char zdy)
 {
 	//DEBUGGING
 	OneObject* OB = Group[ReqID];
@@ -164,19 +165,19 @@ void AddAsk( word ReqID, byte x, byte y, char zdx, char zdy )
 	//ENDDEBUG
 	__asm {
 		//		inc		NAsk
-		mov		eax, NAsk
-		shl		eax, 3
-		add		eax, offset Ask
-		mov		bx, ReqID
-		mov		word ptr[eax], bx
-		mov		word ptr[eax + 2], 0FFFFh
-		mov		bl, x
-		mov		bh, y
-		mov		word ptr[eax + 4], bx
-		mov		bl, zdx
-		mov		bh, zdy
-		mov		word ptr[eax + 6], bx
-		inc		NAsk
+		mov eax, NAsk
+		shl eax, 3
+		add eax, offset Ask
+		mov bx, ReqID
+		mov word ptr[eax], bx
+		mov word ptr[eax + 2], 0FFFFh
+		mov bl, x
+		mov bh, y
+		mov word ptr[eax + 4], bx
+		mov bl, zdx
+		mov bh, zdy
+		mov word ptr[eax + 6], bx
+		inc NAsk
 	};
 };
 
@@ -199,92 +200,99 @@ void PrepareProcessing()
 //Inline- команды построения внутренних команд
 int Ofst;
 char* NowBuf;
-inline void ChkOfst( int size )
+
+inline void ChkOfst(int size)
 {
 	if (Ofst >= OneAsmSize - size - 5 - 4)
 	{
 		char* NN = GetAsmBlock();
-		if (int( NN ))
+		if (int(NN))
 		{
 			NowBuf[Ofst] = 7;
-			memcpy( &NowBuf[Ofst + 1], &NN, 4 );
-			memcpy( &NowBuf[OneAsmSize - 4], &NN, 4 );
+			memcpy(&NowBuf[Ofst + 1], &NN, 4);
+			memcpy(&NowBuf[OneAsmSize - 4], &NN, 4);
 			NowBuf = NN;
 			Ofst = 0;
-			memcpy( &NowBuf[OneAsmSize - 4], &Ofst, 4 );
+			memcpy(&NowBuf[OneAsmSize - 4], &Ofst, 4);
 		}
 		else
 			NowBuf[Ofst] = 0;
 	};
 };
-inline void cmSetXY( char x, char y )
+
+inline void cmSetXY(char x, char y)
 {
-	ChkOfst( 3 );
+	ChkOfst(3);
 	//assert(abs(x)<2&&abs(y)<2);
 	NowBuf[Ofst] = 4;
 	NowBuf[Ofst + 1] = x;
 	NowBuf[Ofst + 2] = y;
 	Ofst += 3;
 };
-inline void cmSetXYDir( byte x, byte y, byte dir, byte n )
+
+inline void cmSetXYDir(byte x, byte y, byte dir, byte n)
 {
-	ChkOfst( 4 );
+	ChkOfst(4);
 	NowBuf[Ofst] = 18;
 	NowBuf[Ofst + 1] = x;
 	NowBuf[Ofst + 2] = y;
-	NowBuf[Ofst + 3] = ( dir & 7 ) | ( n << 4 );
-	Ofst += 4;
-};
-inline void cmSetXYDirX( byte x, byte y, char dx, char dy, byte n )
-{
-	ChkOfst( 4 );
-	//assert(dx<2&&dy<2);
-	byte dr = drr[( dx + 1 ) * 3 + dy + 1];
-	NowBuf[Ofst] = 18;
-	NowBuf[Ofst + 1] = x;
-	NowBuf[Ofst + 2] = y;
-	NowBuf[Ofst + 3] = ( dr & 7 ) | ( n << 4 );
+	NowBuf[Ofst + 3] = (dir & 7) | (n << 4);
 	Ofst += 4;
 };
 
-inline void cmChkXY( byte x, byte y )
+inline void cmSetXYDirX(byte x, byte y, char dx, char dy, byte n)
 {
-	ChkOfst( 3 );
+	ChkOfst(4);
+	//assert(dx<2&&dy<2);
+	byte dr = drr[(dx + 1) * 3 + dy + 1];
+	NowBuf[Ofst] = 18;
+	NowBuf[Ofst + 1] = x;
+	NowBuf[Ofst + 2] = y;
+	NowBuf[Ofst + 3] = (dr & 7) | (n << 4);
+	Ofst += 4;
+};
+
+inline void cmChkXY(byte x, byte y)
+{
+	ChkOfst(3);
 	NowBuf[Ofst] = 44;
 	NowBuf[Ofst + 1] = x;
 	NowBuf[Ofst + 2] = y;
 	Ofst += 3;
 };
-inline void cmSetDir( int dx, int dy )
+
+inline void cmSetDir(int dx, int dy)
 {
 	if (dx == 0 && dy == 0)return;
-	byte dr = drr[( dx + 1 ) * 3 + dy + 1];
-	ChkOfst( 2 );
+	byte dr = drr[(dx + 1) * 3 + dy + 1];
+	ChkOfst(2);
 	NowBuf[Ofst] = 5;
 	NowBuf[Ofst + 1] = dr;
 	Ofst += 2;
 };
-void cmSetDirD( byte dr )
+
+void cmSetDirD(byte dr)
 {
-	ChkOfst( 2 );
+	ChkOfst(2);
 	NowBuf[Ofst] = 5;
 	NowBuf[Ofst + 1] = dr & 7;
 	Ofst += 2;
 };
-inline void cmLoadAnm( byte stype, byte dtype, word kind )
+
+inline void cmLoadAnm(byte stype, byte dtype, word kind)
 {
-	ChkOfst( 5 );
+	ChkOfst(5);
 	NowBuf[Ofst] = 6;
 	NowBuf[Ofst + 1] = dtype;
 	NowBuf[Ofst + 2] = stype;
-	NowBuf[Ofst + 3] = byte( kind );
+	NowBuf[Ofst + 3] = byte(kind);
 	NowBuf[Ofst + 4] = 0;
 	Ofst += 5;
 }
 
-inline void cmPerfAnm( byte n )
+inline void cmPerfAnm(byte n)
 {
-	ChkOfst( 2 );
+	ChkOfst(2);
 	NowBuf[Ofst] = 8;
 	NowBuf[Ofst + 1] = n;
 	Ofst += 2;
@@ -306,25 +314,25 @@ inline void cmDone()
 
 typedef byte xxx[64];
 
-void COrd( Order1* ordr )
+void COrd(Order1* ordr)
 {
-	if (!int( ordr ))
+	if (!int(ordr))
 	{
 		return;
 	}
 
-	if (( int( ordr ) - int( OrdBuf ) ) / sizeof Order1 >= MaxOrdCount)
+	if ((int(ordr) - int(OrdBuf)) / sizeof Order1 >= MaxOrdCount)
 	{
-		int RRRR = ( int( ordr ) - int( OrdBuf ) ) / sizeof Order1;
+		int RRRR = (int(ordr) - int(OrdBuf)) / sizeof Order1;
 	}
 }
 
-void SendToLink( OneObject* OBJ );
+void SendToLink(OneObject* OBJ);
 
 //Атаковать point
-void AttackPointLink( OneObject* OBJ );
+void AttackPointLink(OneObject* OBJ);
 
-void OneObject::AttackPoint( byte px, byte py, byte wep, int Prio )
+void OneObject::AttackPoint(byte px, byte py, byte wep, int Prio)
 {
 	if (CheckOrderAbility())
 	{
@@ -350,10 +358,10 @@ void OneObject::AttackPoint( byte px, byte py, byte wep, int Prio )
 	if (Prio < PrioryLevel)return;
 	if (!Ready)return;
 	Order1* Or1 = GetOrdBlock();
-	if (!int( Or1 ))return;
+	if (!int(Or1))return;
 	Or1->PrioryLevel = Prio & 127;
 	Or1->NextOrder = LocalOrder;
-	Or1->OrderType = 33;//Атака
+	Or1->OrderType = 33; //Атака
 	Or1->OrderTime = 0;
 	Or1->DoLink = &AttackPointLink;
 	Or1->info.AttackXY.x = px;
@@ -363,13 +371,14 @@ void OneObject::AttackPoint( byte px, byte py, byte wep, int Prio )
 	LocalOrder = Or1;
 }
 
-void AttackPointLink( OneObject* OBJ )
-{}
+void AttackPointLink(OneObject* OBJ)
+{
+}
 
 //Атаковать point
-void ContinueAttackPointLink( OneObject* OBJ );
+void ContinueAttackPointLink(OneObject* OBJ);
 
-void OneObject::ContinueAttackPoint( byte px, byte py, int Prio )
+void OneObject::ContinueAttackPoint(byte px, byte py, int Prio)
 {
 	if (CheckOrderAbility())
 	{
@@ -399,14 +408,14 @@ void OneObject::ContinueAttackPoint( byte px, byte py, int Prio )
 		return;
 	}
 	Order1* Or1 = GetOrdBlock();
-	if (!int( Or1 ))
+	if (!int(Or1))
 	{
 		return;
 	}
 	ClearOrders();
 	Or1->PrioryLevel = Prio & 127;
 	Or1->NextOrder = LocalOrder;
-	Or1->OrderType = 34;//Атака
+	Or1->OrderType = 34; //Атака
 	Or1->OrderTime = 0;
 	Or1->DoLink = &ContinueAttackPointLink;
 	Or1->info.AttackXY.x = px;
@@ -415,13 +424,14 @@ void OneObject::ContinueAttackPoint( byte px, byte py, int Prio )
 	LocalOrder = Or1;
 }
 
-void ContinueAttackPointLink( OneObject* OBJ )
-{}
+void ContinueAttackPointLink(OneObject* OBJ)
+{
+}
 
 //Атаковать стену
-void ContinueAttackWallLink( OneObject* OBJ );
+void ContinueAttackWallLink(OneObject* OBJ);
 
-void OneObject::ContinueAttackWall( byte px, byte py, int Prio )
+void OneObject::ContinueAttackWall(byte px, byte py, int Prio)
 {
 	if (CheckOrderAbility())
 	{
@@ -451,14 +461,14 @@ void OneObject::ContinueAttackWall( byte px, byte py, int Prio )
 		return;
 	}
 	Order1* Or1 = GetOrdBlock();
-	if (!int( Or1 ))
+	if (!int(Or1))
 	{
 		return;
 	}
 	ClearOrders();
 	Or1->PrioryLevel = Prio & 127;
 	Or1->NextOrder = LocalOrder;
-	Or1->OrderType = 34;//Атака
+	Or1->OrderType = 34; //Атака
 	Or1->OrderTime = 0;
 	Or1->DoLink = &ContinueAttackWallLink;
 	Or1->info.AttackXY.x = px;
@@ -473,55 +483,55 @@ void OneObject::ContinueAttackWall( byte px, byte py, int Prio )
 	PrioryLevel = Prio & 127;
 }
 
-void ContinueAttackWallLink( OneObject* OBJ )
+void ContinueAttackWallLink(OneObject* OBJ)
 {
-
 }
 
-void MakeExpl( int xx, int yy );
+void MakeExpl(int xx, int yy);
 
-void RestoreLock( int x, int y, int lx, int ly );
+void RestoreLock(int x, int y, int lx, int ly);
 
-int GetHeight( int, int );
+int GetHeight(int, int);
 
-void BClrPt( int x, int y );
+void BClrPt(int x, int y);
 
-void DelWall( int x, int y )
+void DelWall(int x, int y)
 {
-	int LI = GetLI( x, y );
+	int LI = GetLI(x, y);
 	if (LI >= 0 && LI < MaxLI)
 	{
 		WallCell* WCL = WRefs[LI];
-		if (WCL&&WCL->Sprite < 32)
+		if (WCL && WCL->Sprite < 32)
 		{
 			OneObject* OB = Group[WCL->OIndex];
 			if (OB)
 			{
-				WCL->Sprite = 96 + ( WCL->Sprite & 15 );
+				WCL->Sprite = 96 + (WCL->Sprite & 15);
 				OB->Die();
 			};
 		};
 	};
 };
-void EliminateBuilding( OneObject* OB )
+
+void EliminateBuilding(OneObject* OB)
 {
-	if (OB&&OB->NewBuilding)
+	if (OB && OB->NewBuilding)
 	{
 		NewMonster* NM = OB->newMons;
 		int xx, yy;
-		OB->GetCornerXY( &xx, &yy );
-		if (OB->Stage < OB->Ref.General->MoreCharacter->ProduceStages&&NM->NBLockPt)
+		OB->GetCornerXY(&xx, &yy);
+		if (OB->Stage < OB->Ref.General->MoreCharacter->ProduceStages && NM->NBLockPt)
 		{
 			for (int i = 0; i < NM->NBLockPt; i++)
 			{
-				BClrPt( xx + NM->BLockX[i], yy + NM->BLockY[i] );
+				BClrPt(xx + NM->BLockX[i], yy + NM->BLockY[i]);
 			};
 		}
 		else
 		{
 			for (int i = 0; i < NM->NLockPt; i++)
 			{
-				BClrPt( xx + NM->LockX[i], yy + NM->LockY[i] );
+				BClrPt(xx + NM->LockX[i], yy + NM->LockY[i]);
 			};
 		};
 	};
@@ -531,12 +541,13 @@ word DeathList[64];
 word DeathSN[64];
 
 int NDeath;
+
 void InitDeathList()
 {
 	NDeath = 0;
 }
 
-void AddToDeathList( OneObject* OB )
+void AddToDeathList(OneObject* OB)
 {
 	if (NDeath < 64)
 	{
@@ -558,7 +569,7 @@ void ProcessDeathList()
 		bool Erase = false;
 		if (OB && OB->Serial == DeathSN[i])
 		{
-			if (OB->Life > ( OB->MaxLife >> 1 ))
+			if (OB->Life > (OB->MaxLife >> 1))
 			{
 				Erase = true;
 			}
@@ -592,14 +603,14 @@ void ProcessDeathList()
 		{
 			if (i < NDeath - 1)
 			{
-				memcpy( DeathList + i, DeathList + i + 1, ( NDeath - i - 1 ) << 1 );
-				memcpy( DeathSN + i, DeathSN + i + 1, ( NDeath - i - 1 ) << 1 );
+				memcpy(DeathList + i, DeathList + i + 1, (NDeath - i - 1) << 1);
+				memcpy(DeathSN + i, DeathSN + i + 1, (NDeath - i - 1) << 1);
 			}
 			NDeath--;
 		}
 	}
 
-	if (( tmtmt % 128 ) == 17)
+	if ((tmtmt % 128) == 17)
 	{
 		for (int i = 0; i < NDeath; i++)
 		{
@@ -617,7 +628,7 @@ void ProcessDeathList()
 				NewMonster* NM = OB->newMons;
 				if (NM->Building && OB->Life < MinDeath && NM->SlowDeath && !OB->Sdoxlo)
 				{
-					AddToDeathList( OB );
+					AddToDeathList(OB);
 				}
 			}
 		}
@@ -633,34 +644,38 @@ void ProcessDeathList()
 }
 
 //Kills units and buildings, sets buildings on fire
-void DestructBuilding( OneObject* OB )
+void DestructBuilding(OneObject* OB)
 {
 	NewMonster* NM = OB->newMons;
-	if (NM->SlowDeath && (OB->Ready || OB->LocalOrder))//BUGFIX: buildings exploded too soon when upgrading
-	{//It's a complete building
+	if (NM->SlowDeath && (OB->Ready || OB->LocalOrder)) //BUGFIX: buildings exploded too soon when upgrading
+	{
+		//It's a complete building
 		if (OB->Life < MinDeath)
-		{//It's already burning
+		{
+			//It's already burning
 		}
 		else
-		{//Set it on fire
+		{
+			//Set it on fire
 			OB->Life = MinDeath - 1;
 		}
 	}
 	else
-	{//It's a unit or a building in construction, kill it instantly
+	{
+		//It's a unit or a building in construction, kill it instantly
 		OB->Die();
 	}
 }
 
-void CheckArmies( City* );
+void CheckArmies(City*);
 
-int CheckShipDirection( char Dir );
+int CheckShipDirection(char Dir);
 
-void RotateShipAndDie( OneObject* OBJ );
+void RotateShipAndDie(OneObject* OBJ);
 
-void RotateShipAndDieLink( OneObject* OBJ );
+void RotateShipAndDieLink(OneObject* OBJ);
 
-void StopUpgradeInBuilding( OneObject *OB );
+void StopUpgradeInBuilding(OneObject* OB);
 
 void OneObject::Die()
 {
@@ -671,8 +686,9 @@ void OneObject::Die()
 	}
 
 	if (NewBuilding && nullptr != LocalOrder)
-	{//Destroyed object is a building and it's doing something, check for upgrades
-		StopUpgradeInBuilding( this );//BUGFIX: Multiple building explosions when upgrading
+	{
+		//Destroyed object is a building and it's doing something, check for upgrades
+		StopUpgradeInBuilding(this); //BUGFIX: Multiple building explosions when upgrading
 	}
 
 	NewMonster* NM = newMons;
@@ -685,7 +701,7 @@ void OneObject::Die()
 		}
 
 		Life = 3;
-		Stage = ( NSTG * 3 ) >> 2;
+		Stage = (NSTG * 3) >> 2;
 		Ready = 0;
 		LoLayer = &NM->DeathLie1;
 		goto DESTRUCTING;
@@ -698,16 +714,16 @@ void OneObject::Die()
 
 	if (LockType)
 	{
-		if (CheckShipDirection( RealDir ) || delay < 1000)
+		if (CheckShipDirection(RealDir) || delay < 1000)
 		{
-			RotateShipAndDie( this );
+			RotateShipAndDie(this);
 			return;
 		}
 	}
 
-	if (!( NewBuilding || LockType || newMons->Artilery ))
+	if (!(NewBuilding || LockType || newMons->Artilery))
 	{
-		RealDir += ( rando() >> 8 ) - 64;
+		RealDir += (rando() >> 8) - 64;
 	}
 
 	Nat->CITY->Account -= newMons->Ves * 2;
@@ -715,19 +731,19 @@ void OneObject::Die()
 
 	rando();
 
-	Nat->CITY->UnRegisterNewUnit( this );
+	Nat->CITY->UnRegisterNewUnit(this);
 
 	if (GlobalOrder)
 	{
 		if (GlobalOrder->Disconnect)
 		{
-			GlobalOrder->Disconnect( this, GlobalOrder, 0, 0 );
+			GlobalOrder->Disconnect(this, GlobalOrder, 0, 0);
 		}
 	}
 
 	if (NM->DeathSoundID != -1)
 	{
-		AddEffect( RealX >> 4, ( RealY >> 5 ) - GetHeight( RealX >> 4, RealY >> 4 ), NM->DeathSoundID );
+		AddEffect(RealX >> 4, (RealY >> 5) - GetHeight(RealX >> 4, RealY >> 4), NM->DeathSoundID);
 	}
 
 	if (NInside)
@@ -753,7 +769,7 @@ void OneObject::Die()
 
 		if (Inside)
 		{
-			free( Inside );
+			free(Inside);
 		}
 
 		Inside = nullptr;
@@ -780,7 +796,7 @@ void OneObject::Die()
 							//need to remove
 							if (j < N - 1)
 							{
-								memcpy( INS + j, INS + j + 1, ( N - j - 1 ) << 1 );
+								memcpy(INS + j, INS + j + 1, (N - j - 1) << 1);
 							}
 							N--;
 							OB->NInside--;
@@ -794,7 +810,7 @@ void OneObject::Die()
 	//bool gate=0;
 	if (Wall)
 	{
-		int LI = GetLI( WallX, WallY );
+		int LI = GetLI(WallX, WallY);
 		if (LI >= 0 && LI < MaxLI)
 		{
 			WallCell* WCL = WRefs[LI];
@@ -807,8 +823,8 @@ void OneObject::Die()
 
 				if (WCL->Sprite >= 32 && WCL->Sprite < 64)
 				{
-					DelGate( WCL->GateIndex );
-					SetLife( WCL, WCL->MaxHealth / 5 );
+					DelGate(WCL->GateIndex);
+					SetLife(WCL, WCL->MaxHealth / 5);
 					return;
 				}
 			}
@@ -822,17 +838,17 @@ void OneObject::Die()
 	if (NewBuilding && NNUM == MyNation && delay < 1500)
 	{
 		char buf[200];
-		sprintf( buf, LOSTBLD, Ref.General->Message );
-		CreateTimedHintEx( buf, kSystemMessageDisplayTime, 32 );//You have lost %s.
+		sprintf(buf, LOSTBLD, Ref.General->Message);
+		CreateTimedHintEx(buf, kSystemMessageDisplayTime, 32); //You have lost %s.
 		LastActionX = RealX >> 4;
 		LastActionY = RealY >> 4;
 	}
 
-	UnitsField.BClrBar( x, y, Lx );
+	UnitsField.BClrBar(x, y, Lx);
 
 	if (GLock)
 	{
-		MFIELDS[LockType].BClrBar( x, y, Lx );
+		MFIELDS[LockType].BClrBar(x, y, Lx);
 	}
 
 	Selected = 0;
@@ -844,34 +860,34 @@ void OneObject::Die()
 		{
 			for (int iy = WallY - 1; iy < WallY + 2; iy++)
 			{
-				int id = GetLI( ix, iy );
+				int id = GetLI(ix, iy);
 				WallCell* WCL = WRefs[id];
 				if (WCL)
 				{
 					OneObject* OB = Group[WCL->OIndex];
-					if (OB&&OB->NNUM == NNUM&&WCL->Sprite < 32)
+					if (OB && OB->NNUM == NNUM && WCL->Sprite < 32)
 					{
 						OB->delay = del;
 						WRefs[id] = nullptr;
 						WCL->Visible = false;
 						WCL->ClearLocking();
-						DelObject( OB );
+						DelObject(OB);
 						Group[OB->Index] = nullptr;
 						NewMonster* NM = OB->newMons;
 						if (NM->NBars)
 						{
-							Delete3DBar( OB->Index );
+							Delete3DBar(OB->Index);
 						}
 
 						FogRec* FR = &NM->Destruct;
-						if (FR->NWeap&&OB->Life > 2 && OB->delay < 2500)
+						if (FR->NWeap && OB->Life > 2 && OB->delay < 2500)
 						{
 							for (int j = 0; j < 10; j++)
 							{
-								int xp = ( OB->RealX >> 4 ) + ( rando() & 63 ) - 32;
-								int yp = ( OB->RealY >> 4 ) + ( rando() & 63 ) - 32;
-								int nw = ( rando()*FR->NWeap ) >> 15;
-								Create3DAnmObject( WPLIST[FR->Weap[nw]], xp, yp, GetHeight( xp, yp ) + 16, xp, yp, 1000, nullptr, 0, 0xFFFF );
+								int xp = (OB->RealX >> 4) + (rando() & 63) - 32;
+								int yp = (OB->RealY >> 4) + (rando() & 63) - 32;
+								int nw = (rando() * FR->NWeap) >> 15;
+								Create3DAnmObject(WPLIST[FR->Weap[nw]], xp, yp, GetHeight(xp, yp) + 16, xp, yp, 1000, nullptr, 0, 0xFFFF);
 							}
 						}
 					}
@@ -884,13 +900,13 @@ void OneObject::Die()
 	{
 		if (newMons->NBars)
 		{
-			Delete3DBar( Index );
+			Delete3DBar(Index);
 		}
 	}
 
 	if (newMons->Usage == TowerID)
 	{
-		GNFO.ClearTow( this );
+		GNFO.ClearTow(this);
 	}
 
 	if (IFire)
@@ -907,10 +923,10 @@ void OneObject::Die()
 			int PortBuiX = WallX;
 			int PortBuiY = WallY;
 			int LL = NM->BuiDist;
-			MFIELDS[1].BClrBar( PortBuiX - LL - 1, PortBuiY - 1, 3 );
-			MFIELDS[1].BClrBar( PortBuiX + LL - 1, PortBuiY - 1, 3 );
-			MFIELDS[1].BClrBar( PortBuiX - 1, PortBuiY - LL - 1, 3 );
-			MFIELDS[1].BClrBar( PortBuiX - 1, PortBuiY + LL - 1, 3 );
+			MFIELDS[1].BClrBar(PortBuiX - LL - 1, PortBuiY - 1, 3);
+			MFIELDS[1].BClrBar(PortBuiX + LL - 1, PortBuiY - 1, 3);
+			MFIELDS[1].BClrBar(PortBuiX - 1, PortBuiY - LL - 1, 3);
+			MFIELDS[1].BClrBar(PortBuiX - 1, PortBuiY + LL - 1, 3);
 		}
 
 		FR = &NM->Destruct;
@@ -919,8 +935,8 @@ void OneObject::Die()
 		{
 			if (!NM->DeathLie2.Enabled)
 			{
-				DestructBuilding( this );
-				DelObject( this );
+				DestructBuilding(this);
+				DelObject(this);
 				Group[Index] = nullptr;
 			}
 			else
@@ -934,8 +950,8 @@ void OneObject::Die()
 		{
 			if (!NM->DeathLie1.Enabled)
 			{
-				DestructBuilding( this );
-				DelObject( this );
+				DestructBuilding(this);
+				DelObject(this);
 				Group[Index] = nullptr;
 			}
 			else
@@ -946,29 +962,29 @@ void OneObject::Die()
 			}
 		}
 
-		if (delay >= 1500 || ( Stage < ( Ref.General->MoreCharacter->ProduceStages >> 1 ) ) || !FR->NWeap)
+		if (delay >= 1500 || (Stage < (Ref.General->MoreCharacter->ProduceStages >> 1)) || !FR->NWeap)
 		{
 			return;
 		}
 
-DESTRUCTING:
+	DESTRUCTING:
 		FR = &NM->Destruct;
 		{
 			int nn = FR->WProb;
 			int xp, yp;
 			int xx, yy;
-			GetCornerXY( &xx, &yy );
+			GetCornerXY(&xx, &yy);
 
 			for (int i = 0; i < NM->NCheckPt; i++)
 			{
-				xp = ( xx + NM->CheckX[i] ) << 4;
-				yp = ( yy + NM->CheckY[i] ) << 4;
-				int nw = ( rando()*FR->NWeap ) >> 15;
+				xp = (xx + NM->CheckX[i]) << 4;
+				yp = (yy + NM->CheckY[i]) << 4;
+				int nw = (rando() * FR->NWeap) >> 15;
 				if (rando() < nn)
 				{
-					Create3DAnmObject( WPLIST[FR->Weap[nw]],
-						xp, yp, GetHeight( xp, yp ) + 16, xp, yp,
-						1000, nullptr, 0, 0xFFFF );
+					Create3DAnmObject(WPLIST[FR->Weap[nw]],
+					                  xp, yp, GetHeight(xp, yp) + 16, xp, yp,
+					                  1000, nullptr, 0, 0xFFFF);
 				}
 			}
 			return;
@@ -994,23 +1010,23 @@ DESTRUCTING:
 //Remove dead wall cells
 void HealWalls()
 {
-	if (( tmtmt % 128 ) == 3)
+	if ((tmtmt % 128) == 3)
 	{
 		for (int i = 0; i < MAXOBJECT; i++)
 		{
 			OneObject* OB = Group[i];
 			if (OB && OB->Wall)
 			{
-				int LI = GetLI( OB->WallX, OB->WallY );
+				int LI = GetLI(OB->WallX, OB->WallY);
 				WallCell* WCL = WRefs[LI];
 				if (!WCL)
 				{
-					DelObject( OB );
+					DelObject(OB);
 					if (OB->Index < 8192)
 					{
 						if (OB->newMons->NBars)
 						{
-							Delete3DBar( OB->Index );
+							Delete3DBar(OB->Index);
 						}
 						Group[OB->Index] = nullptr;
 					}
@@ -1020,41 +1036,42 @@ void HealWalls()
 	}
 }
 
-void OneObject::MakeDamage( int Fundam, int Persist, OneObject* Sender )
+void OneObject::MakeDamage(int Fundam, int Persist, OneObject* Sender)
 {
-	MakeDamage( Fundam, Persist, Sender, 0 );
+	MakeDamage(Fundam, Persist, Sender, 0);
 }
 
 extern short AlarmSoundID;
-extern byte   WeaponFlags[32];
+extern byte WeaponFlags[32];
 extern int LastAttackDelay;
 int LastAttackX = -1;
 int LastAttackY = -1;
 int AlarmDelay = 0;
-int GetUnitActivity( OneObject* OB );
-void DamageInside( OneObject* OB, int Dam, OneObject* Sender, byte AttType )
+int GetUnitActivity(OneObject* OB);
+
+void DamageInside(OneObject* OB, int Dam, OneObject* Sender, byte AttType)
 {
-	int p = ( int( rando() ) * 101 ) >> 15;
+	int p = (int(rando()) * 101) >> 15;
 	if (p < OB->newMons->PromaxPercent)return;
 	int N = OB->NInside;
-	int rp = ( int( rando() )*N ) >> 15;
+	int rp = (int(rando()) * N) >> 15;
 	word pp = OB->Inside[rp];
 	if (pp != 0xFFFF)
 	{
 		OneObject* IOB = Group[pp];
 		if (OB)
 		{
-			IOB->MakeDamage( Dam, Dam, Sender, AttType );
+			IOB->MakeDamage(Dam, Dam, Sender, AttType);
 		};
 	};
 }
 
-void OneObject::MakeDamage( int Fundam, int Persist, OneObject* Sender, byte AttType )
+void OneObject::MakeDamage(int Fundam, int Persist, OneObject* Sender, byte AttType)
 {
 	if (Sender && Sender->Index != Index)
 	{
-		int ac1 = GetUnitActivity( Sender );
-		int ac2 = GetUnitActivity( this );
+		int ac1 = GetUnitActivity(Sender);
+		int ac2 = GetUnitActivity(this);
 		if (ac1 == -1 || ac2 == 1)
 		{
 			if (Sender->NNUM != NNUM)Sender->Die();
@@ -1086,7 +1103,7 @@ void OneObject::MakeDamage( int Fundam, int Persist, OneObject* Sender, byte Att
 	dam -= ADC->Shield;
 	if (Sender)
 	{
-		if (Sender->newMons->ShotPtZ&&AttType < NAttTypes)
+		if (Sender->newMons->ShotPtZ && AttType < NAttTypes)
 		{
 			//stronghold
 			int NS = 0;
@@ -1108,7 +1125,7 @@ void OneObject::MakeDamage( int Fundam, int Persist, OneObject* Sender, byte Att
 			{
 				int dam0 = Sender->newMons->MinDamage[AttType];
 				int dam1 = Sender->Ref.General->MoreCharacter->MaxDamage[AttType];
-				dam = dam0 + ( ( ( dam1 - dam0 )*NS ) / MAXS ) - ADC->Shield;
+				dam = dam0 + (((dam1 - dam0) * NS) / MAXS) - ADC->Shield;
 			};
 		};
 		int damtype = 0;
@@ -1123,13 +1140,13 @@ void OneObject::MakeDamage( int Fundam, int Persist, OneObject* Sender, byte Att
 			if (wf & 2)
 			{
 				//shot
-				if (NewBuilding&&NInside)
+				if (NewBuilding && NInside)
 				{
-					DamageInside( this, dam, Sender, AttType );
+					DamageInside(this, dam, Sender, AttType);
 					return;
 				};
 			};
-			if (( wf & 2 ) && rando() < 1310 && !newMons->Building)
+			if ((wf & 2) && rando() < 1310 && !newMons->Building)
 			{
 				Die();
 				if (Sender)Sender->Kills++;
@@ -1138,19 +1155,19 @@ void OneObject::MakeDamage( int Fundam, int Persist, OneObject* Sender, byte Att
 			int protect = ADC->Protection[damtype];
 			//  ;-)  //dam=(dam*(256-protect))>>8;
 			dam -= protect;
-			if (( wf & 4 ) && Sender->AddDamage)dam += Sender->AddDamage;
+			if ((wf & 4) && Sender->AddDamage)dam += Sender->AddDamage;
 			if (AddShield)dam -= AddShield;
 		};
 	};
 	if (dam <= 0)dam = 1;
-	if (Sender && ( !LastAttackDelay ) && NNUM == MyNation)
+	if (Sender && (!LastAttackDelay) && NNUM == MyNation)
 	{
 		if (Sender->NNUM != NNUM)
 		{
 			LastAttackDelay = 900;
 			if (AlarmSoundID != -1)
 			{
-				AddEffect( ( mapx << 5 ) + 500, ( mapy << 4 ) + 300, AlarmSoundID );
+				AddEffect((mapx << 5) + 500, (mapy << 4) + 300, AlarmSoundID);
 				LastActionX = RealX >> 4;
 				LastActionY = RealY >> 4;
 				LastAttackX = RealX;
@@ -1163,13 +1180,13 @@ void OneObject::MakeDamage( int Fundam, int Persist, OneObject* Sender, byte Att
 	if (Life > dam)
 	{
 		Life -= dam;
-}
+	}
 	else
 	{
-		if (Sender&&Sender->NNUM != NNUM)
+		if (Sender && Sender->NNUM != NNUM)
 		{
 			if (Sdoxlo && !Hidden)return;
-			if (LocalOrder&&LocalOrder->DoLink == &RotateShipAndDieLink)return;
+			if (LocalOrder && LocalOrder->DoLink == &RotateShipAndDieLink)return;
 			Sender->Kills++;
 			City* CT = Sender->Nat->CITY;
 			CT->Account += 2 * newMons->Ves;
@@ -1186,12 +1203,12 @@ void OneObject::MakeDamage( int Fundam, int Persist, OneObject* Sender, byte Att
 				};
 			};
 		};
-		if (NewBuilding&&Sender&&NNUM == MyNation)
+		if (NewBuilding && Sender && NNUM == MyNation)
 		{
 			LastAttackDelay = 900;
 			if (AlarmSoundID != -1)
 			{
-				AddEffect( ( mapx << 5 ) + 500, ( mapy << 4 ) + 300, AlarmSoundID );
+				AddEffect((mapx << 5) + 500, (mapy << 4) + 300, AlarmSoundID);
 				LastAttackX = RealX;
 				LastAttackY = RealY;
 				AlarmDelay = 60;
@@ -1203,11 +1220,11 @@ void OneObject::MakeDamage( int Fundam, int Persist, OneObject* Sender, byte Att
 
 	if (Wall)
 	{
-		int id = GetLI( WallX, WallY );
+		int id = GetLI(WallX, WallY);
 		WallCell* WCL = WRefs[id];
 		if (WCL)
 		{
-			SetLife( WCL, Life );
+			SetLife(WCL, Life);
 		}
 
 		return;
@@ -1215,12 +1232,12 @@ void OneObject::MakeDamage( int Fundam, int Persist, OneObject* Sender, byte Att
 
 	if (Sender && !Zombi)
 	{
-		AttackObj( Sender->Index, 1 );
+		AttackObj(Sender->Index, 1);
 	}
 }
 
 //Count peasants and city centers?
-void WinnerControl( bool Anyway )
+void WinnerControl(bool Anyway)
 {
 	int NMyPeasants = 0;
 	int NMyCenters = 0;
@@ -1229,7 +1246,7 @@ void WinnerControl( bool Anyway )
 	int MyMask = 1 << NatRefTBL[MyNation];
 
 	byte UnLockN[8];
-	memset( UnLockN, 0, 8 );
+	memset(UnLockN, 0, 8);
 	byte MyNT = NatRefTBL[MyNation];
 
 	for (int i = 0; i < 8; i++)
@@ -1243,7 +1260,7 @@ void WinnerControl( bool Anyway )
 		for (int i = 0; i < MAXOBJECT; i++)
 		{
 			OneObject* OB = Group[i];
-			if (OB && UnLockN[OB->NNUM] && OB->NNUM != 7 && !( OB->Sdoxlo && !OB->Hidden ))
+			if (OB && UnLockN[OB->NNUM] && OB->NNUM != 7 && !(OB->Sdoxlo && !OB->Hidden))
 			{
 				byte USE = OB->newMons->Usage;
 				if (USE == PeasantID)
@@ -1254,18 +1271,16 @@ void WinnerControl( bool Anyway )
 						{
 							if (OB->NNUM == MyNT)
 								NMyPeasants++;
-							else
-								if (!( OB->NMask & MyMask ))
-									NThemPeasants++;
+							else if (!(OB->NMask & MyMask))
+								NThemPeasants++;
 						}
 					}
 					else
 					{
 						if (OB->NNUM == MyNT)
 							NMyPeasants++;
-						else
-							if (!( OB->NMask&MyMask ))
-								NThemPeasants++;
+						else if (!(OB->NMask & MyMask))
+							NThemPeasants++;
 					}
 				}
 				else
@@ -1274,13 +1289,12 @@ void WinnerControl( bool Anyway )
 					{
 						if (OB->NNUM == MyNT)
 							NMyCenters++;
-						else
-							if (!( OB->NMask&MyMask ))
-								NThemCenters++;
+						else if (!(OB->NMask & MyMask))
+							NThemCenters++;
 					}
 				}
 
-				if (!( OB->LockType || OB->NewBuilding || OB->Wall ))
+				if (!(OB->LockType || OB->NewBuilding || OB->Wall))
 				{
 					if (OB->Nat->AI_Enabled)
 					{
@@ -1288,18 +1302,16 @@ void WinnerControl( bool Anyway )
 						{
 							if (OB->NNUM == MyNT)
 								NMyUnits++;
-							else
-								if (!( OB->NMask&MyMask ))
-									NThemUnits++;
+							else if (!(OB->NMask & MyMask))
+								NThemUnits++;
 						}
 					}
 					else
 					{
 						if (OB->NNUM == MyNT)
 							NMyUnits++;
-						else
-							if (!( OB->NMask&MyMask ))
-								NThemUnits++;
+						else if (!(OB->NMask & MyMask))
+							NThemUnits++;
 					}
 				}
 			}
@@ -1313,7 +1325,7 @@ void WinnerControl( bool Anyway )
 	}
 }
 
-void OneObject::DefaultSettings( GeneralObject* GO )
+void OneObject::DefaultSettings(GeneralObject* GO)
 {
 	Ustage = 0;
 	NUstages = 0;
@@ -1382,9 +1394,9 @@ void OneObject::DefaultSettings( GeneralObject* GO )
 	NStages = GO->NStages;
 }
 
-void PatrolLink( OneObject* OBJ );
+void PatrolLink(OneObject* OBJ);
 
-void OneObject::Patrol( int px, int py, int x1, int y1, byte Prio )
+void OneObject::Patrol(int px, int py, int x1, int y1, byte Prio)
 {
 	if (InArmy)
 		return;
@@ -1401,13 +1413,13 @@ void OneObject::Patrol( int px, int py, int x1, int y1, byte Prio )
 	if (!Ready)
 		return;
 
-	Order1* Or1 = CreateOrder( 0 );
+	Order1* Or1 = CreateOrder(0);
 
-	if (!int( Or1 ))
+	if (!int(Or1))
 		return;
 
 	Or1->PrioryLevel = 0;
-	Or1->OrderType = 81;//Атака
+	Or1->OrderType = 81; //Атака
 	Or1->OrderTime = 0;
 	Or1->DoLink = &PatrolLink;
 
@@ -1427,40 +1439,50 @@ void OneObject::Patrol( int px, int py, int x1, int y1, byte Prio )
 	Or1->info.Patrol.dir = 1;
 	Or1->info.Patrol.dir = 1;
 	PrioryLevel = 0;
-	NewMonsterSmartSendTo( x1, y1, 0, 0, 0, 1 );
+	NewMonsterSmartSendTo(x1, y1, 0, 0, 0, 1);
 }
 
-void PatrolLink( OneObject* OBJ )
+void PatrolLink(OneObject* OBJ)
 {
 	OBJ->PrioryLevel = 0;
 	Order1* OR1 = OBJ->LocalOrder;
 	if (OR1->info.Patrol.dir)
 	{
-		OBJ->NewMonsterSmartSendTo( OR1->info.Patrol.x, OR1->info.Patrol.y, 0, 0, 0, 1 );
+		OBJ->NewMonsterSmartSendTo(OR1->info.Patrol.x, OR1->info.Patrol.y, 0, 0, 0, 1);
 		OR1->info.Patrol.dir = 0;
 	}
 	else
 	{
-		OBJ->NewMonsterSmartSendTo( OR1->info.Patrol.x1, OR1->info.Patrol.y1, 0, 0, 0, 1 );
+		OBJ->NewMonsterSmartSendTo(OR1->info.Patrol.x1, OR1->info.Patrol.y1, 0, 0, 0, 1);
 		OR1->info.Patrol.dir = 1;
 	}
 }
 
 void OneObject::EnableDoubleForce()
-{}
+{
+}
 
 void OneObject::DisableDoubleForce()
-{}
-void OneObject::EnableTripleForce()
-{}
-void OneObject::DiasableTripleForce()
-{}
-void OneObject::EnableQuadraForce()
-{}
-void OneObject::DisableQuadraForce()
-{}
+{
+}
 
-void WaitForRepairLink( OneObject* OBJ );
+void OneObject::EnableTripleForce()
+{
+}
+
+void OneObject::DiasableTripleForce()
+{
+}
+
+void OneObject::EnableQuadraForce()
+{
+}
+
+void OneObject::DisableQuadraForce()
+{
+}
+
+void WaitForRepairLink(OneObject* OBJ);
 
 void OneObject::WaitForRepair()
 {
@@ -1472,12 +1494,12 @@ void OneObject::WaitForRepair()
 
 	Order1* Or1 = GetOrdBlock();
 
-	if (!int( Or1 ))
+	if (!int(Or1))
 		return;
 
 	Or1->PrioryLevel = 0;
 	Or1->NextOrder = LocalOrder;
-	Or1->OrderType = 103;//Атака
+	Or1->OrderType = 103; //Атака
 	Or1->OrderTime = 0;
 	Or1->DoLink = &WaitForRepairLink;
 	Or1->info.MoveToXY.x = x;
@@ -1486,8 +1508,9 @@ void OneObject::WaitForRepair()
 	LocalOrder = Or1;
 }
 
-void WaitForRepairLink( OneObject* OBJ )
-{}
+void WaitForRepairLink(OneObject* OBJ)
+{
+}
 
 //####################################################//
 //################                 ###################//
@@ -1505,12 +1528,12 @@ word NNuc;
 //Zero NucList, NucSN, NNuc
 void InitNucList()
 {
-	memset( NucList, 255, sizeof NucList );
-	memset( NucSN, 255, sizeof NucSN );
+	memset(NucList, 255, sizeof NucList);
+	memset(NucSN, 255, sizeof NucSN);
 	NNuc = 0;
 }
 
-void RegisterNuc( word ID )
+void RegisterNuc(word ID)
 {
 	if (!EUsage[ID])return;
 	for (int i = 0; i < 128; i++)
@@ -1525,6 +1548,7 @@ void RegisterNuc( word ID )
 		};
 	};
 };
+
 /*void HandleAntiNuc(){
 	if(!NNuc)return;
 	for(int i=0;i<128;i++){
@@ -1609,39 +1633,41 @@ char NatCharHi[32][8];
 byte NTex1[32];
 byte NTex2[32];
 
-int GetNationByID( char* Name )
+int GetNationByID(char* Name)
 {
 	for (int i = 0; i < NNations; i++)
 	{
-		if (!strcmp( Name, NatsIDS[i] ))return i;
+		if (!strcmp(Name, NatsIDS[i]))return i;
 	};
 	return -1;
 };
 
-void AttackObjLink( OneObject* OBJ );
-ReportFn* AttackLink = (ReportFn*) 0x652419;
+void AttackObjLink(OneObject* OBJ);
+ReportFn* AttackLink = (ReportFn*)0x652419;
+
 void __stdcall CDGINIT_INIT2()
 {
 	AttackLink = &AttackObjLink;
 };
 extern bool ProtectionMode;
 void LoadMessages();
-char* GetTextByID( char* ID );
+char* GetTextByID(char* ID);
+
 void LoadNations()
 {
 	//ProtectionMode=1;
-	GFILE* f = Gopen( "Nations.lst", "r" );
+	GFILE* f = Gopen("Nations.lst", "r");
 	ProtectionMode = 0;
 
-	int z = Gscanf( f, "%d", &NNations );
+	int z = Gscanf(f, "%d", &NNations);
 #ifdef INETTESTVERSION
 	NNations = 1;
 #endif
 	NatNames = new lpchar[NNations];
 	NatScripts = new lpchar[NNations];
 	NatsIDS = new lpchar[NNations];
-	memset( NTex1, 0xFF, 32 );
-	memset( NTex2, 0xFF, 32 );
+	memset(NTex1, 0xFF, 32);
+	memset(NTex2, 0xFF, 32);
 	for (int i = 0; i < NNations; i++)
 	{
 		char NName[64];
@@ -1649,45 +1675,46 @@ void LoadNations()
 		char NIDS[64];
 		char vv[16];
 		vv[0] = 0;
-		z = Gscanf( f, "%s%s%s%s", NIDS, NName, NScrp, vv );
+		z = Gscanf(f, "%s%s%s%s", NIDS, NName, NScrp, vv);
 		if (vv[0] == '#')
 		{
 			int t1, t2;
-			z = Gscanf( f, "%d%d", &t1, &t2 );
+			z = Gscanf(f, "%d%d", &t1, &t2);
 			NTex1[i] = t1;
 			NTex2[i] = t2;
-			Gscanf( f, "%s%s", NatCharLo[i], NatCharHi[i] );
+			Gscanf(f, "%s%s", NatCharLo[i], NatCharHi[i]);
 		}
 		else
 		{
-			strcpy( NatCharLo[i], vv );
-			Gscanf( f, "%s", NatCharHi[i] );
+			strcpy(NatCharLo[i], vv);
+			Gscanf(f, "%s", NatCharHi[i]);
 		};
 		char CC4[64];
-		sprintf( CC4, "#%s", NIDS );
-		strcpy( NName, GetTextByID( CC4 ) );
-		NatNames[i] = new char[strlen( NName ) + 1];
-		strcpy( NatNames[i], NName );
-		NatScripts[i] = new char[strlen( NScrp ) + 1];
-		strcpy( NatScripts[i], NScrp );
-		NatsIDS[i] = new char[strlen( NIDS ) + 1];
-		strcpy( NatsIDS[i], NIDS );
+		sprintf(CC4, "#%s", NIDS);
+		strcpy(NName, GetTextByID(CC4));
+		NatNames[i] = new char[strlen(NName) + 1];
+		strcpy(NatNames[i], NName);
+		NatScripts[i] = new char[strlen(NScrp) + 1];
+		strcpy(NatScripts[i], NScrp);
+		NatsIDS[i] = new char[strlen(NIDS) + 1];
+		strcpy(NatsIDS[i], NIDS);
 	};
-	Gclose( f );
+	Gclose(f);
 };
-void Nation::AddPopul( word N )
+
+void Nation::AddPopul(word N)
 {
 	if (NPopul >= MaxPopul)
 	{
 		MaxPopul += 64;
-		Popul = (word*) realloc( Popul, 2 * MaxPopul );
+		Popul = (word*)realloc(Popul, 2 * MaxPopul);
 	};
 	Popul[NPopul] = N;
 	NPopul++;
 	if (NAccount >= MaxAccount)
 	{
 		MaxAccount += 64;
-		Account = (word*) realloc( Account, 2 * MaxAccount );
+		Account = (word*)realloc(Account, 2 * MaxAccount);
 	};
 	int acc = CITY->Account / 100;
 	if (acc < 0)acc = 0;
@@ -1695,13 +1722,14 @@ void Nation::AddPopul( word N )
 	NAccount++;
 	if (N)ThereWasUnit = 1;
 };
-void Nation::AddUpgrade( word ID, int time )
+
+void Nation::AddUpgrade(word ID, int time)
 {
 	if (NUpgMade >= MaxUpgMade)
 	{
 		MaxUpgMade += 64;
-		UpgIDS = (word*) realloc( UpgIDS, 2 * MaxUpgMade );
-		UpgTime = (int*) realloc( UpgTime, 4 * MaxUpgMade );
+		UpgIDS = (word*)realloc(UpgIDS, 2 * MaxUpgMade);
+		UpgTime = (int*)realloc(UpgTime, 4 * MaxUpgMade);
 	};
 	UpgIDS[NUpgMade] = ID;
 	UpgTime[NUpgMade] = time;
@@ -1711,17 +1739,17 @@ void Nation::AddUpgrade( word ID, int time )
 //Calculate population values for all players
 void EnumPopulation()
 {
-	int NMN[8] = { 0,0,0,0,0,0,0,0 };
+	int NMN[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 	for (int i = 0; i < MAXOBJECT; i++)
 	{
 		OneObject* OB = Group[i];
-		if (OB && ( OB->Hidden || !OB->Sdoxlo ) && ( !OB->NewBuilding ))
+		if (OB && (OB->Hidden || !OB->Sdoxlo) && (!OB->NewBuilding))
 		{
 			NMN[OB->NNUM]++;
 		}
 	}
 	for (int i = 0; i < 7; i++)
 	{
-		NATIONS[i].AddPopul( NMN[i] );
+		NATIONS[i].AddPopul(NMN[i]);
 	}
 }

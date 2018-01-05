@@ -22,60 +22,61 @@
 
 struct RARHeaderData
 {
-  char ArcName[260];
-  char FileName[260];
-  UINT Flags;
-  UINT PackSize;
-  UINT UnpSize;
-  UINT HostOS;
-  UINT FileCRC;
-  UINT FileTime;
-  UINT UnpVer;
-  UINT Method;
-  UINT FileAttr;
-  char *CmtBuf;
-  UINT CmtBufSize;
-  UINT CmtSize;
-  UINT CmtState;
+	char ArcName[260];
+	char FileName[260];
+	UINT Flags;
+	UINT PackSize;
+	UINT UnpSize;
+	UINT HostOS;
+	UINT FileCRC;
+	UINT FileTime;
+	UINT UnpVer;
+	UINT Method;
+	UINT FileAttr;
+	char* CmtBuf;
+	UINT CmtBufSize;
+	UINT CmtSize;
+	UINT CmtState;
 };
 
 
 struct RAROpenArchiveData
 {
-  char *ArcName;
-  UINT OpenMode;
-  UINT OpenResult;
-  char *CmtBuf;
-  UINT CmtBufSize;
-  UINT CmtSize;
-  UINT CmtState;
+	char* ArcName;
+	UINT OpenMode;
+	UINT OpenResult;
+	char* CmtBuf;
+	UINT CmtBufSize;
+	UINT CmtSize;
+	UINT CmtState;
 };
 
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
-typedef HANDLE PASCAL tpRAROpenArchive(struct RAROpenArchiveData *ArchiveData);
-extern tpRAROpenArchive* lpRAROpenArchive;
-HANDLE PASCAL RAROpenArchive(struct RAROpenArchiveData *ArchiveData);
-typedef int PASCAL tpRARCloseArchive(HANDLE hArcData);
-extern tpRARCloseArchive* lpRARCloseArchive;
-int PASCAL RARCloseArchive(HANDLE hArcData);
-typedef int PASCAL tpRARReadHeader(HANDLE hArcData,struct RARHeaderData *HeaderData);
-extern tpRARReadHeader* lpRARReadHeader;
-int PASCAL RARReadHeader(HANDLE hArcData,struct RARHeaderData *HeaderData);
-typedef int PASCAL tpRARProcessFile(HANDLE hArcData,int Operation,char *DestPath,char *DestName);
-extern tpRARProcessFile* lpRARProcessFile;
-int PASCAL RARProcessFile(HANDLE hArcData,int Operation,char *DestPath,char *DestName);
-typedef void PASCAL tpRARSetChangeVolProc(HANDLE hArcData,int (*ChangeVolProc)(char *ArcName,int Mode));
-extern tpRARSetChangeVolProc* lpRARSetChangeVolProc;
-void PASCAL RARSetChangeVolProc(HANDLE hArcData,int (*ChangeVolProc)(char *ArcName,int Mode));
-typedef void PASCAL tpRARSetProcessDataProc(HANDLE hArcData,int (*ProcessDataProc)(unsigned char *Addr,int Size));
-extern tpRARSetProcessDataProc* lpRARSetProcessDataProc;
-void PASCAL RARSetProcessDataProc(HANDLE hArcData,int (*ProcessDataProc)(unsigned char *Addr,int Size));
-typedef void PASCAL tpRARSetPassword(HANDLE hArcData,char *Password);
-extern tpRARSetPassword* lpRARSetPassword;
-void PASCAL RARSetPassword(HANDLE hArcData,char *Password);
+	typedef HANDLE PASCAL tpRAROpenArchive(struct RAROpenArchiveData* ArchiveData);
+	extern tpRAROpenArchive* lpRAROpenArchive;
+	HANDLE PASCAL RAROpenArchive(struct RAROpenArchiveData* ArchiveData);
+	typedef int PASCAL tpRARCloseArchive(HANDLE hArcData);
+	extern tpRARCloseArchive* lpRARCloseArchive;
+	int PASCAL RARCloseArchive(HANDLE hArcData);
+	typedef int PASCAL tpRARReadHeader(HANDLE hArcData, struct RARHeaderData* HeaderData);
+	extern tpRARReadHeader* lpRARReadHeader;
+	int PASCAL RARReadHeader(HANDLE hArcData, struct RARHeaderData* HeaderData);
+	typedef int PASCAL tpRARProcessFile(HANDLE hArcData, int Operation, char* DestPath, char* DestName);
+	extern tpRARProcessFile* lpRARProcessFile;
+	int PASCAL RARProcessFile(HANDLE hArcData, int Operation, char* DestPath, char* DestName);
+	typedef void PASCAL tpRARSetChangeVolProc(HANDLE hArcData, int (*ChangeVolProc)(char* ArcName, int Mode));
+	extern tpRARSetChangeVolProc* lpRARSetChangeVolProc;
+	void PASCAL RARSetChangeVolProc(HANDLE hArcData, int (*ChangeVolProc)(char* ArcName, int Mode));
+	typedef void PASCAL tpRARSetProcessDataProc(HANDLE hArcData, int (*ProcessDataProc)(unsigned char* Addr, int Size));
+	extern tpRARSetProcessDataProc* lpRARSetProcessDataProc;
+	void PASCAL RARSetProcessDataProc(HANDLE hArcData, int (*ProcessDataProc)(unsigned char* Addr, int Size));
+	typedef void PASCAL tpRARSetPassword(HANDLE hArcData, char* Password);
+	extern tpRARSetPassword* lpRARSetPassword;
+	void PASCAL RARSetPassword(HANDLE hArcData, char* Password);
 
 #ifdef __cplusplus
 }

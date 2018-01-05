@@ -4,20 +4,27 @@ typedef DWORD fnGetRequestResult(DWORD Handle, char** Result, int* Size);
 typedef void fnCloseRequest(DWORD Handle);
 typedef void fnProcess();
 typedef void fnCloseAll();
-struct OneVariable {
+
+struct OneVariable
+{
 	char Name[48];
 	char* Value;
 	int MaxLen;
 };
+
 class sicExplorer;
 typedef void fnExpProcess(sicExplorer* SXP, void* PData, int size);
-struct OneSXProcess {
+
+struct OneSXProcess
+{
 	fnExpProcess* Process;
 	fnExpProcess* Close;
 	void* Data;
 	int size;
 };
-struct OneSXPTable {
+
+struct OneSXPTable
+{
 	char ID[32];
 	byte COLMOPT[32];
 	int NLines;
@@ -27,14 +34,18 @@ struct OneSXPTable {
 	char** Lines;
 	int* Refs;
 };
-struct FileDownloadProcess {
-	char  URL[256];
-	char  Name[256];
+
+struct FileDownloadProcess
+{
+	char URL[256];
+	char Name[256];
 	DWORD Handle;
-	byte  ReqMask[128];
-	bool  Ready;
+	byte ReqMask[128];
+	bool Ready;
 };
-class sicExplorer {
+
+class sicExplorer
+{
 public:
 	char HomeAddress[512];
 	char ACCESSKEY[16];
@@ -103,20 +114,24 @@ public:
 
 	~sicExplorer();
 };
-struct InterfaceElementPosition {
+
+struct InterfaceElementPosition
+{
 	char ID[16];
 	int x, y, x1, y1;
 	int StartSD;
 	int FinSD;
 };
-class OneBox {
+
+class OneBox
+{
 public:
 	DialogsSystem DSS;
 	char Name[16];
-	int x, y, x1, y1;    //external coordinates
-	int xi, yi, xi1, yi1;//internal coordinates
-	bool Scroll : 1;    //have scroller?
-	bool Box : 1;       //have box?
+	int x, y, x1, y1; //external coordinates
+	int xi, yi, xi1, yi1; //internal coordinates
+	bool Scroll : 1; //have scroller?
+	bool Box : 1; //have box?
 	bool Active : 1;
 	bool WasActive : 1;
 	short StartScrollIndex;
@@ -130,7 +145,9 @@ public:
 	OneBox();
 	~OneBox();
 };
-class OneInterfaceElement {
+
+class OneInterfaceElement
+{
 public:
 	char ID[16];
 	int x, y, x1, y1;
@@ -142,21 +159,30 @@ public:
 	void ClearActive();
 	void ClearParams();
 	void Clear();
-	~OneInterfaceElement() {
+
+	~OneInterfaceElement()
+	{
 		Clear();
 	};
 };
-struct PanelParam {
+
+struct PanelParam
+{
 	char panel_gp[128];
 	int LU, RU, LD, RD, L, R, U, D, C, C1;
 };
-struct OneAddFont {
+
+struct OneAddFont
+{
 	char FID[32];
 	RLCFont FONT;
 	int sdx, sdy;
 };
+
 #define NTIME 8
-class OneSicWindow {
+
+class OneSicWindow
+{
 public:
 	char WinID[16];
 	sicExplorer* EXP;
@@ -239,7 +265,7 @@ public:
 	char panel_gp_file[128];
 	//7. Standart button
 	//#def_btn(gp-file,index,dx,dy,wholedx,wholedy,whole_Lx)
-	char  stb_gp_file[128];
+	char stb_gp_file[128];
 	int stb_Index;
 	int stb_dx;
 	int stb_dy;
@@ -248,7 +274,7 @@ public:
 	int stb_wholeLx;
 	//8. ТОЖЕ Standart button
 	//#def_sbtn(gp-file,index,dx,dy,wholedx,wholedy,whole_Lx)
-	char  sstb_gp_file[128];
+	char sstb_gp_file[128];
 	int sstb_Index;
 	int sstb_dx;
 	int sstb_dy;
@@ -280,9 +306,12 @@ public:
 	OneSicWindow();
 	~OneSicWindow();
 };
+
 typedef bool tpAddInterface(sicExplorer* SXP, DialogsSystem* DSS, int* x, int* y, int* x1, int* y1,
-	int NActive, char** Active, int NParam, char** Param, char* param);
-class OneInterfaceFunction {
+                            int NActive, char** Active, int NParam, char** Param, char* param);
+
+class OneInterfaceFunction
+{
 public:
 	char Name[16];
 	bool ReqName : 1;
@@ -292,6 +321,7 @@ public:
 	char param[32];
 	tpAddInterface* AddInterface;
 };
+
 extern OneInterfaceFunction* IFNS;
 extern int N_IFNS;
 extern int SCROLL2;
@@ -301,10 +331,13 @@ extern int CBB_0;
 __declspec(dllimport)
 byte GetPaletteColor(int r, int g, int b);
 DWORD SendGlobalRequest(sicExplorer* SXP, char* data, bool allow);
-struct Corners {
+
+struct Corners
+{
 	int CLU, CRU, CLD, CRD;
 	int LL, LR, LU, LD;
 };
+
 __declspec(dllimport)
 void DrawFilledRect3(int x0, int y0, int x1, int y1, Corners* CR, int GP_File, int StartFill, int NFill);
 __declspec(dllimport)

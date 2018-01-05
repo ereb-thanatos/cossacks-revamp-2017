@@ -1,7 +1,8 @@
-class MotionBrush{
+class MotionBrush
+{
 public:
 	int* Data;
-	int Lx,Ly;
+	int Lx, Ly;
 	int Dx;
 	int Dy;
 	MotionBrush();
@@ -9,25 +10,27 @@ public:
 	void CreateRoundBrush(int d);
 	void CreateSquareBrush(int L);
 };
-class MotionField{
+
+class MotionField
+{
 public:
 	//byte* MapH;//(x,y)-bit matrix(1point=16x12 pix)
-	byte* MapV;//(y,x)-T bit matrix //1024*128=131072 bytes big
+	byte* MapV; //(y,x)-T bit matrix //1024*128=131072 bytes big
 	//----Methods-----
 	void Allocate();
 	void FreeAlloc();
 	void ClearMaps();
-	void BSetPt(int x,int y);
-	void BClrPt(int x,int y);
-	void BSetBar(int x,int y,int Lx);
-	void BClrBar(int x,int y,int Lx);
-	void BSetSQ(int x,int y,int Lx,int Ly);
-	void BClrSQ(int x,int y,int Lx,int Ly);
-	int  CheckPt(int x,int y);
-	int  CheckHLine(int x,int y,int Lx);
-	int  CheckVLine(int x,int y,int Lx);
-	bool CheckBar(int x,int y,int Lx,int Ly);
-	void FillNewCirc(int x,int y,int Lx,int Ly);
+	void BSetPt(int x, int y);
+	void BClrPt(int x, int y);
+	void BSetBar(int x, int y, int Lx);
+	void BClrBar(int x, int y, int Lx);
+	void BSetSQ(int x, int y, int Lx, int Ly);
+	void BClrSQ(int x, int y, int Lx, int Ly);
+	int CheckPt(int x, int y);
+	int CheckHLine(int x, int y, int Lx);
+	int CheckVLine(int x, int y, int Lx);
+	bool CheckBar(int x, int y, int Lx, int Ly);
+	void FillNewCirc(int x, int y, int Lx, int Ly);
 
 
 	/*
@@ -42,4 +45,5 @@ public:
 	int FindWay(int x,int y,int x1,int y1,MotionBrush* Brush,short** WayX,short** WayY,int Step,int Border);
 	*/
 };
-extern MotionField MFIELDS[2];//0-Land,1-Water
+
+extern MotionField MFIELDS[2]; //0-Land,1-Water

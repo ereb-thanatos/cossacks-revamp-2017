@@ -4,4 +4,4 @@ void ShowFon();
 void LoadTiles();
 void LoadMap(LPCSTR s);
 void ShowMap();
-void HandleMouse(int x,int y);
+void HandleMouse(int x, int y);

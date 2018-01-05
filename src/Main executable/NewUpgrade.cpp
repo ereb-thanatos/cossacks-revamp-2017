@@ -16,9 +16,9 @@
 #include "NewMon.h"
 #include "StringHash.h"
 
-void NLine( GFILE* f );
-char* GetTextByID( char* ID );
-int GetUnitKind( char* Name );
+void NLine(GFILE* f);
+char* GetTextByID(char* ID);
+int GetUnitKind(char* Name);
 
 //UPGRADE_NAME Icon_ID Level Message Cost 
 //      CATEGORY UNIT VALUE
@@ -63,42 +63,45 @@ int GetUnitKind( char* Name );
 //ID||IntegerValue
 //Example of IntegerValue:
 //+10 -10 100 +10% -10% 110%
-int GetIconByName( char* Name );
-int GetWeaponType( char* Name );
+int GetIconByName(char* Name);
+int GetWeaponType(char* Name);
 char* Sect;
-void ErrM( char* s );
-void IncPar( char* name, int line, char* Sect );
-void GetWeapons( GFILE* f, NewUpgrade* NU, Nation* NT, char* Name, int Line )
-{
+void ErrM(char* s);
+void IncPar(char* name, int line, char* Sect);
 
+void GetWeapons(GFILE* f, NewUpgrade* NU, Nation* NT, char* Name, int Line)
+{
 };
-int GetNTUnit( Nation* NT, char* Name )
+
+int GetNTUnit(Nation* NT, char* Name)
 {
 	int nn = NT->NMon;
 	GeneralObject** GO = NT->Mon;
 	for (int i = 0; i < nn; i++)
 	{
-		if (!strcmp( Name, GO[i]->MonsterID ))return i;
+		if (!strcmp(Name, GO[i]->MonsterID))return i;
 	};
 	return -1;
 };
-int GetNTUpgrade( Nation* NT, char* Name )
+
+int GetNTUpgrade(Nation* NT, char* Name)
 {
 	int nn = NT->NUpgrades;
 	for (int i = 0; i < nn; i++)
 	{
 		NewUpgrade* NU = NT->UPGRADE[i];
-		if (NU && !strcmp( Name, NU->Name ))return i;
+		if (NU && !strcmp(Name, NU->Name))return i;
 	};
 	return -1;
 };
-int GetNTElement( Nation* NT, char* Name, bool UseUnits, bool UseUpgrades )
+
+int GetNTElement(Nation* NT, char* Name, bool UseUnits, bool UseUpgrades)
 {
 	int zz = -1;
-	if (UseUnits)zz = GetNTUnit( NT, Name );
+	if (UseUnits)zz = GetNTUnit(NT, Name);
 	if (zz == -1 && UseUpgrades)
 	{
-		zz = GetNTUpgrade( NT, Name );
+		zz = GetNTUpgrade(NT, Name);
 		if (zz >= 0)zz += 8192;
 	};
 	return zz;
@@ -109,72 +112,73 @@ int GetNTElement( Nation* NT, char* Name, bool UseUnits, bool UseUpgrades )
 //2-  ATTINDEX
 //3-  0<=CtgValue<=NAttTypes
 //4-  0..31
-void GetWeaponKind( GFILE* f, NewUpgrade* NU, Nation* NT, char* Name, int Line )
+void GetWeaponKind(GFILE* f, NewUpgrade* NU, Nation* NT, char* Name, int Line)
 {
 	char gx[128];
 	char gy[128];
-	int z = Gscanf( f, "%s", gx );
+	int z = Gscanf(f, "%s", gx);
 	NU->CtgType = 1;
-	if (z != 1)IncPar( Name, Line, Sect );
-	if (!strcmp( gx, "GRP" ))
+	if (z != 1)IncPar(Name, Line, Sect);
+	if (!strcmp(gx, "GRP"))
 	{
 		int ngrp;
-		z = Gscanf( f, "%d", &ngrp );
+		z = Gscanf(f, "%d", &ngrp);
 		if (z != 1)
 		{
-			sprintf( gx, "%s,Line %d :%s:Invalid GRP directive format for the list of weapon.", Name, Line, Sect );
-			ErrM( gx );
+			sprintf(gx, "%s,Line %d :%s:Invalid GRP directive format for the list of weapon.", Name, Line, Sect);
+			ErrM(gx);
 		};
 		NU->CtgGroup = new word[ngrp];
 		NU->NCtg = ngrp;
 		for (int i = 0; i < ngrp; i++)
 		{
-			z = Gscanf( f, "%s", gx );
-			if (z != 1)IncPar( Name, Line, Sect );
-			int zz1 = GetWeaponType( gx );
+			z = Gscanf(f, "%s", gx);
+			if (z != 1)IncPar(Name, Line, Sect);
+			int zz1 = GetWeaponType(gx);
 			if (zz1 == -1)
 			{
-				sprintf( gy, "%s,Line %d :%s: Unknown weapon type:%s", Name, Line, Sect, gx );
-				ErrM( gy );
+				sprintf(gy, "%s,Line %d :%s: Unknown weapon type:%s", Name, Line, Sect, gx);
+				ErrM(gy);
 			};
 			NU->CtgGroup[i] = zz1;
 		};
 	}
 	else
 	{
-		int zz1 = GetWeaponType( gx );
+		int zz1 = GetWeaponType(gx);
 		if (zz1 == -1)
 		{
-			sprintf( gy, "%s,Line %d :%s: Unknown Monster ID:%s", Name, Line, Sect, gx );
-			ErrM( gy );
+			sprintf(gy, "%s,Line %d :%s: Unknown Monster ID:%s", Name, Line, Sect, gx);
+			ErrM(gy);
 		};
 		NU->CtgValue = zz1;
 		NU->CtgGroup = NULL;
 	};
 };
-void GetAttIndex( GFILE* f, NewUpgrade* NU, Nation* NT, char* Name, int Line )
+
+void GetAttIndex(GFILE* f, NewUpgrade* NU, Nation* NT, char* Name, int Line)
 {
 	char gx[128];
-	int z = Gscanf( f, "%s", gx );
+	int z = Gscanf(f, "%s", gx);
 	int p1, p2;
-	if (z != 1)IncPar( Name, Line, Sect );
+	if (z != 1)IncPar(Name, Line, Sect);
 	NU->CtgType = 2;
-	if (!strcmp( gx, "GRP" ))
+	if (!strcmp(gx, "GRP"))
 	{
-		z = Gscanf( f, "%d", &p1 );
-		if (z != 1)IncPar( Name, Line, Sect );
+		z = Gscanf(f, "%d", &p1);
+		if (z != 1)IncPar(Name, Line, Sect);
 		NU->CtgGroup = new word[p1];
 		NU->NCtg = p1;
 		for (int i = 0; i < p1; i++)
 		{
-			z = Gscanf( f, "%d", &p2 );
-			if (z != 1)IncPar( Name, Line, Sect );
+			z = Gscanf(f, "%d", &p2);
+			if (z != 1)IncPar(Name, Line, Sect);
 			NU->CtgGroup[i] = p2;
 		};
 	}
 	else
 	{
-		if (!strcmp( gx, "ALL" ))
+		if (!strcmp(gx, "ALL"))
 		{
 			NU->CtgGroup = new word[NAttTypes];
 			for (int i = 0; i < NAttTypes; i++)
@@ -185,21 +189,22 @@ void GetAttIndex( GFILE* f, NewUpgrade* NU, Nation* NT, char* Name, int Line )
 		}
 		else
 		{
-			z = sscanf( gx, "%d", &p1 );
-			if (z != 1)IncPar( Name, Line, Sect );
+			z = sscanf(gx, "%d", &p1);
+			if (z != 1)IncPar(Name, Line, Sect);
 			NU->CtgValue = p1;
 			NU->CtgGroup = NULL;
 		};
 	};
 };
-void GetCtgParam01( GFILE* f, NewUpgrade* NU, Nation* NT, char* Name, int Line )
+
+void GetCtgParam01(GFILE* f, NewUpgrade* NU, Nation* NT, char* Name, int Line)
 {
 	char gx[128];
 	char gy[128];
-	int z = Gscanf( f, "%s", gx );
-	if (!strcmp( gx, "ATTINDEX" ))GetAttIndex( f, NU, NT, Name, Line );
-	else if (!strcmp( gx, "WEAPONKIND" ))GetWeaponKind( f, NU, NT, Name, Line );
-	else if (!strcmp( gx, "ALL" ))
+	int z = Gscanf(f, "%s", gx);
+	if (!strcmp(gx, "ATTINDEX"))GetAttIndex(f, NU, NT, Name, Line);
+	else if (!strcmp(gx, "WEAPONKIND"))GetWeaponKind(f, NU, NT, Name, Line);
+	else if (!strcmp(gx, "ALL"))
 	{
 		NU->CtgType = 3;
 		NU->CtgGroup = NULL;
@@ -207,146 +212,147 @@ void GetCtgParam01( GFILE* f, NewUpgrade* NU, Nation* NT, char* Name, int Line )
 	}
 	else
 	{
-		sprintf( gy, "%s, Line %d :%s: ATTINDEX or WEAPONKIND or ALL expected instead of %s", Name, Line, Sect, gx );
-		ErrM( gy );
+		sprintf(gy, "%s, Line %d :%s: ATTINDEX or WEAPONKIND or ALL expected instead of %s", Name, Line, Sect, gx);
+		ErrM(gy);
 	};
 };
-void GetUnits( GFILE* f, NewUpgrade* NU, Nation* NT, char* Name, int Line )
+
+void GetUnits(GFILE* f, NewUpgrade* NU, Nation* NT, char* Name, int Line)
 {
 	char gx[128];
 	char gy[128];
-	int z = Gscanf( f, "%s", gx );
-	if (z != 1)IncPar( Name, Line, Sect );
-	if (!strcmp( gx, "GRP" ))
+	int z = Gscanf(f, "%s", gx);
+	if (z != 1)IncPar(Name, Line, Sect);
+	if (!strcmp(gx, "GRP"))
 	{
 		int ngrp;
-		z = Gscanf( f, "%d", &ngrp );
+		z = Gscanf(f, "%d", &ngrp);
 		if (z != 1)
 		{
-			sprintf( gx, "%s,Line %d :%s:Invalid GRP directive format for the list of units.", Name, Line, Sect );
-			ErrM( gx );
+			sprintf(gx, "%s,Line %d :%s:Invalid GRP directive format for the list of units.", Name, Line, Sect);
+			ErrM(gx);
 		};
 		NU->UnitGroup = new word[ngrp];
 		NU->NUnits = ngrp;
 		NU->UnitType = 0;
 		for (int i = 0; i < ngrp; i++)
 		{
-			z = Gscanf( f, "%s", gx );
-			if (z != 1)IncPar( Name, Line, Sect );
-			int zz1 = GetNTUnit( NT, gx );
+			z = Gscanf(f, "%s", gx);
+			if (z != 1)IncPar(Name, Line, Sect);
+			int zz1 = GetNTUnit(NT, gx);
 			if (zz1 == -1)
 			{
-				sprintf( gy, "%s,Line %d :%s: Unknown Monster ID:%s", Name, Line, Sect, gx );
-				ErrM( gy );
+				sprintf(gy, "%s,Line %d :%s: Unknown Monster ID:%s", Name, Line, Sect, gx);
+				ErrM(gy);
 			};
 			NU->UnitGroup[i] = zz1;
 		};
 	}
-	else
-		if (!strcmp( gx, "UNITKIND" ))
+	else if (!strcmp(gx, "UNITKIND"))
+	{
+		z = Gscanf(f, "%s", gx);
+		if (z != 1)IncPar(Name, Line, Sect);
+		if (!strcmp(gx, "GRP"))
 		{
-			z = Gscanf( f, "%s", gx );
-			if (z != 1)IncPar( Name, Line, Sect );
-			if (!strcmp( gx, "GRP" ))
+			int ngrp;
+			z = Gscanf(f, "%d", &ngrp);
+			if (z != 1)
 			{
-				int ngrp;
-				z = Gscanf( f, "%d", &ngrp );
-				if (z != 1)
-				{
-					sprintf( gx, "%s,Line %d :%s:Invalid GRP directive format for UNITKIND.", Name, Line, Sect );
-					ErrM( gx );
-				};
-				NU->UnitGroup = new word[ngrp];
-				NU->NUnits = ngrp;
-				NU->UnitType = 1;
-				for (int i = 0; i < ngrp; i++)
-				{
-					z = Gscanf( f, "%s", gx );
-					if (z != 1)IncPar( Name, Line, Sect );
-					int zz1 = GetUnitKind( gx );
-					if (zz1 == -1)
-					{
-						sprintf( gy, "%s,Line %d :%s: Unknown unit kind:%s", Name, Line, Sect, gx );
-						ErrM( gy );
-					};
-					NU->UnitGroup[i] = zz1;
-				};
-			}
-			else
+				sprintf(gx, "%s,Line %d :%s:Invalid GRP directive format for UNITKIND.", Name, Line, Sect);
+				ErrM(gx);
+			};
+			NU->UnitGroup = new word[ngrp];
+			NU->NUnits = ngrp;
+			NU->UnitType = 1;
+			for (int i = 0; i < ngrp; i++)
 			{
-				int zz1 = GetUnitKind( gx );
+				z = Gscanf(f, "%s", gx);
+				if (z != 1)IncPar(Name, Line, Sect);
+				int zz1 = GetUnitKind(gx);
 				if (zz1 == -1)
 				{
-					sprintf( gy, "%s,Line %d :%s: Unknown unit kind:%s", Name, Line, Sect, gx );
-					ErrM( gy );
+					sprintf(gy, "%s,Line %d :%s: Unknown unit kind:%s", Name, Line, Sect, gx);
+					ErrM(gy);
 				};
-				NU->UnitValue = zz1;
-				NU->UnitGroup = NULL;
-				NU->UnitType = 1;
+				NU->UnitGroup[i] = zz1;
 			};
 		}
 		else
 		{
-			int zz1 = GetNTUnit( NT, gx );
+			int zz1 = GetUnitKind(gx);
 			if (zz1 == -1)
 			{
-				sprintf( gy, "%s,Line %d :%s: Unknown Monster ID:%s", Name, Line, Sect, gx );
-				ErrM( gy );
+				sprintf(gy, "%s,Line %d :%s: Unknown unit kind:%s", Name, Line, Sect, gx);
+				ErrM(gy);
 			};
 			NU->UnitValue = zz1;
 			NU->UnitGroup = NULL;
-			NU->UnitType = 0;
+			NU->UnitType = 1;
 		};
+	}
+	else
+	{
+		int zz1 = GetNTUnit(NT, gx);
+		if (zz1 == -1)
+		{
+			sprintf(gy, "%s,Line %d :%s: Unknown Monster ID:%s", Name, Line, Sect, gx);
+			ErrM(gy);
+		};
+		NU->UnitValue = zz1;
+		NU->UnitGroup = NULL;
+		NU->UnitType = 0;
+	};
 };
-void GetUnitsAndUpgrades( GFILE* f, NewUpgrade* NU, Nation* NT, char* Name, int Line, bool UseUnits, bool UseUpgrades )
+
+void GetUnitsAndUpgrades(GFILE* f, NewUpgrade* NU, Nation* NT, char* Name, int Line, bool UseUnits, bool UseUpgrades)
 {
 	NU->CtgType = 0;
 	char gx[128];
 	char gy[128];
-	int z = Gscanf( f, "%s", gx );
-	if (z != 1)IncPar( Name, Line, Sect );
-	if (!strcmp( gx, "GRP" ))
+	int z = Gscanf(f, "%s", gx);
+	if (z != 1)IncPar(Name, Line, Sect);
+	if (!strcmp(gx, "GRP"))
 	{
 		int ngrp;
-		z = Gscanf( f, "%d", &ngrp );
+		z = Gscanf(f, "%d", &ngrp);
 		if (z != 1)
 		{
-			sprintf( gx, "%s,Line %d :%s:Invalid GRP directive format for the list of units.", Name, Line, Sect );
-			ErrM( gx );
+			sprintf(gx, "%s,Line %d :%s:Invalid GRP directive format for the list of units.", Name, Line, Sect);
+			ErrM(gx);
 		};
 		NU->UnitGroup = new word[ngrp];
 		NU->NUnits = ngrp;
 		for (int i = 0; i < ngrp; i++)
 		{
-			z = Gscanf( f, "%s", gx );
-			if (z != 1)IncPar( Name, Line, Sect );
-			int zz1 = GetNTElement( NT, gx, UseUnits, UseUpgrades );
+			z = Gscanf(f, "%s", gx);
+			if (z != 1)IncPar(Name, Line, Sect);
+			int zz1 = GetNTElement(NT, gx, UseUnits, UseUpgrades);
 			if (zz1 == -1)
 			{
-				sprintf( gy, "%s,Line %d :%s: Unknown Monster/Upgrade ID:%s", Name, Line, Sect, gx );
-				ErrM( gy );
+				sprintf(gy, "%s,Line %d :%s: Unknown Monster/Upgrade ID:%s", Name, Line, Sect, gx);
+				ErrM(gy);
 			};
 			NU->UnitGroup[i] = zz1;
 		};
 	}
 	else
 	{
-		int zz1 = GetNTElement( NT, gx, UseUnits, UseUpgrades );
+		int zz1 = GetNTElement(NT, gx, UseUnits, UseUpgrades);
 		if (zz1 == -1)
 		{
-			sprintf( gy, "%s,Line %d :%s: Unknown Monster/Upgrade ID:%s", Name, Line, Sect, gx );
-			ErrM( gy );
+			sprintf(gy, "%s,Line %d :%s: Unknown Monster/Upgrade ID:%s", Name, Line, Sect, gx);
+			ErrM(gy);
 		};
 		NU->UnitValue = zz1;
 		NU->UnitGroup = NULL;
 	};
 }
 
-bool ReadValue( GFILE* f, int* result, int* ValType )
+bool ReadValue(GFILE* f, int* result, int* ValType)
 {
 	char gx[128];
 
-	int z = Gscanf( f, "%s", gx );
+	int z = Gscanf(f, "%s", gx);
 	if (z != 1)
 	{
 		return false;
@@ -373,14 +379,14 @@ bool ReadValue( GFILE* f, int* result, int* ValType )
 		gx[0] = ' ';
 	}
 
-	if (gx[strlen( gx ) - 1] == '%')
+	if (gx[strlen(gx) - 1] == '%')
 	{
 		*ValType |= 4;
-		gx[strlen( gx ) - 1] = 0;
+		gx[strlen(gx) - 1] = 0;
 	}
 
 	int value;
-	z = sscanf( gx, "%d", &value );
+	z = sscanf(gx, "%d", &value);
 	if (z != 1)
 	{
 		return false;
@@ -391,12 +397,12 @@ bool ReadValue( GFILE* f, int* result, int* ValType )
 	return true;
 }
 
-void GetValue( GFILE* f, NewUpgrade* NU, Nation* NT, char* Name, int Line )
+void GetValue(GFILE* f, NewUpgrade* NU, Nation* NT, char* Name, int Line)
 {
 	int value, ValType;
 	char gy[128];
 
-	if (ReadValue( f, &value, &ValType ))
+	if (ReadValue(f, &value, &ValType))
 	{
 		NU->Value = value;
 		NU->ValGroup = nullptr;
@@ -404,142 +410,145 @@ void GetValue( GFILE* f, NewUpgrade* NU, Nation* NT, char* Name, int Line )
 	}
 	else
 	{
-		sprintf( gy, "%s, Line %d :%s: Invalid value", Name, Line, Sect );
-		ErrM( gy );
+		sprintf(gy, "%s, Line %d :%s: Invalid value", Name, Line, Sect);
+		ErrM(gy);
 	}
 }
 
-int GetResID( char* Name );
+int GetResID(char* Name);
 
-void GetCostValue( GFILE* f, NewUpgrade* NU, Nation* NT, char* Name, int Line )
+void GetCostValue(GFILE* f, NewUpgrade* NU, Nation* NT, char* Name, int Line)
 {
 	char gx[128];
 	char gy[128];
 	int p1, p2;
-	int z = Gscanf( f, "%s", gx );
-	if (z != 1)IncPar( Name, Line, Sect );
-	if (!strcmp( gx, "GRP" ))
+	int z = Gscanf(f, "%s", gx);
+	if (z != 1)IncPar(Name, Line, Sect);
+	if (!strcmp(gx, "GRP"))
 	{
-		z = Gscanf( f, "%d", &p1 );
-		if (z != 1)IncPar( Name, Line, Sect );
+		z = Gscanf(f, "%d", &p1);
+		if (z != 1)IncPar(Name, Line, Sect);
 		NU->ValGroup = new int[p1];
 		NU->NValues = p1;
 		for (int i = 0; i < p1; i++)
 		{
-			z = Gscanf( f, "%s", gx );
-			if (z != 1)IncPar( Name, Line, Sect );
-			p2 = GetResID( gx );
+			z = Gscanf(f, "%s", gx);
+			if (z != 1)IncPar(Name, Line, Sect);
+			p2 = GetResID(gx);
 			if (p2 == -1)
 			{
-				sprintf( gy, "%s, Line %d :%s: Invalid resource ID:%s", Name, Line, Sect, gx );
-				ErrM( gy );
+				sprintf(gy, "%s, Line %d :%s: Invalid resource ID:%s", Name, Line, Sect, gx);
+				ErrM(gy);
 			};
 			int value, ValType;
-			if (!ReadValue( f, &value, &ValType ))
+			if (!ReadValue(f, &value, &ValType))
 			{
-				sprintf( gy, "%s, Line %d :%s: Invalid amount of resource %s.", Name, Line, Sect, gx );
-				ErrM( gy );
+				sprintf(gy, "%s, Line %d :%s: Invalid amount of resource %s.", Name, Line, Sect, gx);
+				ErrM(gy);
 			};
-			NU->ValGroup[i] = ( ( ValType + ( p2 << 3 ) ) << 26 ) + value;
+			NU->ValGroup[i] = ((ValType + (p2 << 3)) << 26) + value;
 		};
 	}
 	else
 	{
-		p2 = GetResID( gx );
+		p2 = GetResID(gx);
 		if (p2 == -1)
 		{
-			sprintf( gy, "%s, Line %d :%s: Invalid resource ID:%s", Name, Line, Sect, gx );
-			ErrM( gy );
+			sprintf(gy, "%s, Line %d :%s: Invalid resource ID:%s", Name, Line, Sect, gx);
+			ErrM(gy);
 		};
 		int value, ValType;
-		if (!ReadValue( f, &value, &ValType ))
+		if (!ReadValue(f, &value, &ValType))
 		{
-			sprintf( gy, "%s, Line %d :%s: Invalid amount of resource %s.", Name, Line, Sect, gx );
-			ErrM( gy );
+			sprintf(gy, "%s, Line %d :%s: Invalid amount of resource %s.", Name, Line, Sect, gx);
+			ErrM(gy);
 		};
-		NU->Value = ( ( ValType + ( p2 << 3 ) ) << 26 ) + value;
+		NU->Value = ((ValType + (p2 << 3)) << 26) + value;
 		NU->ValGroup = NULL;
 	};
 };
-void GetUpgradeCost( GFILE* f, NewUpgrade* NU, Nation* NT, char* Name, int Line )
+
+void GetUpgradeCost(GFILE* f, NewUpgrade* NU, Nation* NT, char* Name, int Line)
 {
 	char gx[128];
 	char gy[128];
 	int p1, p2, p3;
-	int z = Gscanf( f, "%s", gy );
-	if (strcmp( gy, "#COST" ))
+	int z = Gscanf(f, "%s", gy);
+	if (strcmp(gy, "#COST"))
 	{
-		sprintf( gx, "%s, Line %d :%s: #COST expected but %s is found.", Name, Line, Sect, gy );
-		ErrM( gx );
+		sprintf(gx, "%s, Line %d :%s: #COST expected but %s is found.", Name, Line, Sect, gy);
+		ErrM(gx);
 	};
-	memset( NU->Cost, 0, sizeof NU->Cost );
-	z = Gscanf( f, "%d", &p1 );
-	if (z != 1)IncPar( Name, Line, Sect );
+	memset(NU->Cost, 0, sizeof NU->Cost);
+	z = Gscanf(f, "%d", &p1);
+	if (z != 1)IncPar(Name, Line, Sect);
 	for (int i = 0; i < p1; i++)
 	{
-		z = Gscanf( f, "%s", gx );
-		if (z != 1)IncPar( Name, Line, Sect );
-		p2 = GetResID( gx );
+		z = Gscanf(f, "%s", gx);
+		if (z != 1)IncPar(Name, Line, Sect);
+		p2 = GetResID(gx);
 		if (p2 == -1)
 		{
-			sprintf( gy, "%s, Line %d :%s: Invalid resource ID:%s", Name, Line, Sect, gx );
-			ErrM( gy );
+			sprintf(gy, "%s, Line %d :%s: Invalid resource ID:%s", Name, Line, Sect, gx);
+			ErrM(gy);
 		};
-		z = Gscanf( f, "%d", &p3 );
+		z = Gscanf(f, "%d", &p3);
 		if (z != 1)
 		{
-			sprintf( gy, "%s, Line %d :%s: Invalid amount of resource %s.", Name, Line, Sect, gx );
-			ErrM( gy );
+			sprintf(gy, "%s, Line %d :%s: Invalid amount of resource %s.", Name, Line, Sect, gx);
+			ErrM(gy);
 		};
 		NU->Cost[p2] = p3;
 	};
 };
-void GetUpgradeTime( GFILE* f, NewUpgrade* NU, Nation* NT, char* Name, int Line )
+
+void GetUpgradeTime(GFILE* f, NewUpgrade* NU, Nation* NT, char* Name, int Line)
 {
 	char gx[128];
 	char gy[128];
 	int p1;
-	int z = Gscanf( f, "%s", gy );
-	if (strcmp( gy, "#TIME" ))
+	int z = Gscanf(f, "%s", gy);
+	if (strcmp(gy, "#TIME"))
 	{
-		sprintf( gx, "%s, Line %d :%s: #TIME expected but %s is found.", Name, Line, Sect, gy );
-		ErrM( gx );
+		sprintf(gx, "%s, Line %d :%s: #TIME expected but %s is found.", Name, Line, Sect, gy);
+		ErrM(gx);
 	};
-	z = Gscanf( f, "%d", &p1 );
+	z = Gscanf(f, "%d", &p1);
 	if (z != 1)
 	{
-		sprintf( gx, "%s, Line %d :%s: Invalid #TIME value.", Name, Line, Sect );
-		ErrM( gx );
+		sprintf(gx, "%s, Line %d :%s: Invalid #TIME value.", Name, Line, Sect);
+		ErrM(gx);
 	};
 	NU->NStages = p1;
 };
-int GetWeaponIndex( char* str );
-void GetWeapon( GFILE* f, NewUpgrade* NU, Nation* NT, char* Name, int Line )
+int GetWeaponIndex(char* str);
+
+void GetWeapon(GFILE* f, NewUpgrade* NU, Nation* NT, char* Name, int Line)
 {
 	char gx[128];
 	char gy[128];
 	char gz[128];
-	int z = Gscanf( f, "%s%s", gx, gz );
-	int zzk = GetWeaponType( gx );
+	int z = Gscanf(f, "%s%s", gx, gz);
+	int zzk = GetWeaponType(gx);
 	if (zzk == -1)
 	{
-		sprintf( gy, "%s, Line %d :%s: Unknown weapon kind ID: %s", Name, Line, Sect, gx );
-		ErrM( gy );
+		sprintf(gy, "%s, Line %d :%s: Unknown weapon kind ID: %s", Name, Line, Sect, gx);
+		ErrM(gy);
 	};
-	int zz = GetWeaponIndex( gz );
+	int zz = GetWeaponIndex(gz);
 	if (zz == -1)
 	{
-		sprintf( gy, "%s, Line %d :%s: Unknown weapon ID: %s", Name, Line, Sect, gz );
-		ErrM( gy );
+		sprintf(gy, "%s, Line %d :%s: Unknown weapon ID: %s", Name, Line, Sect, gz);
+		ErrM(gy);
 	};
 	NU->ValueType = 0;
 	NU->ValGroup = nullptr;
-	NU->Value = zz + ( zzk << 16 );
+	NU->Value = zz + (zzk << 16);
 }
 
 StrHash UPGS;
 
-bool UnderstandUpgrade( GFILE* f, char* UpgName, Nation* NT, char* name, int* lpLine, byte NID )
+bool UnderstandUpgrade(GFILE* f, char* UpgName, Nation* NT, char* name, int* lpLine, byte NID)
 {
 	if (NT->NNUM == 0 && NT->NUpgrades == 0)
 	{
@@ -556,57 +565,57 @@ bool UnderstandUpgrade( GFILE* f, char* UpgName, Nation* NT, char* name, int* lp
 	char g1[128];
 	char g2[128];
 	int p1, p4, icx, icy;
-	z = Gscanf( f, "%s%s%d%d%s%d%s", gg, g1, &icx, &icy, g2, &p1, gy );
+	z = Gscanf(f, "%s%s%d%d%s%d%s", gg, g1, &icx, &icy, g2, &p1, gy);
 	if (z != 7)
 	{
-		IncPar( name, line, Sect );
+		IncPar(name, line, Sect);
 	}
 
-	if (strcmp( g1, "#POSITION" ))
+	if (strcmp(g1, "#POSITION"))
 	{
-		sprintf( gz, "%s, Line %d :%s: #POSITION expected  but %s is found.", name, line, Sect, g1 );
-		ErrM( gz );
+		sprintf(gz, "%s, Line %d :%s: #POSITION expected  but %s is found.", name, line, Sect, g1);
+		ErrM(gz);
 	}
 
-	if (strcmp( g2, "#LEVEL" ))
+	if (strcmp(g2, "#LEVEL"))
 	{
-		sprintf( gz, "%s, Line %d :%s: #LEVEL or #STAGELEVEL expected  but %s is found.", name, line, Sect, g2 );
-		ErrM( gz );
+		sprintf(gz, "%s, Line %d :%s: #LEVEL or #STAGELEVEL expected  but %s is found.", name, line, Sect, g2);
+		ErrM(gz);
 	}
 
 	NewUpgrade* NewUpg = new NewUpgrade;
-	memset( NewUpg, 0, sizeof NewUpgrade );
+	memset(NewUpg, 0, sizeof NewUpgrade);
 	int NUPG = NT->NUpgrades;
 	NT->UPGRADE[NUPG] = NewUpg;
 	NT->NUpgrades++;
 
 	if (NT->NNUM == 0)
 	{
-		UPGS.AddString( UpgName );
+		UPGS.AddString(UpgName);
 	}
 
-	GetUpgradeCost( f, NewUpg, NT, name, line + 1 );
-	GetUpgradeTime( f, NewUpg, NT, name, line + 1 );
-	z = Gscanf( f, "%s", gz );
+	GetUpgradeCost(f, NewUpg, NT, name, line + 1);
+	GetUpgradeTime(f, NewUpg, NT, name, line + 1);
+	z = Gscanf(f, "%s", gz);
 
-	if (!strcmp( gg, "NONE" ))
+	if (!strcmp(gg, "NONE"))
 	{
 		p4 = -1;
 	}
 	else
 	{
-		p4 = GetIconByName( gg );
+		p4 = GetIconByName(gg);
 		if (p4 == -1)
 		{
-			sprintf( gy, "%s,Line %d :%s: Invalid icon ID:%s", name, line, Sect, gx );
-			ErrM( gy );
+			sprintf(gy, "%s,Line %d :%s: Invalid icon ID:%s", name, line, Sect, gx);
+			ErrM(gy);
 		}
 	}
 
-	if (!( ( icx >= 0 && icx < 12 && icy >= 0 && icy < 3 ) || ( icx == -1 && icy == -1 ) ))
+	if (!((icx >= 0 && icx < 12 && icy >= 0 && icy < 3) || (icx == -1 && icy == -1)))
 	{
-		sprintf( gy, "%s,Line %d :%s: Invalid icon coordinates:(%d,%d)", name, line, Sect, icx, icy );
-		ErrM( gy );
+		sprintf(gy, "%s,Line %d :%s: Invalid icon coordinates:(%d,%d)", name, line, Sect, icx, icy);
+		ErrM(gy);
 	}
 
 	NewUpg->IconFileID = 0;
@@ -618,11 +627,11 @@ bool UnderstandUpgrade( GFILE* f, char* UpgName, Nation* NT, char* name, int* lp
 	}
 
 	NewUpg->IconSpriteID = p4;
-	NewUpg->Name = new char[strlen( UpgName ) + 1];
-	char* UpgMess = GetTextByID( gy );
-	NewUpg->Message = new char[strlen( UpgMess ) + 1];
-	strcpy( NewUpg->Name, UpgName );
-	strcpy( NewUpg->Message, UpgMess );
+	NewUpg->Name = new char[strlen(UpgName) + 1];
+	char* UpgMess = GetTextByID(gy);
+	NewUpg->Message = new char[strlen(UpgMess) + 1];
+	strcpy(NewUpg->Name, UpgName);
+	strcpy(NewUpg->Message, UpgMess);
 	NewUpg->Level = p1;
 	NewUpg->CtgType = 0;
 	NewUpg->Enabled = false;
@@ -642,251 +651,223 @@ bool UnderstandUpgrade( GFILE* f, char* UpgName, Nation* NT, char* name, int* lp
 	NewUpg->NatID = NID;
 	NewUpg->ManualDisable = 0;
 
-	if (!strcmp( gz, "SPEED" ))
+	if (!strcmp(gz, "SPEED"))
 	{
 		NewUpg->CtgUpgrade = 0;
-		GetUnits( f, NewUpg, NT, name, line + 1 );
-		GetValue( f, NewUpg, NT, name, line + 1 );
+		GetUnits(f, NewUpg, NT, name, line + 1);
+		GetValue(f, NewUpg, NT, name, line + 1);
+		line += 2;
+	}
+	else if (!strcmp(gz, "SHIELD"))
+	{
+		NewUpg->CtgUpgrade = 1;
+		GetUnits(f, NewUpg, NT, name, line + 1);
+		GetValue(f, NewUpg, NT, name, line + 1);
+		line += 2;
+	}
+	else if (!strcmp(gz, "PROTECTION"))
+	{
+		NewUpg->CtgUpgrade = 2;
+		GetWeaponKind(f, NewUpg, NT, name, line + 1);
+		GetUnits(f, NewUpg, NT, name, line + 1);
+		GetValue(f, NewUpg, NT, name, line + 1);
+		NewUpg->CtgType = 4;
+		line += 2;
+	}
+	else if (!strcmp(gz, "ATTPAUSE"))
+	{
+		NewUpg->CtgUpgrade = 3;
+		GetCtgParam01(f, NewUpg, NT, name, line + 1);
+		GetUnits(f, NewUpg, NT, name, line + 1);
+		GetValue(f, NewUpg, NT, name, line + 1);
+		line += 2;
+	}
+	else if (!strcmp(gz, "WEAPON"))
+	{
+		NewUpg->CtgUpgrade = 4;
+		GetCtgParam01(f, NewUpg, NT, name, line + 1);
+		GetUnits(f, NewUpg, NT, name, line + 1);
+		GetWeapon(f, NewUpg, NT, name, line + 1);
+		line += 2;
+	}
+	else if (!strcmp(gz, "BUILD"))
+	{
+		NewUpg->CtgUpgrade = 5;
+		GetUnits(f, NewUpg, NT, name, line + 1);
+		GetValue(f, NewUpg, NT, name, line + 1);
+		line += 2;
+	}
+	else if (!strcmp(gz, "LIFE"))
+	{
+		NewUpg->CtgUpgrade = 6;
+		GetUnits(f, NewUpg, NT, name, line + 1);
+		GetValue(f, NewUpg, NT, name, line + 1);
+		line += 2;
+	}
+	else if (!strcmp(gz, "PRECISE"))
+	{
+		NewUpg->CtgUpgrade = 7;
+		GetCtgParam01(f, NewUpg, NT, name, line + 1);
+		GetUnits(f, NewUpg, NT, name, line + 1);
+		GetValue(f, NewUpg, NT, name, line + 1);
+		line += 2;
+	}
+	else if (!strcmp(gz, "ATTRANGE"))
+	{
+		NewUpg->CtgUpgrade = 8;
+		GetCtgParam01(f, NewUpg, NT, name, line + 1);
+		GetUnits(f, NewUpg, NT, name, line + 1);
+		GetValue(f, NewUpg, NT, name, line + 1);
+		line += 2;
+	}
+	else if (!strcmp(gz, "INSIDE"))
+	{
+		NewUpg->CtgUpgrade = 9;
+		GetUnits(f, NewUpg, NT, name, line + 1);
+		GetValue(f, NewUpg, NT, name, line + 1);
+		line += 2;
+	}
+	else if (!strcmp(gz, "COST"))
+	{
+		NewUpg->CtgUpgrade = 10;
+		GetUnits(f, NewUpg, NT, name, line + 1);
+		GetCostValue(f, NewUpg, NT, name, line + 1);
+		line += 2;
+	}
+	else if (!strcmp(gz, "ENABLE"))
+	{
+		NewUpg->CtgUpgrade = 11;
+		z = Gscanf(f, "%s", gg);
+		if (!strcmp(gg, "UNITS"))
+		{
+			GetUnitsAndUpgrades(f, NewUpg, NT, name, line + 1, true, false);
+		}
+		else if (!strcmp(gg, "UPGRADES"))
+		{
+			GetUnitsAndUpgrades(f, NewUpg, NT, name, line + 1, false, true);
+		}
+		else if (!strcmp(gg, "UNITS&UPGRADES"))
+		{
+			GetUnitsAndUpgrades(f, NewUpg, NT, name, line + 1, true, true);
+		}
+		else
+		{
+			sprintf(gy, "%s, Line %d :%s: UNITS or UPGRADES or UNITS&UPGRADES expected after ENABLED", name, line + 1, Sect);
+			ErrM(gy);
+		};
+		NewUpg->ValGroup = NULL;
+		line += 2;
+	}
+	else if (!strcmp(gz, "DAMAGE"))
+	{
+		NewUpg->CtgUpgrade = 12;
+		GetCtgParam01(f, NewUpg, NT, name, line + 1);
+		GetUnits(f, NewUpg, NT, name, line + 1);
+		GetValue(f, NewUpg, NT, name, line + 1);
+		line += 2;
+	}
+	else if (!strcmp(gz, "GETRES"))
+	{
+		NewUpg->CtgUpgrade = 13;
+		GetUnits(f, NewUpg, NT, name, line + 1);
+		GetValue(f, NewUpg, NT, name, line + 1);
+		line += 2;
+	}
+	else if (!strcmp(gz, "SINGLE_INSIDE"))
+	{
+		NewUpg->CtgUpgrade = 14;
+		GetUnits(f, NewUpg, NT, name, line + 1);
+		GetValue(f, NewUpg, NT, name, line + 1);
+		line += 2;
+	}
+	else if (!strcmp(gz, "SINGLE_ATTPAUSE"))
+	{
+		NewUpg->CtgUpgrade = 15;
+		GetCtgParam01(f, NewUpg, NT, name, line + 1);
+		GetUnits(f, NewUpg, NT, name, line + 1);
+		GetValue(f, NewUpg, NT, name, line + 1);
+		line += 2;
+	}
+	else if (!strcmp(gz, "FISHING"))
+	{
+		NewUpg->CtgUpgrade = 16;
+		GetUnits(f, NewUpg, NT, name, line + 1);
+		GetValue(f, NewUpg, NT, name, line + 1);
+		line += 2;
+	}
+	else if (!strcmp(gz, "RAZBROS"))
+	{
+		NewUpg->CtgUpgrade = 17;
+		GetUnits(f, NewUpg, NT, name, line + 1);
+		GetValue(f, NewUpg, NT, name, line + 1);
+		line += 2;
+	}
+	else if (!strcmp(gz, "SHAR"))
+	{
+		NewUpg->CtgUpgrade = 18;
+		GetUnits(f, NewUpg, NT, name, line + 1);
+		NewUpg->ValGroup = NULL;
+		line += 2;
+	}
+	else if (!strcmp(gz, "EFFECT_FOOD"))
+	{
+		NewUpg->CtgUpgrade = 19;
+		GetValue(f, NewUpg, NT, name, line + 1);
+		line += 2;
+	}
+	else if (!strcmp(gz, "EFFECT_WOOD"))
+	{
+		NewUpg->CtgUpgrade = 20;
+		GetValue(f, NewUpg, NT, name, line + 1);
+		line += 2;
+	}
+	else if (!strcmp(gz, "EFFECT_STONE"))
+	{
+		NewUpg->CtgUpgrade = 21;
+		GetValue(f, NewUpg, NT, name, line + 1);
+		line += 2;
+	}
+	else if (!strcmp(gz, "GEOLOGY"))
+	{
+		NewUpg->CtgUpgrade = 22;
+		line += 2;
+	}
+	else if (!strcmp(gz, "HEALING"))
+	{
+		NewUpg->CtgUpgrade = 23;
+		GetUnits(f, NewUpg, NT, name, line + 1);
+		line += 2;
+	}
+	else if (!strcmp(gz, "UPSTAGE0"))
+	{
+		NewUpg->CtgUpgrade = 24;
+		line += 2;
+	}
+	else if (!strcmp(gz, "UPSTAGE1"))
+	{
+		NewUpg->CtgUpgrade = 25;
+		line += 2;
+	}
+	else if (!strcmp(gz, "UPSTAGE2"))
+	{
+		NewUpg->CtgUpgrade = 26;
+		line += 2;
+	}
+	else if (!strcmp(gz, "UPSTAGE3"))
+	{
+		NewUpg->CtgUpgrade = 27;
+		line += 2;
+	}
+	else if (!strcmp(gz, "UPSTAGE4"))
+	{
+		NewUpg->CtgUpgrade = 28;
 		line += 2;
 	}
 	else
-		if (!strcmp( gz, "SHIELD" ))
-		{
-			NewUpg->CtgUpgrade = 1;
-			GetUnits( f, NewUpg, NT, name, line + 1 );
-			GetValue( f, NewUpg, NT, name, line + 1 );
-			line += 2;
-		}
-		else
-			if (!strcmp( gz, "PROTECTION" ))
-			{
-				NewUpg->CtgUpgrade = 2;
-				GetWeaponKind( f, NewUpg, NT, name, line + 1 );
-				GetUnits( f, NewUpg, NT, name, line + 1 );
-				GetValue( f, NewUpg, NT, name, line + 1 );
-				NewUpg->CtgType = 4;
-				line += 2;
-			}
-			else
-				if (!strcmp( gz, "ATTPAUSE" ))
-				{
-					NewUpg->CtgUpgrade = 3;
-					GetCtgParam01( f, NewUpg, NT, name, line + 1 );
-					GetUnits( f, NewUpg, NT, name, line + 1 );
-					GetValue( f, NewUpg, NT, name, line + 1 );
-					line += 2;
-				}
-				else
-					if (!strcmp( gz, "WEAPON" ))
-					{
-						NewUpg->CtgUpgrade = 4;
-						GetCtgParam01( f, NewUpg, NT, name, line + 1 );
-						GetUnits( f, NewUpg, NT, name, line + 1 );
-						GetWeapon( f, NewUpg, NT, name, line + 1 );
-						line += 2;
-					}
-					else
-						if (!strcmp( gz, "BUILD" ))
-						{
-							NewUpg->CtgUpgrade = 5;
-							GetUnits( f, NewUpg, NT, name, line + 1 );
-							GetValue( f, NewUpg, NT, name, line + 1 );
-							line += 2;
-						}
-						else
-							if (!strcmp( gz, "LIFE" ))
-							{
-								NewUpg->CtgUpgrade = 6;
-								GetUnits( f, NewUpg, NT, name, line + 1 );
-								GetValue( f, NewUpg, NT, name, line + 1 );
-								line += 2;
-							}
-							else
-								if (!strcmp( gz, "PRECISE" ))
-								{
-									NewUpg->CtgUpgrade = 7;
-									GetCtgParam01( f, NewUpg, NT, name, line + 1 );
-									GetUnits( f, NewUpg, NT, name, line + 1 );
-									GetValue( f, NewUpg, NT, name, line + 1 );
-									line += 2;
-								}
-								else
-									if (!strcmp( gz, "ATTRANGE" ))
-									{
-										NewUpg->CtgUpgrade = 8;
-										GetCtgParam01( f, NewUpg, NT, name, line + 1 );
-										GetUnits( f, NewUpg, NT, name, line + 1 );
-										GetValue( f, NewUpg, NT, name, line + 1 );
-										line += 2;
-									}
-									else
-										if (!strcmp( gz, "INSIDE" ))
-										{
-											NewUpg->CtgUpgrade = 9;
-											GetUnits( f, NewUpg, NT, name, line + 1 );
-											GetValue( f, NewUpg, NT, name, line + 1 );
-											line += 2;
-										}
-										else
-											if (!strcmp( gz, "COST" ))
-											{
-												NewUpg->CtgUpgrade = 10;
-												GetUnits( f, NewUpg, NT, name, line + 1 );
-												GetCostValue( f, NewUpg, NT, name, line + 1 );
-												line += 2;
-											}
-											else
-												if (!strcmp( gz, "ENABLE" ))
-												{
-													NewUpg->CtgUpgrade = 11;
-													z = Gscanf( f, "%s", gg );
-													if (!strcmp( gg, "UNITS" ))
-													{
-														GetUnitsAndUpgrades( f, NewUpg, NT, name, line + 1, true, false );
-													}
-													else if (!strcmp( gg, "UPGRADES" ))
-													{
-														GetUnitsAndUpgrades( f, NewUpg, NT, name, line + 1, false, true );
-													}
-													else if (!strcmp( gg, "UNITS&UPGRADES" ))
-													{
-														GetUnitsAndUpgrades( f, NewUpg, NT, name, line + 1, true, true );
-													}
-													else
-													{
-														sprintf( gy, "%s, Line %d :%s: UNITS or UPGRADES or UNITS&UPGRADES expected after ENABLED", name, line + 1, Sect );
-														ErrM( gy );
-													};
-													NewUpg->ValGroup = NULL;
-													line += 2;
-												}
-												else
-													if (!strcmp( gz, "DAMAGE" ))
-													{
-														NewUpg->CtgUpgrade = 12;
-														GetCtgParam01( f, NewUpg, NT, name, line + 1 );
-														GetUnits( f, NewUpg, NT, name, line + 1 );
-														GetValue( f, NewUpg, NT, name, line + 1 );
-														line += 2;
-													}
-													else
-														if (!strcmp( gz, "GETRES" ))
-														{
-															NewUpg->CtgUpgrade = 13;
-															GetUnits( f, NewUpg, NT, name, line + 1 );
-															GetValue( f, NewUpg, NT, name, line + 1 );
-															line += 2;
-														}
-														else
-															if (!strcmp( gz, "SINGLE_INSIDE" ))
-															{
-																NewUpg->CtgUpgrade = 14;
-																GetUnits( f, NewUpg, NT, name, line + 1 );
-																GetValue( f, NewUpg, NT, name, line + 1 );
-																line += 2;
-															}
-															else
-																if (!strcmp( gz, "SINGLE_ATTPAUSE" ))
-																{
-																	NewUpg->CtgUpgrade = 15;
-																	GetCtgParam01( f, NewUpg, NT, name, line + 1 );
-																	GetUnits( f, NewUpg, NT, name, line + 1 );
-																	GetValue( f, NewUpg, NT, name, line + 1 );
-																	line += 2;
-																}
-																else
-																	if (!strcmp( gz, "FISHING" ))
-																	{
-																		NewUpg->CtgUpgrade = 16;
-																		GetUnits( f, NewUpg, NT, name, line + 1 );
-																		GetValue( f, NewUpg, NT, name, line + 1 );
-																		line += 2;
-																	}
-																	else
-																		if (!strcmp( gz, "RAZBROS" ))
-																		{
-																			NewUpg->CtgUpgrade = 17;
-																			GetUnits( f, NewUpg, NT, name, line + 1 );
-																			GetValue( f, NewUpg, NT, name, line + 1 );
-																			line += 2;
-																		}
-																		else
-																			if (!strcmp( gz, "SHAR" ))
-																			{
-																				NewUpg->CtgUpgrade = 18;
-																				GetUnits( f, NewUpg, NT, name, line + 1 );
-																				NewUpg->ValGroup = NULL;
-																				line += 2;
-																			}
-																			else
-																				if (!strcmp( gz, "EFFECT_FOOD" ))
-																				{
-																					NewUpg->CtgUpgrade = 19;
-																					GetValue( f, NewUpg, NT, name, line + 1 );
-																					line += 2;
-																				}
-																				else
-																					if (!strcmp( gz, "EFFECT_WOOD" ))
-																					{
-																						NewUpg->CtgUpgrade = 20;
-																						GetValue( f, NewUpg, NT, name, line + 1 );
-																						line += 2;
-																					}
-																					else
-																						if (!strcmp( gz, "EFFECT_STONE" ))
-																						{
-																							NewUpg->CtgUpgrade = 21;
-																							GetValue( f, NewUpg, NT, name, line + 1 );
-																							line += 2;
-																						}
-																						else
-																							if (!strcmp( gz, "GEOLOGY" ))
-																							{
-																								NewUpg->CtgUpgrade = 22;
-																								line += 2;
-																							}
-																							else
-																								if (!strcmp( gz, "HEALING" ))
-																								{
-																									NewUpg->CtgUpgrade = 23;
-																									GetUnits( f, NewUpg, NT, name, line + 1 );
-																									line += 2;
-																								}
-																								else
-																									if (!strcmp( gz, "UPSTAGE0" ))
-																									{
-																										NewUpg->CtgUpgrade = 24;
-																										line += 2;
-																									}
-																									else
-																										if (!strcmp( gz, "UPSTAGE1" ))
-																										{
-																											NewUpg->CtgUpgrade = 25;
-																											line += 2;
-																										}
-																										else
-																											if (!strcmp( gz, "UPSTAGE2" ))
-																											{
-																												NewUpg->CtgUpgrade = 26;
-																												line += 2;
-																											}
-																											else
-																												if (!strcmp( gz, "UPSTAGE3" ))
-																												{
-																													NewUpg->CtgUpgrade = 27;
-																													line += 2;
-																												}
-																												else
-																													if (!strcmp( gz, "UPSTAGE4" ))
-																													{
-																														NewUpg->CtgUpgrade = 28;
-																														line += 2;
-																													}
-																													else
-																													{
-																														sprintf( gy, "%s, Line %d :%s: Unknown category of upgrade:%s", name, line + 1, Sect, gz );
-																														ErrM( gy );
-																													};
+	{
+		sprintf(gy, "%s, Line %d :%s: Unknown category of upgrade:%s", name, line + 1, Sect, gz);
+		ErrM(gy);
+	};
 	*lpLine = line;
 	for (int cp = 1; cp < 8; cp++)
 	{
@@ -894,29 +875,29 @@ bool UnderstandUpgrade( GFILE* f, char* UpgName, Nation* NT, char* name, int* lp
 		int NUPG = NT[cp].NUpgrades;
 		NT[cp].UPGRADE[NUPG] = NewUpg1;
 		NT[cp].NUpgrades++;
-		memcpy( NewUpg1, NewUpg, sizeof NewUpgrade );
+		memcpy(NewUpg1, NewUpg, sizeof NewUpgrade);
 	};
 	return true;
 }
 
 //performs upgrade immediately
-void UseValue( int *Value, byte Type, int NewValue )
+void UseValue(int* Value, byte Type, int NewValue)
 {
 	switch (Type)
 	{
-	case 0://XX
+	case 0: //XX
 		*Value = NewValue;
 		break;
-	case 1://+XX
+	case 1: //+XX
 		*Value += NewValue;
 		break;
-	case 2://-XX
+	case 2: //-XX
 		*Value -= NewValue;
 		break;
-	case 4://XX%
+	case 4: //XX%
 		*Value = div( ( *Value )*NewValue, 100 ).quot;
 		break;
-	case 5://+XX%
+	case 5: //+XX%
 		*Value += div( ( *Value )*NewValue, 100 ).quot;
 		break;
 	case 6:
@@ -925,55 +906,61 @@ void UseValue( int *Value, byte Type, int NewValue )
 	}
 }
 
-typedef void UpgradeFN( GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB );
-void UpgradeSpeed( GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB )
+typedef void UpgradeFN(GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB);
+
+void UpgradeSpeed(GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB)
 {
 	AdvCharacter* AC = GO->MoreCharacter;
 	for (int i = 0; i < NAttTypes; i++)
 	{
 		int val = AC->Rate[i];
-		UseValue( &val, ValueType, Value );
+		UseValue(&val, ValueType, Value);
 		AC->Rate[i] = val;
 	};
 	AC->Changed = true;
 };
-void UpgradeShield( GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB )
+
+void UpgradeShield(GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB)
 {
 	AdvCharacter* AC = GO->MoreCharacter;
 	int val = AC->Shield;
-	UseValue( &val, ValueType, Value );
+	UseValue(&val, ValueType, Value);
 	AC->Shield = val;
 	AC->Changed = true;
 };
-void UpgradeProtection( GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB )
+
+void UpgradeProtection(GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB)
 {
 	AdvCharacter* AC = GO->MoreCharacter;
 	int val = AC->Protection[CtgValue];
-	UseValue( &val, ValueType, Value );
+	UseValue(&val, ValueType, Value);
 	AC->Protection[CtgValue] = val;
 	AC->Changed = true;
 };
-void UpgradeAttPause( GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB )
+
+void UpgradeAttPause(GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB)
 {
 	AdvCharacter* AC = GO->MoreCharacter;
 	int val = AC->AttackPause[CtgValue];
-	UseValue( &val, ValueType, Value );
+	UseValue(&val, ValueType, Value);
 	AC->AttackPause[CtgValue] = val;
 	AC->Changed = true;
 };
-void UpgradeWeapon( GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB )
+
+void UpgradeWeapon(GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB)
 {
 	AdvCharacter* AC = GO->MoreCharacter;
 	//AC->DamWeap[CtgValue]=WPLIST[Value&65535];
 	//AC->WeaponKind[CtgValue]=Value>>16;
 	AC->Changed = true;
 };
-void UpgradeBuild( GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* param_object )
+
+void UpgradeBuild(GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* param_object)
 {
 	AdvCharacter* AC = GO->MoreCharacter;
 	int val = AC->ProduceStages;
 	int oldval = val;
-	UseValue( &val, ValueType, Value );
+	UseValue(&val, ValueType, Value);
 	AC->ProduceStages = val;
 	AC->Changed = true;
 	for (int i = 0; i < MAXOBJECT; i++)
@@ -1004,11 +991,12 @@ void UpgradeBuild( GeneralObject* GO, word CtgValue, byte ValueType, int Value, 
 		}
 	}
 }
-void UpgradeLife( GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* param_object )
+
+void UpgradeLife(GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* param_object)
 {
 	AdvCharacter* AC = GO->MoreCharacter;
 	int val = AC->Life;
-	UseValue( &val, ValueType, Value );
+	UseValue(&val, ValueType, Value);
 	if (val > 65535)val = 65535;
 	AC->Life = val;
 	for (int i = 0; i < MAXOBJECT; i++)
@@ -1022,51 +1010,54 @@ void UpgradeLife( GeneralObject* GO, word CtgValue, byte ValueType, int Value, O
 	}
 	AC->Changed = true;
 };
-void UpgradeAttRange( GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB )
+
+void UpgradeAttRange(GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB)
 {
 	AdvCharacter* AC = GO->MoreCharacter;
 	int val = AC->AttackRadius2[CtgValue];
-	UseValue( &val, ValueType, Value );
+	UseValue(&val, ValueType, Value);
 	AC->AttackRadius2[CtgValue] = val;
 	val = AC->DetRadius2[CtgValue];
-	UseValue( &val, ValueType, Value );
+	UseValue(&val, ValueType, Value);
 	AC->DetRadius2[CtgValue] = val;
 	if (CtgValue + 1 < NAttTypes)
 	{
 		CtgValue++;
 		val = AC->AttackRadius1[CtgValue];
-		UseValue( &val, ValueType, Value );
+		UseValue(&val, ValueType, Value);
 		AC->AttackRadius1[CtgValue] = val;
 		val = AC->DetRadius1[CtgValue];
-		UseValue( &val, ValueType, Value );
+		UseValue(&val, ValueType, Value);
 		AC->AttackRadius1[CtgValue] = val;
 	};
 	AC->Changed = true;
-	UpdateAttackR( AC );
+	UpdateAttackR(AC);
 };
-void InviteAI_Peasants( OneObject* Mine );
-void UpgradeInside( GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB )
+void InviteAI_Peasants(OneObject* Mine);
+
+void UpgradeInside(GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB)
 {
 	AdvCharacter* AC = GO->MoreCharacter;
 	int val = AC->MaxInside;
-	UseValue( &val, ValueType, Value );
+	UseValue(&val, ValueType, Value);
 	AC->MaxInside = val;
 	AC->Changed = true;
 };
-void UpgradeCost( GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB )
+
+void UpgradeCost(GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB)
 {
 	AdvCharacter* AC = GO->MoreCharacter;
-	byte VT = ( Value >> 26 ) & 7;
-	byte ResID = byte( DWORD( Value ) >> 29 );
+	byte VT = (Value >> 26) & 7;
+	byte ResID = byte(DWORD(Value) >> 29);
 	Value &= 0xFFFFFF;
 	int val = AC->NeedRes[ResID];
-	UseValue( &val, VT, Value );
+	UseValue(&val, VT, Value);
 	AC->NeedRes[ResID] = val;
 	AC->Changed = true;
 };
 extern City CITY[8];
 
-void UpgradeEnable( GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB )
+void UpgradeEnable(GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB)
 {
 	GO->Enabled = true;
 	GO->CondEnabled = true;
@@ -1078,75 +1069,81 @@ void UpgradeEnable( GeneralObject* GO, word CtgValue, byte ValueType, int Value,
 	GO->MoreCharacter->Changed = true;
 }
 
-void UpgradeDamage( GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB )
+void UpgradeDamage(GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB)
 {
 	AdvCharacter* AC = GO->MoreCharacter;
 	int val = AC->MaxDamage[CtgValue];
 	if (!val)return;
-	UseValue( &val, ValueType, Value );
+	UseValue(&val, ValueType, Value);
 	AC->MaxDamage[CtgValue] = val;
 	AC->Changed = true;
-	UpdateAttackR( AC );
+	UpdateAttackR(AC);
 };
-void UpgradeGetRes( GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB )
+
+void UpgradeGetRes(GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB)
 {
 	AdvCharacter* AC = GO->MoreCharacter;
 	int val = AC->ResEff;
-	UseValue( &val, ValueType, Value );
+	UseValue(&val, ValueType, Value);
 	AC->ResEff = val;
 	AC->Changed = true;
 };
-void ApplyToOneUnitAndOneCategory( GeneralObject* GO, word Category, NewUpgrade* NU, UpgradeFN* UFN, OneObject* OB )
+
+void ApplyToOneUnitAndOneCategory(GeneralObject* GO, word Category, NewUpgrade* NU, UpgradeFN* UFN, OneObject* OB)
 {
 	if (NU->ValGroup)
 	{
 		for (int i = 0; i < NU->NValues; i++)
-			UFN( GO, Category, NU->ValueType, NU->ValGroup[i], OB );
+			UFN(GO, Category, NU->ValueType, NU->ValGroup[i], OB);
 	}
 	else
 	{
-		UFN( GO, Category, NU->ValueType, NU->Value, OB );
+		UFN(GO, Category, NU->ValueType, NU->Value, OB);
 	};
 };
-void UpgradeSingleAttPause( GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB )
+
+void UpgradeSingleAttPause(GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB)
 {
 	if (!OB)return;
 	int val = OB->PersonalDelay;
-	UseValue( &val, ValueType, Value );
+	UseValue(&val, ValueType, Value);
 	OB->PersonalDelay = val;
 };
-void UpgradeSingleInside( GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB )
+
+void UpgradeSingleInside(GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB)
 {
 	if (!OB)return;
 	int val = OB->AddInside;
-	UseValue( &val, ValueType, Value );
+	UseValue(&val, ValueType, Value);
 	OB->AddInside = val;
-	if (OB&&OB->newMons->Usage == MineID&&OB->Nat->AI_Enabled)
+	if (OB && OB->newMons->Usage == MineID && OB->Nat->AI_Enabled)
 	{
-		InviteAI_Peasants( OB );
+		InviteAI_Peasants(OB);
 	};
 };
-void UpgradeFishing( GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB )
+
+void UpgradeFishing(GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB)
 {
 	AdvCharacter* AC = GO->MoreCharacter;
 	int val = AC->FishAmount;
-	UseValue( &val, ValueType, Value );
+	UseValue(&val, ValueType, Value);
 	AC->FishAmount = val;
 	val = AC->FishSpeed;
-	UseValue( &val, ValueType, Value );
+	UseValue(&val, ValueType, Value);
 	AC->FishSpeed = val;
 	AC->Changed = true;
 };
-void UpgradeRazbros( GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB )
+
+void UpgradeRazbros(GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB)
 {
 	AdvCharacter* AC = GO->MoreCharacter;
 	int val = AC->Razbros;
-	UseValue( &val, ValueType, Value );
+	UseValue(&val, ValueType, Value);
 	AC->Razbros = val;
 	AC->Changed = true;
 }
 
-void UpgradeShar( GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB )
+void UpgradeShar(GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB)
 {
 	NATIONS[OB->NNUM].SharAllowed = true;
 	NATIONS[OB->NNUM].SharX = OB->RealX;
@@ -1154,7 +1151,7 @@ void UpgradeShar( GeneralObject* GO, word CtgValue, byte ValueType, int Value, O
 	NATIONS[OB->NNUM].SearchRadius = 180;
 }
 
-void HealUnits( GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB )
+void HealUnits(GeneralObject* GO, word CtgValue, byte ValueType, int Value, OneObject* OB)
 {
 	int N = NtNUnits[OB->NNUM];
 	word* units = NatList[OB->NNUM];
@@ -1164,24 +1161,25 @@ void HealUnits( GeneralObject* GO, word CtgValue, byte ValueType, int Value, One
 		if (MID != 0xFFFF)
 		{
 			OneObject* OBJ = Group[MID];
-			if (OBJ&&OBJ->Ref.General == GO)
+			if (OBJ && OBJ->Ref.General == GO)
 			{
-				int L = int( OBJ->Life ) + OBJ->MaxLife / 10;
+				int L = int(OBJ->Life) + OBJ->MaxLife / 10;
 				if (L > OBJ->MaxLife)L = OBJ->MaxLife;
 				OBJ->Life = L;
 			};
 		};
 	};
 };
-void ApplyToOneUnit( GeneralObject* GO, NewUpgrade* NU, UpgradeFN* UFN, OneObject* OB )
+
+void ApplyToOneUnit(GeneralObject* GO, NewUpgrade* NU, UpgradeFN* UFN, OneObject* OB)
 {
 	NewMonster* NM = GO->newMons;
 	switch (NU->CtgType)
 	{
-	case 0://no categoties
-		ApplyToOneUnitAndOneCategory( GO, 0, NU, UFN, OB );
+	case 0: //no categoties
+		ApplyToOneUnitAndOneCategory(GO, 0, NU, UFN, OB);
 		break;
-	case 1://WEAPONKIND
+	case 1: //WEAPONKIND
 		if (NU->CtgGroup)
 		{
 			for (int j = 0; j < NU->NCtg; j++)
@@ -1190,7 +1188,7 @@ void ApplyToOneUnit( GeneralObject* GO, NewUpgrade* NU, UpgradeFN* UFN, OneObjec
 				for (int i = 0; i < NAttTypes; i++)
 				{
 					if (NM->WeaponKind[i] == Ctgval)
-						ApplyToOneUnitAndOneCategory( GO, i, NU, UFN, OB );
+						ApplyToOneUnitAndOneCategory(GO, i, NU, UFN, OB);
 				};
 			};
 		}
@@ -1199,51 +1197,52 @@ void ApplyToOneUnit( GeneralObject* GO, NewUpgrade* NU, UpgradeFN* UFN, OneObjec
 			for (int i = 0; i < NAttTypes; i++)
 			{
 				if (NM->WeaponKind[i] == NU->CtgValue)
-					ApplyToOneUnitAndOneCategory( GO, i, NU, UFN, OB );
+					ApplyToOneUnitAndOneCategory(GO, i, NU, UFN, OB);
 			};
 		};
 		break;
-	case 2://ATTINDEX
+	case 2: //ATTINDEX
 		if (NU->CtgGroup)
 		{
 			for (int j = 0; j < NU->NCtg; j++)
 			{
 				int Ctgval = NU->CtgGroup[j];
 				//assert(Ctgval>=0&&Ctgval<NAttTypes);
-				ApplyToOneUnitAndOneCategory( GO, Ctgval, NU, UFN, OB );
+				ApplyToOneUnitAndOneCategory(GO, Ctgval, NU, UFN, OB);
 			};
 		}
 		else
 		{
 			//assert(NU->CtgValue>=0&&NU->CtgValue<NAttTypes);
-			ApplyToOneUnitAndOneCategory( GO, NU->CtgValue, NU, UFN, OB );
+			ApplyToOneUnitAndOneCategory(GO, NU->CtgValue, NU, UFN, OB);
 		};
 		break;
-	case 3://ALL
-	{
-		for (int i = 0; i < NAttTypes; i++)
-			ApplyToOneUnitAndOneCategory( GO, i, NU, UFN, OB );
-	};
-	break;
-	case 4://PROTECTION
+	case 3: //ALL
+		{
+			for (int i = 0; i < NAttTypes; i++)
+				ApplyToOneUnitAndOneCategory(GO, i, NU, UFN, OB);
+		};
+		break;
+	case 4: //PROTECTION
 		if (NU->CtgGroup)
 		{
 			for (int j = 0; j < NU->NCtg; j++)
 			{
 				int Ctgval = NU->CtgGroup[j];
 				//assert(Ctgval>=0&&Ctgval<32);
-				ApplyToOneUnitAndOneCategory( GO, Ctgval, NU, UFN, OB );
+				ApplyToOneUnitAndOneCategory(GO, Ctgval, NU, UFN, OB);
 			};
 		}
 		else
 		{
 			//assert(NU->CtgValue>=0&&NU->CtgValue<32);
-			ApplyToOneUnitAndOneCategory( GO, NU->CtgValue, NU, UFN, OB );
+			ApplyToOneUnitAndOneCategory(GO, NU->CtgValue, NU, UFN, OB);
 		};
 		break;
 	};
 };
-void ApplyToUnits( Nation* NT, NewUpgrade* NU, UpgradeFN* UFN, OneObject* OB )
+
+void ApplyToUnits(Nation* NT, NewUpgrade* NU, UpgradeFN* UFN, OneObject* OB)
 {
 	if (NU->UnitGroup)
 	{
@@ -1256,7 +1255,7 @@ void ApplyToUnits( Nation* NT, NewUpgrade* NU, UpgradeFN* UFN, OneObject* OB )
 				{
 					GeneralObject* GO = NT->Mon[i];
 					if (GO->newMons->Kind == UnitValue)
-						ApplyToOneUnit( GO, NU, UFN, OB );
+						ApplyToOneUnit(GO, NU, UFN, OB);
 				};
 			};
 		}
@@ -1266,43 +1265,44 @@ void ApplyToUnits( Nation* NT, NewUpgrade* NU, UpgradeFN* UFN, OneObject* OB )
 			{
 				word val = NU->UnitGroup[i];
 				//assert(val<NT->NMon);
-				ApplyToOneUnit( NT->Mon[NU->UnitGroup[i]], NU, UFN, OB );
+				ApplyToOneUnit(NT->Mon[NU->UnitGroup[i]], NU, UFN, OB);
 			};
 		};
 	}
 	else
 	{
 		if (NU->UnitType == 1)
-		{//UNITKIND
+		{
+			//UNITKIND
 			int UnitValue = NU->UnitValue;
 			for (int i = 0; i < NT->NMon; i++)
 			{
 				GeneralObject* GO = NT->Mon[i];
 				if (GO->newMons->Kind == UnitValue)
-					ApplyToOneUnit( GO, NU, UFN, OB );
+					ApplyToOneUnit(GO, NU, UFN, OB);
 			};
 		}
 		else
 		{
 			//assert(NU->UnitValue<NT->NMon);
-			ApplyToOneUnit( NT->Mon[NU->UnitValue], NU, UFN, OB );
+			ApplyToOneUnit(NT->Mon[NU->UnitValue], NU, UFN, OB);
 		};
 	};
 };
 
-void EraseUnitsInPoint( int x, int y )
+void EraseUnitsInPoint(int x, int y)
 {
-	if (x > 0 && y > 0 && x < VAL_MAPSX&&y < VAL_MAPSX)
+	if (x > 0 && y > 0 && x < VAL_MAPSX && y < VAL_MAPSX)
 	{
 		int xc = x >> 3;
 		int yc = y >> 3;
-		int cell = ( ( yc >> 7 ) << VAL_SHFCX ) + ( xc >> 7 ) + VAL_MAXCX + 1;
+		int cell = ((yc >> 7) << VAL_SHFCX) + (xc >> 7) + VAL_MAXCX + 1;
 		int NMon = MCount[cell];
 		int ofs1 = cell << SHFCELL;
 		word MID;
 		for (int i = 0; i < NMon; i++)
 		{
-			MID = GetNMSL( ofs1 + i );
+			MID = GetNMSL(ofs1 + i);
 			if (MID != 0xFFFF)
 			{
 				OneObject* OB = Group[MID];
@@ -1316,107 +1316,109 @@ void EraseUnitsInPoint( int x, int y )
 }
 
 void TurnFogOff();
-void PerformNewUpgrade( Nation* NT, int UIndex, OneObject* OB )
+
+void PerformNewUpgrade(Nation* NT, int UIndex, OneObject* OB)
 {
 	NewUpgrade* NU = NT->UPGRADE[UIndex];
 	switch (NU->CtgUpgrade)
 	{
-	case 0://SPEED
-		ApplyToUnits( NT, NU, &UpgradeSpeed, OB );
+	case 0: //SPEED
+		ApplyToUnits(NT, NU, &UpgradeSpeed, OB);
 		break;
-	case 1://SHIELD
-		ApplyToUnits( NT, NU, &UpgradeShield, OB );
+	case 1: //SHIELD
+		ApplyToUnits(NT, NU, &UpgradeShield, OB);
 		break;
-	case 2://PROTECTION
-		ApplyToUnits( NT, NU, &UpgradeProtection, OB );
+	case 2: //PROTECTION
+		ApplyToUnits(NT, NU, &UpgradeProtection, OB);
 		break;
-	case 3://ATTPAUSE
-		ApplyToUnits( NT, NU, &UpgradeAttPause, OB );
+	case 3: //ATTPAUSE
+		ApplyToUnits(NT, NU, &UpgradeAttPause, OB);
 		break;
-	case 4://WEAPON
-		ApplyToUnits( NT, NU, &UpgradeWeapon, OB );
+	case 4: //WEAPON
+		ApplyToUnits(NT, NU, &UpgradeWeapon, OB);
 		break;
-	case 5://BUILD
-		ApplyToUnits( NT, NU, &UpgradeBuild, OB );
+	case 5: //BUILD
+		ApplyToUnits(NT, NU, &UpgradeBuild, OB);
 		break;
-	case 6://LIFE
-		ApplyToUnits( NT, NU, &UpgradeLife, OB );
+	case 6: //LIFE
+		ApplyToUnits(NT, NU, &UpgradeLife, OB);
 		break;
-	case 7://PRECISE
+	case 7: //PRECISE
 		break;
-	case 8://ATTRANGE
-		ApplyToUnits( NT, NU, &UpgradeAttRange, OB );
+	case 8: //ATTRANGE
+		ApplyToUnits(NT, NU, &UpgradeAttRange, OB);
 		break;
-	case 9://INSIDE
-		ApplyToUnits( NT, NU, &UpgradeInside, OB );
+	case 9: //INSIDE
+		ApplyToUnits(NT, NU, &UpgradeInside, OB);
 		break;
-	case 10://COST
-		ApplyToUnits( NT, NU, &UpgradeCost, OB );
+	case 10: //COST
+		ApplyToUnits(NT, NU, &UpgradeCost, OB);
 		break;
-	case 11://ENABLE
-		ApplyToUnits( NT, NU, &UpgradeEnable, OB );
+	case 11: //ENABLE
+		ApplyToUnits(NT, NU, &UpgradeEnable, OB);
 		break;
-	case 12://DAMAGE
-		ApplyToUnits( NT, NU, &UpgradeDamage, OB );
+	case 12: //DAMAGE
+		ApplyToUnits(NT, NU, &UpgradeDamage, OB);
 		break;
-	case 13://GETRES
-		ApplyToUnits( NT, NU, &UpgradeGetRes, OB );
+	case 13: //GETRES
+		ApplyToUnits(NT, NU, &UpgradeGetRes, OB);
 		break;
-	case 14://SINGLE_INSIDE
-		ApplyToUnits( NT, NU, &UpgradeSingleInside, OB );
+	case 14: //SINGLE_INSIDE
+		ApplyToUnits(NT, NU, &UpgradeSingleInside, OB);
 		break;
-	case 15://SINGLE_ATTPAUSE
-		ApplyToUnits( NT, NU, &UpgradeSingleAttPause, OB );
+	case 15: //SINGLE_ATTPAUSE
+		ApplyToUnits(NT, NU, &UpgradeSingleAttPause, OB);
 		break;
-	case 16://FISHING
-		ApplyToUnits( NT, NU, &UpgradeFishing, OB );
+	case 16: //FISHING
+		ApplyToUnits(NT, NU, &UpgradeFishing, OB);
 		break;
-	case 17://RAZBROS
-		ApplyToUnits( NT, NU, &UpgradeRazbros, OB );
+	case 17: //RAZBROS
+		ApplyToUnits(NT, NU, &UpgradeRazbros, OB);
 		break;
-	case 18://SHAR
-	{
-		if (MyNation == NT->CITY->NI)
-		{//Prevent from firing when other players do their upgrades
-			TurnFogOff();//BUGFIX: Set FogMode = 0 as soon as the update is through
-		}
-		ApplyToUnits( NT, NU, &UpgradeShar, OB );
-	}
-	break;
-	case 19://EFFECT_FOOD
-	{
-		int val = NT->FoodEff;
-		UseValue( &val, NU->ValueType, NU->Value );
-		NT->FoodEff = val;
-	}
-	break;
-	case 20://EFFECT_WOOD
-	{
-		int val = NT->WoodEff;
-		UseValue( &val, NU->ValueType, NU->Value );
-		if (200 < val)
+	case 18: //SHAR
 		{
-			val = 200;//just in case
+			if (MyNation == NT->CITY->NI)
+			{
+				//Prevent from firing when other players do their upgrades
+				TurnFogOff(); //BUGFIX: Set FogMode = 0 as soon as the update is through
+			}
+			ApplyToUnits(NT, NU, &UpgradeShar, OB);
 		}
-		NT->WoodEff = val;
-	}
-	break;
-	case 21://EFFECT_STONE
-	{
-		int val = NT->StoneEff;
-		UseValue( &val, NU->ValueType, NU->Value );
-		if (400 < val)
+		break;
+	case 19: //EFFECT_FOOD
 		{
-			val = 400;//just in case
+			int val = NT->FoodEff;
+			UseValue(&val, NU->ValueType, NU->Value);
+			NT->FoodEff = val;
 		}
-		NT->StoneEff = val;
-	}
-	break;
-	case 22://GEOLOGY
+		break;
+	case 20: //EFFECT_WOOD
+		{
+			int val = NT->WoodEff;
+			UseValue(&val, NU->ValueType, NU->Value);
+			if (200 < val)
+			{
+				val = 200; //just in case
+			}
+			NT->WoodEff = val;
+		}
+		break;
+	case 21: //EFFECT_STONE
+		{
+			int val = NT->StoneEff;
+			UseValue(&val, NU->ValueType, NU->Value);
+			if (400 < val)
+			{
+				val = 400; //just in case
+			}
+			NT->StoneEff = val;
+		}
+		break;
+	case 22: //GEOLOGY
 		NT->Geology = true;
 		break;
 	case 23:
-		ApplyToUnits( NT, NU, &HealUnits, OB );
+		ApplyToUnits(NT, NU, &HealUnits, OB);
 		break;
 	}
 
@@ -1435,12 +1437,12 @@ void PerformNewUpgrade( Nation* NT, int UIndex, OneObject* OB )
 	{
 		for (int i = 0; i < NU->NAutoPerform; i++)
 		{
-			PerformNewUpgrade( NT, NU->AutoPerform[i], OB );
+			PerformNewUpgrade(NT, NU->AutoPerform[i], OB);
 		}
 	}
 }
 
-void CreateAdvCharacter( AdvCharacter* AC, NewMonster* NM )
+void CreateAdvCharacter(AdvCharacter* AC, NewMonster* NM)
 {
 	for (int i = 0; i < NAttTypes; i++)
 	{
@@ -1459,15 +1461,16 @@ void CreateAdvCharacter( AdvCharacter* AC, NewMonster* NM )
 		AC->FishAmount = NM->FishAmount;
 		AC->Razbros = NM->Razbros;
 	};
-	for (int i = 0; i < 32; i++)AC->Protection[i] = byte( NM->Protection[i] );
+	for (int i = 0; i < 32; i++)AC->Protection[i] = byte(NM->Protection[i]);
 	for (int i = 0; i < 8; i++)AC->NeedRes[i] = NM->NeedRes[i];
 	AC->Life = NM->Life;
 	AC->ProduceStages = NM->ProduceStages;
 	AC->Shield = NM->Shield;
 	AC->Changed = false;
-	UpdateAttackR( AC );
+	UpdateAttackR(AC);
 };
-int GetUpgradeID( Nation* NT, char* Name )
+
+int GetUpgradeID(Nation* NT, char* Name)
 {
-	return UPGS.SearchString( Name );
+	return UPGS.SearchString(Name);
 };

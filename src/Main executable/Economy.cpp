@@ -50,14 +50,14 @@ public:
 
 	//Market exchange rates
 	//Beware: Synchronization critical!
-	double ResCostBuy[8][6];//Current cost
-	double ResCostSell[8][6];//Current cost
-	double ResCostBuy0[8][6];//Default cost?
-	double ResCostSell0[8][6];//Default cost?
-	double ResCostBuy1[8][6];//Nominal cost
-	double ResCostSell1[8][6];//Nominal cost
-	double ResCostBuy2[8][6];//Default cost?
-	double ResCostSell2[8][6];//Default cost?
+	double ResCostBuy[8][6]; //Current cost
+	double ResCostSell[8][6]; //Current cost
+	double ResCostBuy0[8][6]; //Default cost?
+	double ResCostSell0[8][6]; //Default cost?
+	double ResCostBuy1[8][6]; //Nominal cost
+	double ResCostSell1[8][6]; //Nominal cost
+	double ResCostBuy2[8][6]; //Default cost?
+	double ResCostSell2[8][6]; //Default cost?
 
 	//Save default market exchange rates for dllexport function
 	double buy_rates_for_bots[6];
@@ -79,115 +79,116 @@ public:
 
 	void Load();
 	void InitInterface();
-	void CreateInterface( IconSet* ISET );
-	void PerformOperation( byte Nation, byte SellRes, byte BuyRes, int SellAmount );
+	void CreateInterface(IconSet* ISET);
+	void PerformOperation(byte Nation, byte SellRes, byte BuyRes, int SellAmount);
 	void Process();
 };
 
 void EERR()
 {
-	ErrM( "ECONOMY.TXT is corrupted." );
+	ErrM("ECONOMY.TXT is corrupted.");
 }
 
-int GetIconByName( char* Name );
+int GetIconByName(char* Name);
 
-int GetResID( char* );
+int GetResID(char*);
 
 void Economy::Load()
 {
-	GFILE* F = Gopen( "economy.txt", "r" );
+	GFILE* F = Gopen("economy.txt", "r");
 	if (F)
 	{
 		char cc[128];
-		int z = Gscanf( F, "%s", cc );
+		int z = Gscanf(F, "%s", cc);
 		if (z != 1)
 		{
 			EERR();
 		}
 
-		ClearIcn = GetIconByName( cc );
-		z = Gscanf( F, "%s", cc );
+		ClearIcn = GetIconByName(cc);
+		z = Gscanf(F, "%s", cc);
 		if (z != 1)
 		{
 			EERR();
 		}
 
-		ChertaIcn = GetIconByName( cc );
-		z = Gscanf( F, "%s", cc );
+		ChertaIcn = GetIconByName(cc);
+		z = Gscanf(F, "%s", cc);
 		if (z != 1)
 		{
 			EERR();
 		}
 
-		BuyIcn = GetIconByName( cc );
-		z = Gscanf( F, "%s", cc );
+		BuyIcn = GetIconByName(cc);
+		z = Gscanf(F, "%s", cc);
 		if (z != 1)
 		{
 			EERR();
 		}
 
-		P10Icn = GetIconByName( cc );
-		z = Gscanf( F, "%s", cc );
+		P10Icn = GetIconByName(cc);
+		z = Gscanf(F, "%s", cc);
 		if (z != 1)
 		{
 			EERR();
 		}
 
-		M10Icn = GetIconByName( cc );
-		z = Gscanf( F, "%s", cc );
+		M10Icn = GetIconByName(cc);
+		z = Gscanf(F, "%s", cc);
 		if (z != 1)
 		{
 			EERR();
 		}
 
-		P100Icn = GetIconByName( cc );
-		z = Gscanf( F, "%s", cc );
+		P100Icn = GetIconByName(cc);
+		z = Gscanf(F, "%s", cc);
 		if (z != 1)
 		{
 			EERR();
 		}
 
-		M100Icn = GetIconByName( cc );
-		z = Gscanf( F, "%s", cc );
+		M100Icn = GetIconByName(cc);
+		z = Gscanf(F, "%s", cc);
 		if (z != 1)
 		{
 			EERR();
 		}
 
-		P1000Icn = GetIconByName( cc );
-		z = Gscanf( F, "%s", cc );
+		P1000Icn = GetIconByName(cc);
+		z = Gscanf(F, "%s", cc);
 		if (z != 1)
 		{
 			EERR();
 		}
-		M1000Icn = GetIconByName( cc );
-		z = Gscanf( F, "%s", cc );
-		if (z != 1)
-		{
-			EERR();
-		}
-
-		P10000Icn = GetIconByName( cc );
-		z = Gscanf( F, "%s", cc );
+		M1000Icn = GetIconByName(cc);
+		z = Gscanf(F, "%s", cc);
 		if (z != 1)
 		{
 			EERR();
 		}
 
-		M10000Icn = GetIconByName( cc );
+		P10000Icn = GetIconByName(cc);
+		z = Gscanf(F, "%s", cc);
+		if (z != 1)
+		{
+			EERR();
+		}
+
+		M10000Icn = GetIconByName(cc);
 		for (int i = 0; i < 6; i++)
-		{//Iterate through each resource
-			z = Gscanf( F, "%s", cc );
+		{
+			//Iterate through each resource
+			z = Gscanf(F, "%s", cc);
 			if (z != 1)EERR();
 			float v1, v2;
-			EcResID[i] = GetResID( cc );
-			EcResIcn[i] = GetIconByName( cc );
+			EcResID[i] = GetResID(cc);
+			EcResIcn[i] = GetIconByName(cc);
 			float x1, x2, x3, x4, x5, x6, x7, x8, x9, x10;
-			z = Gscanf( F, "%s%g%g%g%s%g%g%s%g%s%g%g%g%s%g%g%s%g",
-				cc, &x1, &x2, &x3,
-				cc, &v1, &x4, cc, &x5,
-				cc, &x6, &x7, &x8,
-				cc, &v2, &x9, cc, &x10 );
+			z = Gscanf(F, "%s%g%g%g%s%g%g%s%g%s%g%g%g%s%g%g%s%g",
+			           cc, &x1, &x2, &x3,
+			           cc, &v1, &x4, cc, &x5,
+			           cc, &x6, &x7, &x8,
+			           cc, &v2, &x9, cc, &x10);
 
 			if (z != 18)
 			{
@@ -199,7 +200,8 @@ void Economy::Load()
 			sell_rates_for_bots[i] = x7;
 
 			for (int j = 0; j < 8; j++)
-			{//Iterate through each nation array
+			{
+				//Iterate through each nation array
 				ResCostBuy0[j][i] = x1;
 				ResCostBuy1[j][i] = x2;
 				ResCostBuy2[j][i] = x3;
@@ -216,11 +218,11 @@ void Economy::Load()
 			ExpBUY[i] /= v1 * 100;
 			ExpSELL[i] /= v2 * 100;
 		}
-		Gclose( F );
+		Gclose(F);
 	}
 	else
 	{
-		ErrM( "Could not open ECONOMY.TXT" );
+		ErrM("Could not open ECONOMY.TXT");
 	}
 
 	InitInterface();
@@ -241,35 +243,35 @@ void Economy::InitInterface()
 	ResBuy = -1;
 }
 
-void SelectBUY( int i )
+void SelectBUY(int i)
 {
 	ECO.ResBuy = i;
 }
 
-void CmdTorg( byte NI, byte SellRes, byte BuyRes, int SellAmount );
+void CmdTorg(byte NI, byte SellRes, byte BuyRes, int SellAmount);
 
-void SelectBUYBUTTON( int i )
+void SelectBUYBUTTON(int i)
 {
 	if (ECO.ResSell != -1 && ECO.ResBuy != -1)
 	{
-		CmdTorg( NatRefTBL[MyNation], ECO.ResSell, ECO.ResBuy, ECO.NeedToSell );
+		CmdTorg(NatRefTBL[MyNation], ECO.ResSell, ECO.ResBuy, ECO.NeedToSell);
 	}
 }
 
-void SelectSELL( int i )
+void SelectSELL(int i)
 {
 	ECO.ResSell = i;
 }
 
-void SelectCLEAR( int i )
+void SelectCLEAR(int i)
 {
 	ECO.NeedToBuy = 0;
 	ECO.NeedToSell = 0;
 }
 
-void SelectCHANGE( int i )
+void SelectCHANGE(int i)
 {
-	if (GetKeyState( VK_SHIFT ) & 0x8000)
+	if (GetKeyState(VK_SHIFT) & 0x8000)
 	{
 		ECO.NeedToSell += i * 100;
 	}
@@ -293,10 +295,11 @@ extern bool ECOSHOW;
 extern byte MarketState;
 
 //Composes and shows the UI for market exchanges depending on MarketState
-void Economy::CreateInterface( IconSet* ISET )
+void Economy::CreateInterface(IconSet* ISET)
 {
 	if (1 == MarketState)
-	{//Market Option is set to 'No Exchange'
+	{
+		//Market Option is set to 'No Exchange'
 		return;
 	}
 
@@ -305,100 +308,100 @@ void Economy::CreateInterface( IconSet* ISET )
 		int ix = i % 2;
 		int iy = i >> 1;
 
-		OneIcon* IC = ISET->AddIconFixed( 0, EcResIcn[i], ix + iy * 12 );
+		OneIcon* IC = ISET->AddIconFixed(0, EcResIcn[i], ix + iy * 12);
 
 		if (ResSell == i)
 		{
 			IC->SelectIcon();
 		}
 
-		IC->AssignLeft( &SelectSELL, i );
-		IC->CreateHint( RDS[EcResID[i]].Name );
-		IC = ISET->AddIconFixed( 0, EcResIcn[i], ix + 7 + iy * 12 );
+		IC->AssignLeft(&SelectSELL, i);
+		IC->CreateHint(RDS[EcResID[i]].Name);
+		IC = ISET->AddIconFixed(0, EcResIcn[i], ix + 7 + iy * 12);
 
 		if (ResBuy == i)
 		{
 			IC->SelectIcon();
 		}
 
-		IC->AssignLeft( &SelectBUY, i );
-		IC->CreateHint( RDS[EcResID[i]].Name );
+		IC->AssignLeft(&SelectBUY, i);
+		IC->CreateHint(RDS[EcResID[i]].Name);
 	}
 
-	OneIcon* M10 = ISET->AddIconFixed( 0, M10Icn, 2 );
-	M10->AssignLeft( &SelectCHANGE, -10 );
-	M10->CreateHint( ECONOM1 );//"-10 units"
+	OneIcon* M10 = ISET->AddIconFixed(0, M10Icn, 2);
+	M10->AssignLeft(&SelectCHANGE, -10);
+	M10->CreateHint(ECONOM1); //"-10 units"
 
-	OneIcon* P10 = ISET->AddIconFixed( 0, P10Icn, 3 );
-	P10->AssignLeft( &SelectCHANGE, 10 );
-	P10->CreateHint( ECONOM2 );//"+10 units"
+	OneIcon* P10 = ISET->AddIconFixed(0, P10Icn, 3);
+	P10->AssignLeft(&SelectCHANGE, 10);
+	P10->CreateHint(ECONOM2); //"+10 units"
 
-	OneIcon* M1000 = ISET->AddIconFixed( 0, M1000Icn, 5 );
-	M1000->AssignLeft( &SelectCHANGE, -1000 );
-	M1000->CreateHint( ECONOM3 );//"-1000 units"
+	OneIcon* M1000 = ISET->AddIconFixed(0, M1000Icn, 5);
+	M1000->AssignLeft(&SelectCHANGE, -1000);
+	M1000->CreateHint(ECONOM3); //"-1000 units"
 
-	OneIcon* P1000 = ISET->AddIconFixed( 0, P1000Icn, 6 );
-	P1000->AssignLeft( &SelectCHANGE, 1000 );
-	P1000->CreateHint( ECONOM4 );//"+1000 units"
+	OneIcon* P1000 = ISET->AddIconFixed(0, P1000Icn, 6);
+	P1000->AssignLeft(&SelectCHANGE, 1000);
+	P1000->CreateHint(ECONOM4); //"+1000 units"
 
-	OneIcon* BUY = ISET->AddIconFixed( 0, BuyIcn, 4 );
-	BUY->AssignLeft( &SelectBUYBUTTON, 0 );
-	BUY->CreateHint( ECONOM5 );//"Buy resource"
+	OneIcon* BUY = ISET->AddIconFixed(0, BuyIcn, 4);
+	BUY->AssignLeft(&SelectBUYBUTTON, 0);
+	BUY->CreateHint(ECONOM5); //"Buy resource"
 
-	OneIcon* M100 = ISET->AddIconFixed( 0, M100Icn, 2 + 24 );
-	M100->AssignLeft( &SelectCHANGE, -100 );
-	M100->CreateHint( ECONOM6 );//"-100 units"
+	OneIcon* M100 = ISET->AddIconFixed(0, M100Icn, 2 + 24);
+	M100->AssignLeft(&SelectCHANGE, -100);
+	M100->CreateHint(ECONOM6); //"-100 units"
 
-	OneIcon* P100 = ISET->AddIconFixed( 0, P100Icn, 3 + 24 );
-	P100->AssignLeft( &SelectCHANGE, 100 );
-	P100->CreateHint( ECONOM7 );//"+100 units"
+	OneIcon* P100 = ISET->AddIconFixed(0, P100Icn, 3 + 24);
+	P100->AssignLeft(&SelectCHANGE, 100);
+	P100->CreateHint(ECONOM7); //"+100 units"
 
-	OneIcon* CLEAR = ISET->AddIconFixed( 0, ClearIcn, 4 + 24 );
-	CLEAR->AssignLeft( &SelectCLEAR, 0 );
-	CLEAR->CreateHint( ECONOM8 );//"Clear"
+	OneIcon* CLEAR = ISET->AddIconFixed(0, ClearIcn, 4 + 24);
+	CLEAR->AssignLeft(&SelectCLEAR, 0);
+	CLEAR->CreateHint(ECONOM8); //"Clear"
 
-	OneIcon* M10000 = ISET->AddIconFixed( 0, M10000Icn, 5 + 24 );
-	M10000->AssignLeft( &SelectCHANGE, -10000 );
-	M10000->CreateHint( ECONOM9 );//"-10000 units"
+	OneIcon* M10000 = ISET->AddIconFixed(0, M10000Icn, 5 + 24);
+	M10000->AssignLeft(&SelectCHANGE, -10000);
+	M10000->CreateHint(ECONOM9); //"-10000 units"
 
-	OneIcon* P10000 = ISET->AddIconFixed( 0, P10000Icn, 6 + 24 );
-	P10000->AssignLeft( &SelectCHANGE, 10000 );
-	P10000->CreateHint( ECONOMA );//"+10000 units"
+	OneIcon* P10000 = ISET->AddIconFixed(0, P10000Icn, 6 + 24);
+	P10000->AssignLeft(&SelectCHANGE, 10000);
+	P10000->CreateHint(ECONOMA); //"+10000 units"
 
 	char cc[128];
 	if (ResSell != -1)
 	{
-		sprintf( cc, "%d", NeedToSell );
-		int L = GetRLCStrWidth( cc, &WhiteFont );
-		ShowString( PrpX + ( IconLx + 2 ) * 3 - ( L >> 1 ), PrpY + IconLy + 16, cc, &WhiteFont );
+		sprintf(cc, "%d", NeedToSell);
+		int L = GetRLCStrWidth(cc, &WhiteFont);
+		ShowString(PrpX + (IconLx + 2) * 3 - (L >> 1), PrpY + IconLy + 16, cc, &WhiteFont);
 	}
 
 	if (ResSell != -1 && ResBuy != -1)
 	{
-		NeedToBuy = int( double( NeedToSell )*ResCostSell[MyNation][ResSell] / ResCostBuy[MyNation][ResBuy] );
-		sprintf( cc, "%d", NeedToBuy );
-		int L = GetRLCStrWidth( cc, &WhiteFont );
-		ShowString( PrpX + ( IconLx + 2 ) * 6 - ( L >> 1 ), PrpY + IconLy + 16, cc, &WhiteFont );
+		NeedToBuy = int(double(NeedToSell) * ResCostSell[MyNation][ResSell] / ResCostBuy[MyNation][ResBuy]);
+		sprintf(cc, "%d", NeedToBuy);
+		int L = GetRLCStrWidth(cc, &WhiteFont);
+		ShowString(PrpX + (IconLx + 2) * 6 - (L >> 1), PrpY + IconLy + 16, cc, &WhiteFont);
 	}
 
 	ECOSHOW = 1;
 }
 
-void EconomyInterface( IconSet* ISET )
+void EconomyInterface(IconSet* ISET)
 {
-	ECO.CreateInterface( ISET );
+	ECO.CreateInterface(ISET);
 }
 
 void EconomePostDraw()
 {
-	GPS.ShowGP( PrpX - 12, PrpY - 31, BordGP, 88, 0 );
-	GPS.ShowGP( PrpX + 283, PrpY - 31, BordGP, 89, 0 );
+	GPS.ShowGP(PrpX - 12, PrpY - 31, BordGP, 88, 0);
+	GPS.ShowGP(PrpX + 283, PrpY - 31, BordGP, 89, 0);
 
-	int L = GetRLCStrWidth( ECOSELL, &SmallYellowFont );//"SELL"
-	ShowString( PrpX + ( IconLx + 2 ) - ( L >> 1 ), PrpY - 21, ECOSELL, &SmallYellowFont );//"SELL"
+	int L = GetRLCStrWidth(ECOSELL, &SmallYellowFont); //"SELL"
+	ShowString(PrpX + (IconLx + 2) - (L >> 1), PrpY - 21, ECOSELL, &SmallYellowFont); //"SELL"
 
-	L = GetRLCStrWidth( ECOBUY, &SmallYellowFont );//"BUY"
-	ShowString( PrpX + ( IconLx + 2 ) * 8 - ( L >> 1 ), PrpY - 21, ECOBUY, &SmallYellowFont );//"BUY"
+	L = GetRLCStrWidth(ECOBUY, &SmallYellowFont); //"BUY"
+	ShowString(PrpX + (IconLx + 2) * 8 - (L >> 1), PrpY - 21, ECOBUY, &SmallYellowFont); //"BUY"
 }
 
 void ClearEconomy()
@@ -413,10 +416,11 @@ void LoadEconomy()
 
 //Exchange resources using players own exchange rate
 //Reassign other players exchange rates, if the market is global
-void Economy::PerformOperation( byte Nation, byte SellRes, byte BuyRes, int SellAmount )
+void Economy::PerformOperation(byte Nation, byte SellRes, byte BuyRes, int SellAmount)
 {
 	if (5 < SellRes || 5 < BuyRes || 0 > SellAmount)
-	{//Sanity check
+	{
+		//Sanity check
 		return;
 	}
 
@@ -428,7 +432,7 @@ void Economy::PerformOperation( byte Nation, byte SellRes, byte BuyRes, int Sell
 		SellAmount = XRESRC( Nation, SellID );
 	}
 
-	int BuyAmount = int( double( SellAmount )*ResCostSell[Nation][SellRes] / ResCostBuy[Nation][BuyRes] );
+	int BuyAmount = int(double(SellAmount) * ResCostSell[Nation][SellRes] / ResCostBuy[Nation][BuyRes]);
 
 	AddXRESRC( Nation, SellID, -SellAmount );
 	AddXRESRC( Nation, BuyID, BuyAmount );
@@ -436,17 +440,19 @@ void Economy::PerformOperation( byte Nation, byte SellRes, byte BuyRes, int Sell
 	NATIONS[Nation].ResBuy[BuyID] += BuyAmount;
 	NATIONS[Nation].ResSell[SellID] += SellAmount;
 
-	double Ves = double( BuyAmount ) * ExpBUY[BuyRes];
-	ResCostBuy[Nation][BuyRes] = ( ResCostBuy[Nation][BuyRes] + ResCostBuy2[Nation][BuyRes] * Ves ) / ( 1 + Ves );
-	ResCostSell[Nation][BuyRes] = ( ResCostSell[Nation][BuyRes] + ResCostSell2[Nation][BuyRes] * Ves ) / ( 1 + Ves );
-	Ves = double( SellAmount ) * ExpSELL[SellRes];
-	ResCostSell[Nation][SellRes] = ( ResCostSell[Nation][SellRes] + ResCostSell0[Nation][SellRes] * Ves ) / ( 1 + Ves );
-	ResCostBuy[Nation][SellRes] = ( ResCostBuy[Nation][SellRes] + ResCostBuy0[Nation][SellRes] * Ves ) / ( 1 + Ves );
+	double Ves = double(BuyAmount) * ExpBUY[BuyRes];
+	ResCostBuy[Nation][BuyRes] = (ResCostBuy[Nation][BuyRes] + ResCostBuy2[Nation][BuyRes] * Ves) / (1 + Ves);
+	ResCostSell[Nation][BuyRes] = (ResCostSell[Nation][BuyRes] + ResCostSell2[Nation][BuyRes] * Ves) / (1 + Ves);
+	Ves = double(SellAmount) * ExpSELL[SellRes];
+	ResCostSell[Nation][SellRes] = (ResCostSell[Nation][SellRes] + ResCostSell0[Nation][SellRes] * Ves) / (1 + Ves);
+	ResCostBuy[Nation][SellRes] = (ResCostBuy[Nation][SellRes] + ResCostBuy0[Nation][SellRes] * Ves) / (1 + Ves);
 
 	if (2 != MarketState)
-	{//Market Option 'Independent Exchange Rates' NOT selected
+	{
+		//Market Option 'Independent Exchange Rates' NOT selected
 		for (int i = 0; i < 8; i++)
-		{//Assign calculated exchange rates to all players
+		{
+			//Assign calculated exchange rates to all players
 			ResCostBuy[i][BuyRes] = ResCostBuy[Nation][BuyRes];
 			ResCostSell[i][BuyRes] = ResCostSell[Nation][BuyRes];
 			ResCostSell[i][SellRes] = ResCostSell[Nation][SellRes];
@@ -458,26 +464,28 @@ void Economy::PerformOperation( byte Nation, byte SellRes, byte BuyRes, int Sell
 //Calculates exchange result for dllexport (bots AI dll)
 //Always use player #0 local exchange rates for transactions
 //Else there will be unsync when bots exchange
-int GetTorgResultEx( byte SellRes, byte BuyRes, int SellAmount )
+int GetTorgResultEx(byte SellRes, byte BuyRes, int SellAmount)
 {
 	int BuyID = ECO.EcResID[BuyRes];
 	int SellID = ECO.EcResID[SellRes];
 
-	return int( double( SellAmount )*ECO.sell_rates_for_bots[SellRes] / ECO.buy_rates_for_bots[BuyRes] );
+	return int(double(SellAmount) * ECO.sell_rates_for_bots[SellRes] / ECO.buy_rates_for_bots[BuyRes]);
 }
 
-void PerformTorg( byte Nation, byte SellRes, byte BuyRes, int SellAmount )
+void PerformTorg(byte Nation, byte SellRes, byte BuyRes, int SellAmount)
 {
-	ECO.PerformOperation( Nation, SellRes, BuyRes, SellAmount );
+	ECO.PerformOperation(Nation, SellRes, BuyRes, SellAmount);
 }
 
 //Balances out market exchange rates over time
 void Economy::Process()
 {
 	for (int i = 0; i < 8; i++)
-	{//For each nation's exchange array
+	{
+		//For each nation's exchange array
 		for (int j = 0; j < 6; j++)
-		{//Each resource in array
+		{
+			//Each resource in array
 			if (ResCostSell[i][j] > ResCostSell1[i][j])
 			{
 				ResCostSell[i][j] -= TimeSELL[j];
@@ -504,32 +512,32 @@ void ProcessEconomy()
 	ECO.Process();
 }
 
-extern byte INVECO[6];//={2,5,4,0,1,3};
+extern byte INVECO[6]; //={2,5,4,0,1,3};
 
-int GetFinPower( int* Fin, int Nation )
+int GetFinPower(int* Fin, int Nation)
 {
 	int FP = 0;
 	for (int i = 0; i < 6; i++)
 	{
-		FP += int( ECO.ResCostSell1[Nation][i] * Fin[INVECO[i]] );
+		FP += int(ECO.ResCostSell1[Nation][i] * Fin[INVECO[i]]);
 	}
 	return FP;
 }
 
 //Calculates exchange rate for the game market information popup
-int GetCurrentCost( byte Buy, byte Sell, int Amount )
+int GetCurrentCost(byte Buy, byte Sell, int Amount)
 {
-	return int( ( Amount*ECO.ResCostSell[MyNation][Sell] ) / ECO.ResCostBuy[MyNation][Buy] );
+	return int((Amount * ECO.ResCostSell[MyNation][Sell]) / ECO.ResCostBuy[MyNation][Buy]);
 }
 
 //Calculates exchange rate for the game market information popup
-int GetNominalCost( byte Buy, byte Sell, int Amount )
+int GetNominalCost(byte Buy, byte Sell, int Amount)
 {
-	return int( ( Amount*ECO.ResCostSell1[MyNation][Sell] ) / ECO.ResCostBuy1[MyNation][Buy] );
+	return int((Amount * ECO.ResCostSell1[MyNation][Sell]) / ECO.ResCostBuy1[MyNation][Buy]);
 }
 
-int GetEconomyData( byte** EC )
+int GetEconomyData(byte** EC)
 {
-	*EC = (byte*) &ECO;
+	*EC = (byte*)&ECO;
 	return sizeof ECO;
 }

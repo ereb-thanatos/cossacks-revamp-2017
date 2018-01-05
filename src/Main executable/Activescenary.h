@@ -1,59 +1,73 @@
-struct GAMEOBJ{
+struct GAMEOBJ
+{
 	word Index;
 	word Serial;
-	int  Type;
+	int Type;
 };
-struct UnitsGroup{
+
+struct UnitsGroup
+{
 	word* IDS;
 	word* SNS;
 	int N;
 };
-struct UnitsPosition{
+
+struct UnitsPosition
+{
 	word* Type;
-	int*  coor;
+	int* coor;
 	int N;
 };
-struct ZonesGroup{
+
+struct ZonesGroup
+{
 	word* ZoneID;
 	int N;
 };
+
 typedef void StdVoid();
-struct GTimer{
+
+struct GTimer
+{
 	int Time;
 	bool Used;
 	bool First;
 };
-struct LightSpot{
-	int x,y,Type;
+
+struct LightSpot
+{
+	int x, y, Type;
 };
-class ScenaryInterface{
+
+class ScenaryInterface
+{
 public:
 	void** SaveZone;
-	int *  SaveSize;
-	int    NSaves;
-	int    MaxSaves;
+	int* SaveSize;
+	int NSaves;
+	int MaxSaves;
 	HINSTANCE hLib;
-	char*  DLLName;
+	char* DLLName;
 
 	UnitsGroup* UGRP;
-	int    NUGRP;
-	int    MaxUGRP;
-	
+	int NUGRP;
+	int MaxUGRP;
+
 	UnitsPosition* UPOS;
-	int    NUPOS;
-	int    MaxUPOS;
+	int NUPOS;
+	int MaxUPOS;
 
 	ZonesGroup* ZGRP;
-	int    NZGRP;
-	int    MaxZGRP;
+	int NZGRP;
+	int MaxZGRP;
 
 	char** Messages;
-	int    NMess;
-	int    MaxMess;
+	int NMess;
+	int MaxMess;
 
 	char** Sounds;
-	int    NSnd;
-	int    MaxSnds;
+	int NSnd;
+	int MaxSnds;
 
 	int NErrors;
 
@@ -63,33 +77,36 @@ public:
 	int NPages;
 	int MaxPages;
 	char** Page;
-	int*   PageSize;
+	int* PageSize;
 	char** PageID;
 	char** PageBMP;
 
-	bool   TextDisable[52];
-	
-	bool   StandartVictory;
-	bool   Victory;
-	char*  VictoryText;
+	bool TextDisable[52];
 
-	bool   LooseGame;
-	char*  LooseText;
+	bool StandartVictory;
+	bool Victory;
+	char* VictoryText;
 
-	char*  CentralText;
+	bool LooseGame;
+	char* LooseText;
+
+	char* CentralText;
 	int CTextTime;
 
 	GTimer TIME[32];
-	word   TRIGGER[512];
+	word TRIGGER[512];
 	LightSpot LSpot[64];
 	StdVoid* ScenaryHandler;
 	ScenaryInterface();
 	~ScenaryInterface();
-	void Load(char* Name,char* Text);
+	void Load(char* Name, char* Text);
 	void UnLoading();
 };
+
 extern ScenaryInterface SCENINF;
-class SingleMission{
+
+class SingleMission
+{
 public:
 	char* ID;
 	char* DLLPath;
@@ -99,7 +116,9 @@ public:
 	int NIntro;
 	char** Intro;
 };
-class MissPack{
+
+class MissPack
+{
 public:
 	SingleMission* MISS;
 	int NMiss;
@@ -111,7 +130,9 @@ public:
 	MissPack();
 	~MissPack();
 };
-struct SingleCampagin{
+
+struct SingleCampagin
+{
 	char* CampMessage;
 	char* CampText;
 	char* CampBmp;
@@ -119,14 +140,18 @@ struct SingleCampagin{
 	int* Miss;
 	DWORD* OpenIndex;
 };
-class CampaginPack{
+
+class CampaginPack
+{
 public:
 	int NCamp;
 	SingleCampagin* SCamp;
 	CampaginPack();
 	~CampaginPack();
 };
-class OneBattle{
+
+class OneBattle
+{
 public:
 	char* ID;
 	char* Map;
@@ -143,7 +168,9 @@ public:
 	char** Hints;
 	int* Coor;
 };
-class OneWar{
+
+class OneWar
+{
 public:
 	char* Name;
 	char* Date;
@@ -151,7 +178,9 @@ public:
 	int NBatles;
 	int* BattleList;
 };
-class WarPack{
+
+class WarPack
+{
 public:
 	int NWars;
 	OneWar* Wars;
@@ -160,6 +189,7 @@ public:
 	WarPack();
 	~WarPack();
 };
+
 extern WarPack WARS;
 extern MissPack MISSLIST;
 extern CampaginPack CAMPAGINS;

@@ -14,13 +14,13 @@
 ///////////////////////////////////////////////////////////
 CWave::CWave(char* fileName)
 {
-    // Initialize the class's members.
-    m_waveSize = 0;
-    m_waveOK = FALSE;
-    m_pWave= NULL;
+	// Initialize the class's members.
+	m_waveSize = 0;
+	m_waveOK = FALSE;
+	m_pWave = NULL;
 
-    // Load the wave file.
-    m_waveOK = LoadWaveFile(fileName);
+	// Load the wave file.
+	m_waveOK = LoadWaveFile(fileName);
 }
 
 ///////////////////////////////////////////////////////////
@@ -28,8 +28,8 @@ CWave::CWave(char* fileName)
 ///////////////////////////////////////////////////////////
 CWave::~CWave()
 {
-    // Free the memory assigned to the wave data.
-    GlobalFreePtr(m_pWave);
+	// Free the memory assigned to the wave data.
+	GlobalFreePtr(m_pWave);
 }
 
 ///////////////////////////////////////////////////////////
@@ -40,63 +40,63 @@ CWave::~CWave()
 ///////////////////////////////////////////////////////////
 BOOL CWave::LoadWaveFile(char* fileName)
 {
-    MMCKINFO mmCkInfoRIFF;
-    MMCKINFO mmCkInfoChunk;
-    MMRESULT result;
-    HMMIO hMMIO;
-    long bytesRead;
+	MMCKINFO mmCkInfoRIFF;
+	MMCKINFO mmCkInfoChunk;
+	MMRESULT result;
+	HMMIO hMMIO;
+	long bytesRead;
 
-    // Open the wave file.
-    hMMIO = mmioOpen(fileName, NULL, MMIO_READ | MMIO_ALLOCBUF);
-    if (hMMIO == NULL)
-        return FALSE;
+	// Open the wave file.
+	hMMIO = mmioOpen(fileName, NULL, MMIO_READ | MMIO_ALLOCBUF);
+	if (hMMIO == NULL)
+		return FALSE;
 
-    // Descend into the RIFF chunk.
-    mmCkInfoRIFF.fccType = mmioFOURCC('W', 'A', 'V', 'E');
-    result = mmioDescend(hMMIO, &mmCkInfoRIFF, NULL, MMIO_FINDRIFF);
-    if (result != MMSYSERR_NOERROR)
-        return FALSE;
+	// Descend into the RIFF chunk.
+	mmCkInfoRIFF.fccType = mmioFOURCC('W', 'A', 'V', 'E');
+	result = mmioDescend(hMMIO, &mmCkInfoRIFF, NULL, MMIO_FINDRIFF);
+	if (result != MMSYSERR_NOERROR)
+		return FALSE;
 
-    // Descend into the format chunk.
-    mmCkInfoChunk.ckid = mmioFOURCC('f', 'm', 't', ' ');
-    result = mmioDescend(hMMIO, &mmCkInfoChunk,
-        &mmCkInfoRIFF, MMIO_FINDCHUNK);
-    if (result != MMSYSERR_NOERROR)
-        return FALSE;
+	// Descend into the format chunk.
+	mmCkInfoChunk.ckid = mmioFOURCC('f', 'm', 't', ' ');
+	result = mmioDescend(hMMIO, &mmCkInfoChunk,
+	                     &mmCkInfoRIFF, MMIO_FINDCHUNK);
+	if (result != MMSYSERR_NOERROR)
+		return FALSE;
 
-    // Read the format information into the WAVEFORMATEX structure.
-    bytesRead = mmioRead(hMMIO, (char*)&m_waveFormatEx,
-        sizeof(WAVEFORMATEX));
-    if (bytesRead == -1)
-        return FALSE;
+	// Read the format information into the WAVEFORMATEX structure.
+	bytesRead = mmioRead(hMMIO, (char*)&m_waveFormatEx,
+	                     sizeof(WAVEFORMATEX));
+	if (bytesRead == -1)
+		return FALSE;
 
-    // Ascend out of the format chunk.
-    result = mmioAscend(hMMIO, &mmCkInfoChunk, 0);
-    if (result != MMSYSERR_NOERROR)
-        return FALSE;
+	// Ascend out of the format chunk.
+	result = mmioAscend(hMMIO, &mmCkInfoChunk, 0);
+	if (result != MMSYSERR_NOERROR)
+		return FALSE;
 
-    // Descend into the data chunk.
-    mmCkInfoChunk.ckid = mmioFOURCC('d', 'a', 't', 'a');
-    result = mmioDescend(hMMIO, &mmCkInfoChunk,
-        &mmCkInfoRIFF, MMIO_FINDCHUNK);
-    if (result != MMSYSERR_NOERROR)
-        return FALSE;
+	// Descend into the data chunk.
+	mmCkInfoChunk.ckid = mmioFOURCC('d', 'a', 't', 'a');
+	result = mmioDescend(hMMIO, &mmCkInfoChunk,
+	                     &mmCkInfoRIFF, MMIO_FINDCHUNK);
+	if (result != MMSYSERR_NOERROR)
+		return FALSE;
 
-    // Save the size of the wave data.
-    m_waveSize = mmCkInfoChunk.cksize;
+	// Save the size of the wave data.
+	m_waveSize = mmCkInfoChunk.cksize;
 
-    // Allocate a buffer for the wave data.
-    m_pWave = (char*)GlobalAllocPtr(GMEM_MOVEABLE, m_waveSize);
-    if (m_pWave == NULL)
-        return FALSE;
+	// Allocate a buffer for the wave data.
+	m_pWave = (char*)GlobalAllocPtr(GMEM_MOVEABLE, m_waveSize);
+	if (m_pWave == NULL)
+		return FALSE;
 
-    // Read the wave data into the buffer.
-    bytesRead = mmioRead(hMMIO, (char*)m_pWave, m_waveSize);
-    if (bytesRead == -1)
-        return FALSE;
-    mmioClose(hMMIO, 0);
+	// Read the wave data into the buffer.
+	bytesRead = mmioRead(hMMIO, (char*)m_pWave, m_waveSize);
+	if (bytesRead == -1)
+		return FALSE;
+	mmioClose(hMMIO, 0);
 
-    return TRUE;
+	return TRUE;
 }
 
 ///////////////////////////////////////////////////////////
@@ -106,7 +106,7 @@ BOOL CWave::LoadWaveFile(char* fileName)
 ///////////////////////////////////////////////////////////
 DWORD CWave::GetWaveSize()
 {
-    return m_waveSize;
+	return m_waveSize;
 }
 
 ///////////////////////////////////////////////////////////
@@ -117,7 +117,7 @@ DWORD CWave::GetWaveSize()
 ///////////////////////////////////////////////////////////
 LPWAVEFORMATEX CWave::GetWaveFormatPtr()
 {
-    return &m_waveFormatEx;
+	return &m_waveFormatEx;
 }
 
 ///////////////////////////////////////////////////////////
@@ -128,7 +128,7 @@ LPWAVEFORMATEX CWave::GetWaveFormatPtr()
 ///////////////////////////////////////////////////////////
 char* CWave::GetWaveDataPtr()
 {
-    return m_pWave;
+	return m_pWave;
 }
 
 ///////////////////////////////////////////////////////////
@@ -139,5 +139,5 @@ char* CWave::GetWaveDataPtr()
 ///////////////////////////////////////////////////////////
 BOOL CWave::WaveOK()
 {
-    return m_waveOK;
+	return m_waveOK;
 }

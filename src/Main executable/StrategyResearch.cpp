@@ -1,4 +1,3 @@
-
 #include "ddini.h"
 #include "ResFile.h"
 #include "FastDraw.h"
@@ -44,7 +43,11 @@ class DamageMap(){
 };
 */
 extern int COUNTER;
-const byte StrCod[26] = { 0xFF,0xFF,0xFF,0xFF,0xFF,5,0xFF,0xFF,2,4,3,0,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0,1,2,2,0xFF,0xFF };
+const byte StrCod[26] = {
+	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 5, 0xFF, 0xFF, 2, 4, 3, 0, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0, 1, 2, 2,
+	0xFF, 0xFF
+};
+
 /*
 void GlobalArmyInfo::ResearchArmyDistribution(byte NI){
 #ifdef NOSTRATINF
@@ -205,7 +208,8 @@ void GlobalArmyInfo::ResearchArmyDistribution(byte NI){
 	//COUNTER=GetTickCount()-tt;
 };
 */
-void GlobalArmyInfo::ResearchArmyDistribution(byte NI) {
+void GlobalArmyInfo::ResearchArmyDistribution(byte NI)
+{
 #ifdef NOSTRATINF
 	return;
 #endif
@@ -213,24 +217,29 @@ void GlobalArmyInfo::ResearchArmyDistribution(byte NI) {
 	int tt = GetTickCount();
 	//int N=NtNUnits[NI];
 	//word* Units=NatList[NI];
-	memset(ArmDistr, 0xFF, StratLx*StratLy * 2);
+	memset(ArmDistr, 0xFF, StratLx * StratLy * 2);
 	if (!GNFO.EINF[NI])return;
 	NCIN = 0;
 	NArmy = 0;
 	DWORD* __InflMap = GNFO.EINF[NI]->InflMap;
 	//if(N){
 	EnemyInfo* GN0 = GNFO.EINF[NI];
-	for (int MID = 0; MID < MAXOBJECT; MID++) {
+	for (int MID = 0; MID < MAXOBJECT; MID++)
+	{
 		OneObject* OB = Group[MID];
-		if (OB && (!OB->Sdoxlo) && GN0 != GNFO.EINF[OB->NNUM]) {
+		if (OB && (!OB->Sdoxlo) && GN0 != GNFO.EINF[OB->NNUM])
+		{
 			NewMonster* NM = OB->newMons;
 			byte ID = StrCod[NM->Usage];
-			if (ID != 0xFF) {
+			if (ID != 0xFF)
+			{
 				int xx1 = OB->RealX >> 10;
 				int yy1 = OB->RealY >> 10;
-				if (xx1 >= 0 && yy1 >= 0) {
+				if (xx1 >= 0 && yy1 >= 0)
+				{
 					int dang = 0;
-					if (xx1 > 0 && yy1 > 0) {
+					if (xx1 > 0 && yy1 > 0)
+					{
 						dang = __InflMap[xx1 + (yy1 << TopSH)];
 					};
 					int xx = xx1 >> 2;
@@ -238,8 +247,10 @@ void GlobalArmyInfo::ResearchArmyDistribution(byte NI) {
 					int SIDX = xx + (yy << StratSH);
 					int sdx = ArmDistr[SIDX];
 					CellInfo* SINFO;
-					if (sdx == 0xFFFF) {
-						if (NCIN >= MaxCIN) {
+					if (sdx == 0xFFFF)
+					{
+						if (NCIN >= MaxCIN)
+						{
 							MaxCIN += 64;
 							CIN = (CellInfo*)realloc(CIN, MaxCIN * sizeof CellInfo);
 						};
@@ -253,62 +264,77 @@ void GlobalArmyInfo::ResearchArmyDistribution(byte NI) {
 					}
 					else SINFO = CIN + sdx;
 					((word*)SINFO)[ID]++;
-					SINFO->Total += NM->Force;//++
+					SINFO->Total += NM->Force; //++
 				}
 				else OB->Die();
 			};
 		};
 	};
 	//assert(_CrtCheckMemory());
-	if (NCIN) {
+	if (NCIN)
+	{
 		CellInfo* CINFO = CIN;
-		for (int i = 0; i < NCIN; i++) {
+		for (int i = 0; i < NCIN; i++)
+		{
 			CINFO->ArmyID = i + 8192;
 			CINFO++;
 		};
 		bool change;
 		//assert(_CrtCheckMemory());
-		do {
+		do
+		{
 			change = false;
 			CellInfo* CINFO = CIN;
-			for (int i = 0; i < NCIN; i++) {
+			for (int i = 0; i < NCIN; i++)
+			{
 				word AID = CINFO->ArmyID;
-				if (AID != 0xFFFF) {
+				if (AID != 0xFFFF)
+				{
 					int cell = int(CINFO->x) + (int(CINFO->y) << StratSH);
 					word ARMD = ArmDistr[cell + 1];
-					if (ARMD != 0xFFFF) {
+					if (ARMD != 0xFFFF)
+					{
 						CellInfo* CI1 = CIN + ARMD;
-						if (CI1->ArmyID > AID) {
+						if (CI1->ArmyID > AID)
+						{
 							CI1->ArmyID = AID;
 							change = true;
 							//CI1->Changed=1;
 						};
 					};
 					ARMD = ArmDistr[cell + StratLx];
-					if (ARMD != 0xFFFF) {
+					if (ARMD != 0xFFFF)
+					{
 						CellInfo* CI1 = CIN + ARMD;
-						if (CI1->ArmyID > AID) {
+						if (CI1->ArmyID > AID)
+						{
 							CI1->ArmyID = AID;
 							change = true;
 							//CI1->Changed=1;
 						};
 					};
-					if (cell > 1) {
+					if (cell > 1)
+					{
 						ARMD = ArmDistr[cell - 1];
-						if (ARMD != 0xFFFF) {
+						if (ARMD != 0xFFFF)
+						{
 							CellInfo* CI1 = CIN + ARMD;
-							if (CI1->ArmyID > AID) {
+							if (CI1->ArmyID > AID)
+							{
 								CI1->ArmyID = AID;
 								change = true;
 								//CI1->Changed=1;
 							};
 						};
 					};
-					if (cell > StratLx) {
+					if (cell > StratLx)
+					{
 						ARMD = ArmDistr[cell - StratLx];
-						if (ARMD != 0xFFFF) {
+						if (ARMD != 0xFFFF)
+						{
 							CellInfo* CI1 = CIN + ARMD;
-							if (CI1->ArmyID > AID) {
+							if (CI1->ArmyID > AID)
+							{
 								CI1->ArmyID = AID;
 								change = true;
 								//CI1->Changed=1;
@@ -318,17 +344,21 @@ void GlobalArmyInfo::ResearchArmyDistribution(byte NI) {
 				};
 				CINFO++;
 			};
-		} while (change);
+		}
+		while (change);
 		//assert(_CrtCheckMemory());
 		//enumerating armies
 		//COUNTER=GetTickCount()-tt;
 		//return;
 		NArmy = 0;
 		int CurArmy = 0;
-		for (int i = 0; i < NCIN; i++) {
+		for (int i = 0; i < NCIN; i++)
+		{
 			word ARID = CIN[i].ArmyID;
-			if (ARID >= 8192) {
-				if (NArmy >= MaxArmy) {
+			if (ARID >= 8192)
+			{
+				if (NArmy >= MaxArmy)
+				{
 					MaxArmy += 32;
 					AINF = (ArmyInfo*)realloc(AINF, MaxArmy * sizeof ArmyInfo);
 				};
@@ -336,8 +366,10 @@ void GlobalArmyInfo::ResearchArmyDistribution(byte NI) {
 				memset(Ari, 0, sizeof ArmyInfo);
 				Ari->MinX = 250;
 				Ari->MinY = 250;
-				for (int j = 0; j < NCIN; j++) {
-					if (CIN[j].ArmyID == ARID) {
+				for (int j = 0; j < NCIN; j++)
+				{
+					if (CIN[j].ArmyID == ARID)
+					{
 						CellInfo* CI = CIN + j;
 						Ari->NCaval += CI->NCaval;
 						Ari->NMort += CI->NMort;
@@ -351,7 +383,7 @@ void GlobalArmyInfo::ResearchArmyDistribution(byte NI) {
 						if (xx > Ari->MaxX)Ari->MaxX = xx;
 						if (yy < Ari->MinY)Ari->MinY = yy;
 						if (yy > Ari->MaxY)Ari->MaxY = yy;
-						Ari->N += CI->Total;//++;
+						Ari->N += CI->Total; //++;
 						CI->ArmyID = CurArmy;
 					};
 				};
@@ -362,7 +394,9 @@ void GlobalArmyInfo::ResearchArmyDistribution(byte NI) {
 		};
 	};
 };
-void GlobalArmyInfo::Clear() {
+
+void GlobalArmyInfo::Clear()
+{
 #ifdef NOSTRATINF
 	return;
 #endif
@@ -370,17 +404,21 @@ void GlobalArmyInfo::Clear() {
 	NArmy = 0;
 	MaxArmy = 0;
 	MaxCIN = 0;
-	if (CIN) {
+	if (CIN)
+	{
 		free(CIN);
 		CIN = NULL;
 	};
-	if (AINF) {
+	if (AINF)
+	{
 		free(AINF);
 		AINF = NULL;
 	};
-	memset(ArmDistr, 0xFF, StratLx*StratLy * 2);
+	memset(ArmDistr, 0xFF, StratLx * StratLy * 2);
 };
-GlobalArmyInfo::GlobalArmyInfo() {
+
+GlobalArmyInfo::GlobalArmyInfo()
+{
 #ifdef NOSTRATINF
 	return;
 #endif
@@ -392,18 +430,23 @@ GlobalArmyInfo::GlobalArmyInfo() {
 	AINF = NULL;
 	//memset(ArmDistr,0xFF,StratLx*StratLy*2);
 };
-GlobalArmyInfo::~GlobalArmyInfo() {
+
+GlobalArmyInfo::~GlobalArmyInfo()
+{
 #ifdef NOSTRATINF
 	return;
 #endif
 	Clear();
 };
-void GlobalArmyInfo::Show(int x, int y) {
+
+void GlobalArmyInfo::Show(int x, int y)
+{
 #ifdef NOSTRATINF
 	return;
 #endif
 	if (!NCIN)return;
-	for (int i = 0; i < NCIN; i++) {
+	for (int i = 0; i < NCIN; i++)
+	{
 		CellInfo* CI = CIN + i;
 		int col = 0xD0 + ((CI->ArmyID & 7) << 2);
 		int xx = x + (int(CI->x) << 2);

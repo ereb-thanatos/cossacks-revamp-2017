@@ -1,7 +1,9 @@
 extern int StratLx;
 extern int StratLy;
 extern int StratSH;
-class CellInfo{
+
+class CellInfo
+{
 public:
 	word NSword;
 	word NStrel;
@@ -15,7 +17,9 @@ public:
 	word ArmyID;
 	byte Changed;
 };
-class ArmyInfo{
+
+class ArmyInfo
+{
 public:
 	word NSword;
 	word NStrel;
@@ -30,7 +34,9 @@ public:
 	byte MaxY;
 	word N;
 };
-class GlobalArmyInfo{
+
+class GlobalArmyInfo
+{
 public:
 	word* ArmDistr;
 	CellInfo* CIN;
@@ -43,5 +49,5 @@ public:
 	~GlobalArmyInfo();
 	void Clear();
 	void ResearchArmyDistribution(byte NI);
-	void Show(int x,int y);
+	void Show(int x, int y);
 };

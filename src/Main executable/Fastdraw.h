@@ -33,8 +33,8 @@ extern FASTDRAW_API void* RealScreenPtr;
 
 struct RLCHeader
 {
-	short	SizeX;
-	short	SizeY;
+	short SizeX;
+	short SizeY;
 };
 
 typedef RLCHeader* lpRLCHeader;
@@ -43,7 +43,7 @@ struct xRLCTable
 {
 	int Size;
 	int sign;
-	int	SCount;
+	int SCount;
 	int OfsTable[32768000];
 };
 
@@ -53,7 +53,7 @@ typedef RLCTable* lpRLCTable;
 class FASTDRAW_API RLCFont
 {
 public:
-	int	FirstSymbol;
+	int FirstSymbol;
 	int LastSymbol;
 	byte Options;
 	int ShadowGP;
@@ -104,7 +104,7 @@ __declspec(dllexport) int GetRLCHeight(RLCTable lpr, byte n);
 FASTDRAW_API void ShowRLC(int x, int y, void* PicPtr);
 
 //Loading RLC file
-FASTDRAW_API bool LoadRLC(LPCSTR lpFileName, RLCTable *RLCtbl);
+FASTDRAW_API bool LoadRLC(LPCSTR lpFileName, RLCTable* RLCtbl);
 
 FASTDRAW_API void ShowRLCItem(int x, int y, lpRLCTable lprt, int n, byte nt);
 FASTDRAW_API void ShowRLCItemShadow(int x, int y, lpRLCTable lprt, int n);

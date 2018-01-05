@@ -30,15 +30,17 @@ extern int NUCLUSE[4];
 extern Nation WEP;
 void DosToWin(char*);
 char* mbm[1024];
-int	nmbm = 0;
+int nmbm = 0;
 
-void NLine(GFILE* f) 
+void NLine(GFILE* f)
 {
 	char tt[8];
 	int zz;
-	do {
+	do
+	{
 		zz = Gscanf(f, "%lc", tt);
-	} while (tt[0] != 10 && zz == 1);
+	}
+	while (tt[0] != 10 && zz == 1);
 }
 
 void Errx(LPCSTR s)
@@ -47,7 +49,8 @@ void Errx(LPCSTR s)
 	assert(false);
 }
 
-int GetCIndex(char* s) {
+int GetCIndex(char* s)
+{
 	char gx[128];
 	if (!strcmp(s, "NUCLUSE"))
 		return 1;
@@ -57,7 +60,9 @@ int GetCIndex(char* s) {
 };
 char* CurFile;
 StrHash MODS;
-void InitModes() {
+
+void InitModes()
+{
 	MODS.AddString("??");
 	MODS.AddString("[MEMBERS]");
 	MODS.AddString("[TILEWEAPON]");
@@ -144,12 +149,16 @@ void InitModes() {
 	MODS.AddString("[SPECIAL_UPGRADE]");
 	MODS.AddString("[UPGRADESTAGE]");
 };
-void GetMode(char* s, int* mode, int line) {
+
+void GetMode(char* s, int* mode, int line)
+{
 	if (!MODS.LastIndex)InitModes();
 	if (s[0] != '[')return;
 	int v = MODS.SearchString(s);
-	if (v == -1) {
-		if (!strcmp(s, "[END]")) {
+	if (v == -1)
+	{
+		if (!strcmp(s, "[END]"))
+		{
 			*mode = 255;
 			return;
 		};
@@ -160,12 +169,15 @@ void GetMode(char* s, int* mode, int line) {
 	else *mode = v;
 };
 
-int SearchStr(char** Res, char* s, int count) {
+int SearchStr(char** Res, char* s, int count)
+{
 	for (int i = 0; i < count; i++)
 		if (!strcmp(Res[i], s))return i;
 	return -1;
 };
-int GetWeaponIndex(char* str) {
+
+int GetWeaponIndex(char* str)
+{
 	return SearchStr(mbm, str, nmbm);
 };
 extern char* SoundID[512];
@@ -180,7 +192,7 @@ void LoadWeapon()
 	char* fn = "weapon.nds";
 	CurFile = fn;
 
-	int	mode = 0;
+	int mode = 0;
 	int line = 1;
 	int wid = 0;
 	int zz1, zz2;
@@ -211,7 +223,8 @@ void LoadWeapon()
 			//[MEMBERS]
 			z = Gscanf(f, "%s", gg);
 			GetMode(gg, &mode, line);
-			if (mode == 1 && gg[0] != '/'&&gg[0] != 0) {
+			if (mode == 1 && gg[0] != '/' && gg[0] != 0)
+			{
 				z = Gscanf(f, "%s%d%d%s%s%s%d%d", gx3, &p1, &p2, gx2, gx1, gx, &p3, &p4);
 				mbm[nmbm] = new char[strlen(gg) + 1];
 				strcpy(mbm[nmbm], gg);
@@ -223,7 +236,8 @@ void LoadWeapon()
 				WPL->CustomEx = NULL;
 				WPL->ShadowWeapon = NULL;
 				WPL->NewAnm = GetNewAnimationByName(gx3);
-				if (!WPL->NewAnm) {
+				if (!WPL->NewAnm)
+				{
 					sprintf(gx, "Weapon.nds, %d, Unknown animation:%s", line, gx3);
 					Errx(gx);
 				};
@@ -233,40 +247,46 @@ void LoadWeapon()
 				WPL->HiLayer = 0;
 				WPL->SoundID = -1;
 				//Transparency loading
-				if (!strcmp(gx2, "NONE"))WPL->Transparency = 0; else
-					if (!strcmp(gx2, "DARK"))WPL->Transparency = 1; else
-						if (!strcmp(gx2, "WHITE"))WPL->Transparency = 2; else
-							if (!strcmp(gx2, "RED"))WPL->Transparency = 3; else
-								if (!strcmp(gx2, "BRIGHT"))WPL->Transparency = 4; else
-									if (!strcmp(gx2, "ALPHAR"))WPL->Transparency = 5; else
-										if (!strcmp(gx2, "ALPHAW"))WPL->Transparency = 7; else
-											if (!strcmp(gx2, "ALPHAGB"))WPL->Transparency = 7; else
-												if (!strcmp(gx2, "YELLOW"))WPL->Transparency = 0; else {
-													sprintf(gy, "%s,line %d :Unknown transparency ID: %s", fn, line, gx2);
-													Errx(gy);
-												};
+				if (!strcmp(gx2, "NONE"))WPL->Transparency = 0;
+				else if (!strcmp(gx2, "DARK"))WPL->Transparency = 1;
+				else if (!strcmp(gx2, "WHITE"))WPL->Transparency = 2;
+				else if (!strcmp(gx2, "RED"))WPL->Transparency = 3;
+				else if (!strcmp(gx2, "BRIGHT"))WPL->Transparency = 4;
+				else if (!strcmp(gx2, "ALPHAR"))WPL->Transparency = 5;
+				else if (!strcmp(gx2, "ALPHAW"))WPL->Transparency = 7;
+				else if (!strcmp(gx2, "ALPHAGB"))WPL->Transparency = 7;
+				else if (!strcmp(gx2, "YELLOW"))WPL->Transparency = 0;
+				else
+				{
+					sprintf(gy, "%s,line %d :Unknown transparency ID: %s", fn, line, gx2);
+					Errx(gy);
+				};
 				//Gravity loading
-				if (!strcmp(gx1, "NO_GRAVITY"))WPL->Gravity = 0; else
-					if (!strcmp(gx1, "LO_GRAVITY"))WPL->Gravity = 1; else
-						if (!strcmp(gx1, "HI_GRAVITY"))WPL->Gravity = 2; else
-							if (!strcmp(gx1, "HI_GRAVITY1"))WPL->Gravity = 3; else
-								if (!strcmp(gx1, "HI_GRAVITY2"))WPL->Gravity = 4; else
-									if (!strcmp(gx1, "HI_GRAVITY3"))WPL->Gravity = 5; else {
-										sprintf(gy, "%s,line %d :Unknown gravity type: %s", fn, line, gx1);
-										Errx(gy);
-									};
+				if (!strcmp(gx1, "NO_GRAVITY"))WPL->Gravity = 0;
+				else if (!strcmp(gx1, "LO_GRAVITY"))WPL->Gravity = 1;
+				else if (!strcmp(gx1, "HI_GRAVITY"))WPL->Gravity = 2;
+				else if (!strcmp(gx1, "HI_GRAVITY1"))WPL->Gravity = 3;
+				else if (!strcmp(gx1, "HI_GRAVITY2"))WPL->Gravity = 4;
+				else if (!strcmp(gx1, "HI_GRAVITY3"))WPL->Gravity = 5;
+				else
+				{
+					sprintf(gy, "%s,line %d :Unknown gravity type: %s", fn, line, gx1);
+					Errx(gy);
+				};
 				//Propagation type
-				if (!strcmp(gx, "STAND"))WPL->Propagation = 0; else
-					if (!strcmp(gx, "SLIGHTUP"))WPL->Propagation = 1; else
-						if (!strcmp(gx, "RANDOM"))WPL->Propagation = 2; else
-							if (!strcmp(gx, "RANDOM1"))WPL->Propagation = 6; else
-								if (!strcmp(gx, "FLY"))WPL->Propagation = 3; else
-									if (!strcmp(gx, "REFLECT	"))WPL->Propagation = 7; else
-										if (!strcmp(gx, "ANGLE"))WPL->Propagation = 5; else
-											if (!strcmp(gx, "IMMEDIATE"))WPL->Propagation = 4; else {
-												sprintf(gy, "%s,line %d :Unknown propagation type: %s", fn, line, gx1);
-												Errx(gy);
-											};
+				if (!strcmp(gx, "STAND"))WPL->Propagation = 0;
+				else if (!strcmp(gx, "SLIGHTUP"))WPL->Propagation = 1;
+				else if (!strcmp(gx, "RANDOM"))WPL->Propagation = 2;
+				else if (!strcmp(gx, "RANDOM1"))WPL->Propagation = 6;
+				else if (!strcmp(gx, "FLY"))WPL->Propagation = 3;
+				else if (!strcmp(gx, "REFLECT	"))WPL->Propagation = 7;
+				else if (!strcmp(gx, "ANGLE"))WPL->Propagation = 5;
+				else if (!strcmp(gx, "IMMEDIATE"))WPL->Propagation = 4;
+				else
+				{
+					sprintf(gy, "%s,line %d :Unknown propagation type: %s", fn, line, gx1);
+					Errx(gy);
+				};
 				WPL->Speed = p3;
 				WPL->Times = p4;
 				WPL->NTileWeapon = 0;
@@ -282,39 +302,46 @@ void LoadWeapon()
 			NLine(f);
 			line++;
 			break;
-		case 80://[FIRES]
+		case 80: //[FIRES]
 			z = Gscanf(f, "%s", gg);
 			GetMode(gg, &mode, line);
-			if (mode == 80 && gg[0] != '/'&&gg[0] != 0) {
+			if (mode == 80 && gg[0] != '/' && gg[0] != 0)
+			{
 				z = Gscanf(f, "%d", &p1);
 				NFiresAnm[0] = p1;
 				FiresAnm[0] = new lpNewAnimation[p1];
 				PreFires[0] = new lpNewAnimation[p1];
 				PostFires[0] = new lpNewAnimation[p1];
-				for (int i = 0; i < p1; i++) {
+				for (int i = 0; i < p1; i++)
+				{
 					z = Gscanf(f, "%s", gy);
 					PreFires[0][i] = GetNewAnimationByName(gy);
-					if (!PreFires[0][i]) {
+					if (!PreFires[0][i])
+					{
 						sprintf(gx, "Weapon.nds, %d, Unknown animation:%s", line, gy);
 						Errx(gx);
 					};
 				};
 				NLine(f);
 				line++;
-				for (int i = 0; i < p1; i++) {
+				for (int i = 0; i < p1; i++)
+				{
 					z = Gscanf(f, "%s", gy);
 					FiresAnm[0][i] = GetNewAnimationByName(gy);
-					if (!FiresAnm[0][i]) {
+					if (!FiresAnm[0][i])
+					{
 						sprintf(gx, "Weapon.nds, %d, Unknown animation:%s", line, gy);
 						Errx(gx);
 					};
 				};
 				NLine(f);
 				line++;
-				for (int i = 0; i < p1; i++) {
+				for (int i = 0; i < p1; i++)
+				{
 					z = Gscanf(f, "%s", gy);
 					PostFires[0][i] = GetNewAnimationByName(gy);
-					if (!PostFires[0][i]) {
+					if (!PostFires[0][i])
+					{
 						sprintf(gx, "Weapon.nds, %d, Unknown animation:%s", line, gy);
 						Errx(gx);
 					};
@@ -326,30 +353,36 @@ void LoadWeapon()
 				FiresAnm[1] = new lpNewAnimation[p1];
 				PreFires[1] = new lpNewAnimation[p1];
 				PostFires[1] = new lpNewAnimation[p1];
-				for (int i = 0; i < p1; i++) {
+				for (int i = 0; i < p1; i++)
+				{
 					z = Gscanf(f, "%s", gy);
 					PreFires[1][i] = GetNewAnimationByName(gy);
-					if (!PreFires[1][i]) {
+					if (!PreFires[1][i])
+					{
 						sprintf(gx, "Weapon.nds, %d, Unknown animation:%s", line, gy);
 						Errx(gx);
 					};
 				};
 				NLine(f);
 				line++;
-				for (int i = 0; i < p1; i++) {
+				for (int i = 0; i < p1; i++)
+				{
 					z = Gscanf(f, "%s", gy);
 					FiresAnm[1][i] = GetNewAnimationByName(gy);
-					if (!FiresAnm[1][i]) {
+					if (!FiresAnm[1][i])
+					{
 						sprintf(gx, "Weapon.nds, %d, Unknown animation:%s", line, gy);
 						Errx(gx);
 					};
 				};
 				NLine(f);
 				line++;
-				for (int i = 0; i < p1; i++) {
+				for (int i = 0; i < p1; i++)
+				{
 					z = Gscanf(f, "%s", gy);
 					PostFires[1][i] = GetNewAnimationByName(gy);
-					if (!PostFires[1][i]) {
+					if (!PostFires[1][i])
+					{
 						sprintf(gx, "Weapon.nds, %d, Unknown animation:%s", line, gy);
 						Errx(gx);
 					};
@@ -358,12 +391,14 @@ void LoadWeapon()
 				line++;
 			};
 			break;
-		case 77://[FULLPARENT]
+		case 77: //[FULLPARENT]
 			z = Gscanf(f, "%s", gg);
 			GetMode(gg, &mode, line);
-			if (mode == 77 && gg[0] != '/'&&gg[0] != 0) {
+			if (mode == 77 && gg[0] != '/' && gg[0] != 0)
+			{
 				zz1 = SearchStr(mbm, gg, nmbm);
-				if (zz1 == -1) {
+				if (zz1 == -1)
+				{
 					sprintf(gy, "%s,line %d :[FULLPARENT]:Parent weapon %s not found.", fn, line, gg);
 					Errx(gy);
 				};
@@ -372,12 +407,14 @@ void LoadWeapon()
 				line++;
 			};
 			break;
-		case 17://[HILAYER]
+		case 17: //[HILAYER]
 			z = Gscanf(f, "%s", gg);
 			GetMode(gg, &mode, line);
-			if (mode == 17 && gg[0] != '/'&&gg[0] != 0) {
+			if (mode == 17 && gg[0] != '/' && gg[0] != 0)
+			{
 				zz1 = SearchStr(mbm, gg, nmbm);
-				if (zz1 == -1) {
+				if (zz1 == -1)
+				{
 					sprintf(gy, "%s,line %d :[HILAYER]:weapon %s not found.", fn, line, gg);
 					Errx(gy);
 				};
@@ -390,23 +427,28 @@ void LoadWeapon()
 			//[TILEWEAPON]
 			z = Gscanf(f, "%s", gg);
 			GetMode(gg, &mode, line);
-			if (mode == 2 && gg[0] != '/'&&gg[0] != 0) {
+			if (mode == 2 && gg[0] != '/' && gg[0] != 0)
+			{
 				z = Gscanf(f, "%d%d", &p1, &p2);
 				zz1 = SearchStr(mbm, gg, nmbm);
-				if (zz1 == -1) {
+				if (zz1 == -1)
+				{
 					sprintf(gy, "%s,line %d :[TILEWEAPON]:Parent weapon %s not found.", fn, line, gg);
 					Errx(gy);
 				};
 				WPLIST[zz1]->NTileWeapon = p2;
 				WPLIST[zz1]->TileProbability = p1;
-				if (p2 > 4) {
+				if (p2 > 4)
+				{
 					sprintf(gy, "%d (WEAPON.NDS) :[TILEWEAPON]:Too mutch tile weapon IDs : %d", line, p1);
 					Errx(gy);
 				};
-				for (int j = 0; j < p2; j++) {
+				for (int j = 0; j < p2; j++)
+				{
 					z = Gscanf(f, "%s", gx);
 					int zz2 = SearchStr(mbm, gx, nmbm);
-					if (zz2 == -1) {
+					if (zz2 == -1)
+					{
 						sprintf(gy, "Identifier %s not found.", gx);
 						Errx(gy);
 					};
@@ -416,13 +458,15 @@ void LoadWeapon()
 			NLine(f);
 			line++;
 			break;
-		case 12://[CHILDWEAPON]
+		case 12: //[CHILDWEAPON]
 			z = Gscanf(f, "%s", gg);
 			GetMode(gg, &mode, line);
-			if (mode == 12 && gg[0] != '/'&&gg[0] != 0) {
+			if (mode == 12 && gg[0] != '/' && gg[0] != 0)
+			{
 				z = Gscanf(f, "%d%d%d%d", &p1, &p2, &p3, &wid);
 				zz1 = SearchStr(mbm, gg, nmbm);
-				if (zz1 == -1) {
+				if (zz1 == -1)
+				{
 					sprintf(gy, "%d (WEAPON.NDS) : Unknown parent weapon : %s", line, gg);
 					Errx(gy);
 				};
@@ -435,31 +479,35 @@ void LoadWeapon()
 				CWP->MaxChild = p2;
 				WP->HotFrame = p3;
 				CWP->NChildWeapon = wid;
-				if (wid > 4) {
+				if (wid > 4)
+				{
 					sprintf(gy, "%d (WEAPON.NDS) : [CHILDWEAPON] Too mutch child weapon IDs : %d", line, wid);
 					Errx(gy);
 				};
-				for (int j = 0; j < wid; j++) {
+				for (int j = 0; j < wid; j++)
+				{
 					z = Gscanf(f, "%s", gx1);
 					zz2 = SearchStr(mbm, gx1, nmbm);
-					if (zz2 == -1) {
+					if (zz2 == -1)
+					{
 						sprintf(gy, "%d (WEAPON.NDS) : Unknown child weapon ID : %s", line, gx1);
 						Errx(gy);
 					};
 					CWP->Child[j] = WPLIST[zz2];
 				};
-
 			};
 			NLine(f);
 			line++;
 			break;
-		case 61://[SYNCWEAPON]
+		case 61: //[SYNCWEAPON]
 			z = Gscanf(f, "%s", gg);
 			GetMode(gg, &mode, line);
-			if (mode == 61 && gg[0] != '/'&&gg[0] != 0) {
+			if (mode == 61 && gg[0] != '/' && gg[0] != 0)
+			{
 				z = Gscanf(f, "%d", &p1);
 				zz1 = SearchStr(mbm, gg, nmbm);
-				if (zz1 == -1) {
+				if (zz1 == -1)
+				{
 					sprintf(gy, "%d (WEAPON.NDS) : Unknown parent weapon : %s", line, gg);
 					Errx(gy);
 				};
@@ -467,15 +515,18 @@ void LoadWeapon()
 				mbm[nmbm] = new char[strlen(gg) + 1];
 				strcpy(mbm[nmbm], gg);
 				Weapon* WP = WPLIST[zz1];
-				if (p1 > 4) {
+				if (p1 > 4)
+				{
 					sprintf(gy, "%d (WEAPON.NDS) : %s Too mutch child weapon IDs : %d", line, gg, wid);
 					Errx(gy);
 				};
 				WP->NSyncWeapon = p1;
-				for (int j = 0; j < p1; j++) {
+				for (int j = 0; j < p1; j++)
+				{
 					z = Gscanf(f, "%s", gx1);
 					zz2 = SearchStr(mbm, gx1, nmbm);
-					if (zz1 == -1) {
+					if (zz1 == -1)
+					{
 						sprintf(gy, "%d (WEAPON.NDS) : Unknown child weapon ID : %s", line, gx1);
 						Errx(gy);
 					};
@@ -486,14 +537,16 @@ void LoadWeapon()
 			NLine(f);
 			line++;
 			break;
-		case 78://[CUSTOMEXPLOSION]
+		case 78: //[CUSTOMEXPLOSION]
 			z = Gscanf(f, "%s", gg);
 			GetMode(gg, &mode, line);
-			if (mode == 78 && gg[0] != '/'&&gg[0] != 0) {
+			if (mode == 78 && gg[0] != '/' && gg[0] != 0)
+			{
 				char mtype[16];
 				z = Gscanf(f, "%s%d%d%d%d", mtype, &p1, &p2, &p3, &wid);
 				zz1 = SearchStr(mbm, gg, nmbm);
-				if (zz1 == -1) {
+				if (zz1 == -1)
+				{
 					sprintf(gy, "%d (WEAPON.NDS) : Unknown parent weapon : %s", line, gg);
 					Errx(gy);
 				};
@@ -505,7 +558,8 @@ void LoadWeapon()
 				CWP += WP->NCustomEx;
 				WP->NCustomEx++;
 				int typ = GetExMedia(mtype);
-				if (typ == -1) {
+				if (typ == -1)
+				{
 					sprintf(gy, "%d (Weapon.nds) : Unknown explosion media type : %s", line, mtype);
 					Errx(gy);
 				};
@@ -514,14 +568,17 @@ void LoadWeapon()
 				CWP->MaxChild = p2;
 				WP->HotFrame = p3;
 				CWP->NChildWeapon = wid;
-				if (wid > 4) {
+				if (wid > 4)
+				{
 					sprintf(gy, "%d (WEAPON.NDS) : [CUSTOMEXPLOSION] Too mutch child weapon IDs : %d", line, wid);
 					Errx(gy);
 				};
-				for (int j = 0; j < wid; j++) {
+				for (int j = 0; j < wid; j++)
+				{
 					z = Gscanf(f, "%s", gx1);
 					zz2 = SearchStr(mbm, gx1, nmbm);
-					if (zz2 == -1) {
+					if (zz2 == -1)
+					{
 						sprintf(gy, "%d (WEAPON.NDS) : Unknown child weapon ID : %s", line, gx1);
 						Errx(gy);
 					};
@@ -535,15 +592,18 @@ void LoadWeapon()
 			//[SHADOWWEAPON]
 			z = Gscanf(f, "%s", gg);
 			GetMode(gg, &mode, line);
-			if (mode == 79 && gg[0] != '/'&&gg[0] != 0) {
+			if (mode == 79 && gg[0] != '/' && gg[0] != 0)
+			{
 				zz1 = SearchStr(mbm, gg, nmbm);
-				if (zz1 == -1) {
+				if (zz1 == -1)
+				{
 					sprintf(gy, "%s,line %d :[SHADOWWEAPON]:Parent weapon %s not found.", fn, line, gg);
 					Errx(gy);
 				};
 				z = Gscanf(f, "%s", gx);
 				int zz2 = SearchStr(mbm, gx, nmbm);
-				if (zz2 == -1) {
+				if (zz2 == -1)
+				{
 					sprintf(gy, "Identifier %s not found.", gx);
 					Errx(gy);
 				};
@@ -552,15 +612,17 @@ void LoadWeapon()
 			NLine(f);
 			line++;
 			break;
-		case 13://[RADIUS&DAMAGE]
+		case 13: //[RADIUS&DAMAGE]
 			z = Gscanf(f, "%s%d%d", gg, &p1, &p2);
 			GetMode(gg, &mode, line);
-			if (mode == 12 && gg[0] != '/'&&gg[0] != 0) {
+			if (mode == 12 && gg[0] != '/' && gg[0] != 0)
+			{
 				z = Gscanf(f, "%d%d%d%d", &p1, &p2, &p3, &wid);
 				NLine(f);
 				line++;
 				zz1 = SearchStr(mbm, gg, nmbm);
-				if (zz1 == -1) {
+				if (zz1 == -1)
+				{
 					sprintf(gy, "%d (WEAPON.NDS) : Unknown weapon ID: %s", line, gg);
 					Errx(gy);
 				};
@@ -568,36 +630,42 @@ void LoadWeapon()
 				WPLIST[zz1]->Damage = p2;
 			};
 			break;
-		case 14://[CONSTANT]
+		case 14: //[CONSTANT]
 			z = Gscanf(f, "%s", gg);
 			GetMode(gg, &mode, line);
 			if (mode == 14)
 				z = Gscanf(f, "%s%s%s%s", gx, gx1, gx2, gx3);
 			NLine(f);
 			line++;
-			if (mode == 14 && gg[0] != '/'&&gg[0] != 0) {
+			if (mode == 14 && gg[0] != '/' && gg[0] != 0)
+			{
 				zz1 = GetCIndex(gg);
-				if (zz1 == 1) {
+				if (zz1 == 1)
+				{
 					zz1 = SearchStr(mbm, gx, nmbm);
-					if (zz1 == -1) {
+					if (zz1 == -1)
+					{
 						sprintf(gy, "Illegal value for NUCLUSE : %s", gx);
 						Errx(gy);
 					};
 					NUCLUSE[0] = zz1;
 					zz1 = SearchStr(mbm, gx1, nmbm);
-					if (zz1 == -1) {
+					if (zz1 == -1)
+					{
 						sprintf(gy, "Illegal value for NUCLUSE : %s", gx1);
 						Errx(gy);
 					};
 					NUCLUSE[1] = zz1;
 					zz1 = SearchStr(mbm, gx2, nmbm);
-					if (zz1 == -1) {
+					if (zz1 == -1)
+					{
 						sprintf(gy, "Illegal value for NUCLUSE : %s", gx2);
 						Errx(gy);
 					};
 					NUCLUSE[2] = zz1;
 					zz1 = SearchStr(mbm, gx3, nmbm);
-					if (zz1 == -1) {
+					if (zz1 == -1)
+					{
 						sprintf(gy, "Illegal value for NUCLUSE : %s", gx);
 						Errx(gy);
 					};
@@ -605,7 +673,7 @@ void LoadWeapon()
 				};
 			};
 			break;
-		case 45://[IDWEAPON]
+		case 45: //[IDWEAPON]
 			z = Gscanf(f, "%s", gg);
 			GetMode(gg, &mode, line);
 			if (mode == 45)
@@ -616,7 +684,7 @@ void LoadWeapon()
 			NLine(f);
 			line++;
 
-			if (mode == 45 && gg[0] != '/'&&gg[0] != 0)
+			if (mode == 45 && gg[0] != '/' && gg[0] != 0)
 			{
 				zz1 = SearchStr(mbm, gx, nmbm);
 				if (zz1 == -1)
@@ -624,24 +692,25 @@ void LoadWeapon()
 					sprintf(gy, "Identifier %s not found.", gg);
 					Errx(gy);
 				}
-				if (!strcmp(gg, "ID_FIRE"))ID_FIRE = zz1; else
-					if (!strcmp(gg, "ID_FIRE1"))ID_FIRE1 = zz1; else
-						if (!strcmp(gg, "ID_MAGW"))ID_MAGW = zz1; else
-							if (!strcmp(gg, "ID_EXPL1"))ID_EXPL1 = zz1; else
-								if (!strcmp(gg, "ID_EXPL2"))ID_EXPL2 = zz1; else
-									if (!strcmp(gg, "ID_GLASSFLY"))ID_GLASSFLY = zz1; else
-										if (!strcmp(gg, "ID_GLASSBROKEN"))ID_GLASSBROKEN = zz1; else
-											if (!strcmp(gg, "ID_MAGEXP"))ID_MAGEXP = zz1; else
-												if (!strcmp(gg, "ID_FOG"))ID_FOG = zz1; else
-													if (!strcmp(gg, "ID_FOG1"))ID_FOG1 = zz1; else
-														if (!strcmp(gg, "ID_FIREX"))ID_FIREX = zz1; else
-														{
-															sprintf(gx, "[IDWEAPON] %d :Unknown constant: %s", line, gg);
-															Errx(gx);
-														}
+				if (!strcmp(gg, "ID_FIRE"))ID_FIRE = zz1;
+				else if (!strcmp(gg, "ID_FIRE1"))ID_FIRE1 = zz1;
+				else if (!strcmp(gg, "ID_MAGW"))ID_MAGW = zz1;
+				else if (!strcmp(gg, "ID_EXPL1"))ID_EXPL1 = zz1;
+				else if (!strcmp(gg, "ID_EXPL2"))ID_EXPL2 = zz1;
+				else if (!strcmp(gg, "ID_GLASSFLY"))ID_GLASSFLY = zz1;
+				else if (!strcmp(gg, "ID_GLASSBROKEN"))ID_GLASSBROKEN = zz1;
+				else if (!strcmp(gg, "ID_MAGEXP"))ID_MAGEXP = zz1;
+				else if (!strcmp(gg, "ID_FOG"))ID_FOG = zz1;
+				else if (!strcmp(gg, "ID_FOG1"))ID_FOG1 = zz1;
+				else if (!strcmp(gg, "ID_FIREX"))ID_FIREX = zz1;
+				else
+				{
+					sprintf(gx, "[IDWEAPON] %d :Unknown constant: %s", line, gg);
+					Errx(gx);
+				}
 			}
 			break;
-		case 64://[SOUND}
+		case 64: //[SOUND}
 			z = Gscanf(f, "%s", gg);
 			GetMode(gg, &mode, line);
 
@@ -652,7 +721,7 @@ void LoadWeapon()
 
 			NLine(f);
 			line++;
-			if (mode == 64 && gg[0] != '/'&&gg[0] != 0)
+			if (mode == 64 && gg[0] != '/' && gg[0] != 0)
 			{
 				zz1 = SearchStr(mbm, gg, nmbm);
 
@@ -677,7 +746,8 @@ void LoadWeapon()
 			z = 0;
 			break;
 		}
-	} while (z);
+	}
+	while (z);
 
 	if (mode == 0)
 	{
@@ -826,7 +896,8 @@ void ListAllUnits()
 	f = fopen("upglist.dat", "w");
 	for (int i = 0; i < NATIONS->NUpgrades; i++)
 	{
-		fprintf(f, "%s %s %s\n", NatNames[NATIONS->UPGRADE[i]->NatID], NATIONS->UPGRADE[i]->Name, NATIONS->UPGRADE[i]->Message);
+		fprintf(f, "%s %s %s\n", NatNames[NATIONS->UPGRADE[i]->NatID], NATIONS->UPGRADE[i]->Name,
+		        NATIONS->UPGRADE[i]->Message);
 	}
 	fclose(f);
 }
@@ -895,10 +966,10 @@ void LoadNation(char* fn, byte NIndex, byte NatID)
 	char gx[128];
 	char gy[128];
 	char gz[128];
-	int	mode = 0;
+	int mode = 0;
 	int line = 0;
 	int wid = 0;
-	int	zz1, zz2;
+	int zz1, zz2;
 	int parm1, parm2, parm3;
 
 	GFILE* f1 = Gopen(fn, "r");
@@ -930,11 +1001,12 @@ void LoadNation(char* fn, byte NIndex, byte NatID)
 			//[MEMBERS]
 			z = Gscanf(f1, "%s", gx);
 			GetMode(gx, &mode, line);
-			if (mode == 1 && gx[0] != '/'&&gx[0] != 0)
+			if (mode == 1 && gx[0] != '/' && gx[0] != 0)
 			{
 				z = Gscanf(f1, "%s", gg);
 
-				for (int cp = 0; cp < 8; cp++) {
+				for (int cp = 0; cp < 8; cp++)
+				{
 					nat[cp].Mon[nat[cp].NMon] = (GeneralObject*)(new Visuals);
 					CreateGOByName(nat[cp].Mon[nat[cp].NMon], gg, gx);
 					nat[cp].Mon[nat[cp].NMon]->NatID = NatID;
@@ -950,7 +1022,8 @@ void LoadNation(char* fn, byte NIndex, byte NatID)
 			//[PRODUCE]
 			z = Gscanf(f1, "%s", gg);
 			GetMode(gg, &mode, line);
-			if (gg[0] == '/' || gg[0] == 0) {
+			if (gg[0] == '/' || gg[0] == 0)
+			{
 				NLine(f1);
 				line++;
 				break;
@@ -959,26 +1032,32 @@ void LoadNation(char* fn, byte NIndex, byte NatID)
 				z = Gscanf(f1, "%d", &wid);
 			NLine(f1);
 			line++;
-			if (mode == 5) {
+			if (mode == 5)
+			{
 				zz1 = mnm.SearchString(gg);
-				if (zz1 == -1) {
+				if (zz1 == -1)
+				{
 					sprintf(gy, "%s : Undefined identifier %s at line %d", fn, gg, line);
 					Errx(gy);
 				};
-				for (cp = 0; cp < 8; cp++) {
+				for (cp = 0; cp < 8; cp++)
+				{
 					nat[cp].PACount[zz1] = wid;
 					nat[cp].PAble[zz1] = new word[wid];
 					nat[cp].AIndex[zz1] = new char[wid];
 					nat[cp].AHotKey[zz1] = new char[wid];
 				};
-				for (int j = 0; j < wid; j++) {
+				for (int j = 0; j < wid; j++)
+				{
 					z = Gscanf(f1, "%s", gg);
-					int	zz2 = mnm.SearchString(gg);
-					if (zz2 == -1) {
+					int zz2 = mnm.SearchString(gg);
+					if (zz2 == -1)
+					{
 						sprintf(gy, "%s : Undefined identifier %s at line %d", fn, gg, line);
 						Errx(gy);
 					};
-					for (cp = 0; cp < 8; cp++) {
+					for (cp = 0; cp < 8; cp++)
+					{
 						nat[cp].PAble[zz1][j] = zz2;
 						nat[cp].AIndex[zz1][j] = -1;
 						nat[cp].AHotKey[zz1][j] = 0;
@@ -987,7 +1066,7 @@ void LoadNation(char* fn, byte NIndex, byte NatID)
 				};
 			};
 			break;
-		case 6://COUNTRY
+		case 6: //COUNTRY
 			z = Gscanf(f1, "%s", gg);
 			GetMode(gg, &mode, line);
 			line++;
@@ -1053,7 +1132,7 @@ void LoadNation(char* fn, byte NIndex, byte NatID)
 				}
 			}
 			break;
-		case 7://[UPGRADE]
+		case 7: //[UPGRADE]
 			z = Gscanf(f1, "%s", gg);
 			GetMode(gg, &mode, line);
 			if (mode == 7)
@@ -1078,7 +1157,7 @@ void LoadNation(char* fn, byte NIndex, byte NatID)
 				line++;
 			}
 			break;
-		case 8://[AUTOUPGRADE]
+		case 8: //[AUTOUPGRADE]
 			z = Gscanf(f1, "%s", gg);
 			GetMode(gg, &mode, line);
 			line++;
@@ -1126,7 +1205,7 @@ void LoadNation(char* fn, byte NIndex, byte NatID)
 			}
 			NLine(f1);
 			break;
-		case 9://[UPGRADELINKS]
+		case 9: //[UPGRADELINKS]
 			z = Gscanf(f1, "%s", gg);
 			GetMode(gg, &mode, line);
 			line++;
@@ -1174,7 +1253,7 @@ void LoadNation(char* fn, byte NIndex, byte NatID)
 			}
 			NLine(f1);
 			break;
-		case 10://[FIXED_PRODUCE]
+		case 10: //[FIXED_PRODUCE]
 			z = Gscanf(f1, "%s", gg);
 			GetMode(gg, &mode, line);
 			if (gg[0] == '/' || gg[0] == 0)
@@ -1210,7 +1289,7 @@ void LoadNation(char* fn, byte NIndex, byte NatID)
 						sprintf(gy, "%s : Not enough parameters at line %d", fn, line);
 						Errx(gy);
 					}
-					int	zz2 = mnm.SearchString(gg);
+					int zz2 = mnm.SearchString(gg);
 					if (zz2 == -1)
 					{
 						sprintf(gy, "%s : Undefined identifier %s at line %d", fn, gg, line);
@@ -1237,7 +1316,7 @@ void LoadNation(char* fn, byte NIndex, byte NatID)
 				line++;
 			}
 			break;
-		case 19://[NOSEARCHVICTIM]
+		case 19: //[NOSEARCHVICTIM]
 			z = Gscanf(f1, "%s", gg);
 			GetMode(gg, &mode, line);
 			line++;
@@ -1261,7 +1340,7 @@ void LoadNation(char* fn, byte NIndex, byte NatID)
 				}
 			}
 			break;
-		case 22://[LIFESHOTLOST]
+		case 22: //[LIFESHOTLOST]
 			z = Gscanf(f1, "%s", gg);
 			GetMode(gg, &mode, line);
 			line++;
@@ -1286,7 +1365,7 @@ void LoadNation(char* fn, byte NIndex, byte NatID)
 				}
 			}
 			break;
-		case 23://[STARTACCESS]
+		case 23: //[STARTACCESS]
 			z = Gscanf(f1, "%s", gg);
 			GetMode(gg, &mode, line);
 			line++;
@@ -1312,7 +1391,7 @@ void LoadNation(char* fn, byte NIndex, byte NatID)
 			break;
 
 
-		case 27://[CANBUILD]
+		case 27: //[CANBUILD]
 			z = Gscanf(f1, "%s", gg);
 			GetMode(gg, &mode, line);
 			line++;
@@ -1333,7 +1412,7 @@ void LoadNation(char* fn, byte NIndex, byte NatID)
 			}
 			break;
 
-		case 36://[UPGRADEENABLE]
+		case 36: //[UPGRADEENABLE]
 			z = Gscanf(f1, "%s", gg);
 			GetMode(gg, &mode, line);
 			line++;
@@ -1358,7 +1437,7 @@ void LoadNation(char* fn, byte NIndex, byte NatID)
 				NLine(f1);
 			}
 			break;
-		case 81://[DISABLED_UPGRADE]
+		case 81: //[DISABLED_UPGRADE]
 			z = Gscanf(f1, "%s", gg);
 			GetMode(gg, &mode, line);
 			line++;
@@ -1379,7 +1458,7 @@ void LoadNation(char* fn, byte NIndex, byte NatID)
 				NLine(f1);
 			}
 			break;
-		case 37://[PRIVATE]
+		case 37: //[PRIVATE]
 			z = Gscanf(f1, "%s", gg);
 			GetMode(gg, &mode, line);
 			line++;
@@ -1407,7 +1486,7 @@ void LoadNation(char* fn, byte NIndex, byte NatID)
 			}
 			break;
 
-		case 38://[UPGRADEPLACE]
+		case 38: //[UPGRADEPLACE]
 			z = Gscanf(f1, "%s", gg);
 			GetMode(gg, &mode, line);
 			line++;
@@ -1460,7 +1539,7 @@ void LoadNation(char* fn, byte NIndex, byte NatID)
 			}
 			break;
 
-		case 40://[ENABLED]
+		case 40: //[ENABLED]
 			z = Gscanf(f1, "%s", gg);
 			GetMode(gg, &mode, line);
 			line++;
@@ -1485,7 +1564,7 @@ void LoadNation(char* fn, byte NIndex, byte NatID)
 				}
 			}
 			break;
-		case 41://[AUTO_PERFORM_UPGRADE]
+		case 41: //[AUTO_PERFORM_UPGRADE]
 			z = Gscanf(f1, "%s", gg);
 			GetMode(gg, &mode, line);
 			line++;
@@ -1501,7 +1580,7 @@ void LoadNation(char* fn, byte NIndex, byte NatID)
 			}
 			NLine(f1);
 			break;
-		case 50://[ACCESSCONTROL]
+		case 50: //[ACCESSCONTROL]
 			z = Gscanf(f1, "%s", gg);
 			GetMode(gg, &mode, line);
 			line++;
@@ -1572,7 +1651,7 @@ void LoadNation(char* fn, byte NIndex, byte NatID)
 				NLine(f1);
 			}
 			break;
-		case 53://[OFFICERS]
+		case 53: //[OFFICERS]
 			z = Gscanf(f1, "%s", gg);
 			GetMode(gg, &mode, line);
 			line++;
@@ -1612,7 +1691,7 @@ void LoadNation(char* fn, byte NIndex, byte NatID)
 					z = Gscanf(f1, "%s%d", gy, &na);
 
 					int z2 = 0;
-					for (z2 = 0; z2 < NOClasses && strcmp(gy, OrderDesc[z2].ID); z2++);//BUGFIX: s/z/z2/
+					for (z2 = 0; z2 < NOClasses && strcmp(gy, OrderDesc[z2].ID); z2++); //BUGFIX: s/z/z2/
 					//FUNNY: wtf officer formation buttons logic all fucked up
 					//WHY U NAME variables like z or z2 and mix them up?
 
@@ -1643,7 +1722,7 @@ void LoadNation(char* fn, byte NIndex, byte NatID)
 						char cc1[128];
 						z2 = Gscanf(f1, "%s", cc1);
 						int t;
-						for (t = 0; t < NEOrders&&strcmp(ElementaryOrders[t].ID, cc1); t++);
+						for (t = 0; t < NEOrders && strcmp(ElementaryOrders[t].ID, cc1); t++);
 						if (t >= NEOrders)
 						{
 							sprintf(gz, "( %s ) %d :[OFFICERS]->%s->%s Invalid oder ID: %s.", fn, line, gg, gy, cc1);
@@ -1689,37 +1768,44 @@ void LoadNation(char* fn, byte NIndex, byte NatID)
 			}
 			break;
 
-		case 73://[CANSETDEST]
+		case 73: //[CANSETDEST]
 			z = Gscanf(f1, "%s", gg);
 			GetMode(gg, &mode, line);
 			line++;
-			if (gg[0] == '/' || gg[0] == 0) {
+			if (gg[0] == '/' || gg[0] == 0)
+			{
 				NLine(f1);
 				break;
 			};
-			if (mode == 73) {
+			if (mode == 73)
+			{
 				zz1 = mnm.SearchString(gg);
-				if (zz1 == -1) {
+				if (zz1 == -1)
+				{
 					sprintf(gz, "( %s ) %d :Undefined monster : %s", fn, line, gg);
 					Errx(gz);
 				};
 				NLine(f1);
-				for (cp = 0; cp < 8; cp++) {
+				for (cp = 0; cp < 8; cp++)
+				{
 					nat[cp].Mon[zz1]->CanDest = true;
 				};
 			};
 			break;
-		case 74://[EXTMENU]
+		case 74: //[EXTMENU]
 			z = Gscanf(f1, "%s", gg);
 			GetMode(gg, &mode, line);
 			line++;
-			if (gg[0] == '/' || gg[0] == 0) {
+			if (gg[0] == '/' || gg[0] == 0)
+			{
 				NLine(f1);
 				break;
 			};
-			if (mode == 74) {
+			if (mode == 74)
+			{
 				zz1 = mnm.SearchString(gg);
-				if (zz1 == -1) {
+				if (zz1 == -1)
+				{
 					sprintf(gz, "( %s ) %d :Undefined monster : %s", fn, line, gg);
 					Errx(gz);
 				};
@@ -1728,80 +1814,108 @@ void LoadNation(char* fn, byte NIndex, byte NatID)
 			};
 			break;
 
-		case 76://[LOCKUNIT]
+		case 76: //[LOCKUNIT]
 			z = Gscanf(f1, "%s", gg);
 			GetMode(gg, &mode, line);
 			line++;
-			if (gg[0] == '/' || gg[0] == 0) {
+			if (gg[0] == '/' || gg[0] == 0)
+			{
 				NLine(f1);
 				break;
 			};
-			if (mode == 76) {
+			if (mode == 76)
+			{
 				z = Gscanf(f1, "%d%s", &parm1, gx);
 				zz1 = mnm.SearchString(gg);
-				if (zz1 == -1) {
+				if (zz1 == -1)
+				{
 					sprintf(gz, "( %s ) %d :Undefined monster : %s", fn, line, gg);
 					Errx(gz);
 				};
 				parm3 = mnm.SearchString(gx);
-				if (parm3 == -1) {
+				if (parm3 == -1)
+				{
 					sprintf(gz, "( %s ) %d :Undefined monster : %s", fn, line, gx);
 					Errx(gz);
 				};
 				NLine(f1);
-				for (cp = 0; cp < 8; cp++) {
+				for (cp = 0; cp < 8; cp++)
+				{
 					nat[cp].Mon[zz1]->LockID = parm3;
 					nat[cp].Mon[zz1]->NLockUnits = parm1;
 				};
 			};
 			break;
-		case 82://[SPECIAL_UNIT]
+		case 82: //[SPECIAL_UNIT]
 			z = Gscanf(f1, "%s", gg);
 			GetMode(gg, &mode, line);
 			line++;
-			if (gg[0] == '/' || gg[0] == 0) {
+			if (gg[0] == '/' || gg[0] == 0)
+			{
 				NLine(f1);
 				break;
 			};
-			if (mode == 82) {
+			if (mode == 82)
+			{
 				int z1, z2, z3, z4, z5, z6, z7, z8;
-				z1 = 0; z2 = 0; z3 = 0; z4 = 0; z5 = 0; z6 = 0; z7 = 0; z8 = 0;
+				z1 = 0;
+				z2 = 0;
+				z3 = 0;
+				z4 = 0;
+				z5 = 0;
+				z6 = 0;
+				z7 = 0;
+				z8 = 0;
 				z = Gscanf(f1, "%d%d%d%d%d%d%d%d", &z1, &z2, &z3, &z4, &z5, &z6, &z7, &z8);
 				zz1 = mnm.SearchString(gg);
-				if (zz1 == -1) {
+				if (zz1 == -1)
+				{
 					sprintf(gz, "( %s ) %d :Undefined monster : %s", fn, line, gg);
 					Errx(gz);
 				};
-				for (cp = 0; cp < 8; cp++) {
-					nat[cp].Mon[zz1]->Options = 0 != (z1 + (z2 << 1) + (z3 << 2) + (z4 << 3) + (z5 << 3) + (z6 << 3) + (z7 << 3) + (z8 << 3));
+				for (cp = 0; cp < 8; cp++)
+				{
+					nat[cp].Mon[zz1]->Options = 0 != (z1 + (z2 << 1) + (z3 << 2) + (z4 << 3) + (z5 << 3) + (z6 << 3) + (z7 << 3) + (z8
+						<< 3));
 				};
 			};
 			break;
-		case 83://[SPECIAL_UPGRADE]
+		case 83: //[SPECIAL_UPGRADE]
 			z = Gscanf(f1, "%s", gg);
 			GetMode(gg, &mode, line);
 			line++;
-			if (gg[0] == '/' || gg[0] == 0) {
+			if (gg[0] == '/' || gg[0] == 0)
+			{
 				NLine(f1);
 				break;
 			};
-			if (mode == 83) {
+			if (mode == 83)
+			{
 				int z1, z2, z3, z4, z5, z6, z7, z8;
-				z1 = 0; z2 = 0; z3 = 0; z4 = 0; z5 = 0; z6 = 0; z7 = 0; z8 = 0;
+				z1 = 0;
+				z2 = 0;
+				z3 = 0;
+				z4 = 0;
+				z5 = 0;
+				z6 = 0;
+				z7 = 0;
+				z8 = 0;
 				z = Gscanf(f1, "%d%d%d%d%d%d%d%d", &z1, &z2, &z3, &z4, &z5, &z6, &z7, &z8);
 				zz1 = GetUpgradeID(nat, gg);
-				if (zz1 == -1) {
+				if (zz1 == -1)
+				{
 					sprintf(gz, "( %s ) %d :Undefined upgrade : %s", fn, line, gg);
 					Errx(gz);
 				};
-				for (cp = 0; cp < 8; cp++) {
+				for (cp = 0; cp < 8; cp++)
+				{
 					NewUpgrade* NU = nat[cp].UPGRADE[zz1];
 					NU->Options = z1 + (z2 << 1) + (z3 << 2) + (z4 << 3) + (z5 << 3) + (z6 << 3) + (z7 << 3) + (z8 << 3);
 				};
 			};
 			break;
 
-		case 84://[UPGRADESTAGE]
+		case 84: //[UPGRADESTAGE]
 			z = Gscanf(f1, "%s", gg);
 			GetMode(gg, &mode, line);
 			line++;
@@ -1829,37 +1943,44 @@ void LoadNation(char* fn, byte NIndex, byte NatID)
 			}
 			break;
 
-		case 255://[END]
+		case 255: //[END]
 			z = 0;
 			break;
 		}
-	} while (z);
+	}
+	while (z);
 	Gclose(f1);
 }
 
-int Get_UID(Nation* NT, char* gg, char* fn, int line) {
+int Get_UID(Nation* NT, char* gg, char* fn, int line)
+{
 	int N = NT->NMon;
 	char gx[128];
 	GeneralObject** GOG = NT->Mon;
 	int k;
-	for (k = 0; k < N&&strcmp(GOG[k]->MonsterID, gg); k++);
-	if (k >= N) {
+	for (k = 0; k < N && strcmp(GOG[k]->MonsterID, gg); k++);
+	if (k >= N)
+	{
 		NewUpgrade** NUG = NT->UPGRADE;
 		N = NT->NUpgrades;
-		for (k = 0; k < N&&strcmp(NUG[k]->Name, gg); k++);
-		if (k >= N) {
+		for (k = 0; k < N && strcmp(NUG[k]->Name, gg); k++);
+		if (k >= N)
+		{
 			sprintf(gx, "%s, line %d :Unknown ID: %s", fn, line, gg);
 			Errx(gx);
 		};
 	};
 	return k;
 };
-void Read_UIDG(Nation* NT, U_Grp* UG, char* Name, GFILE* f1, char* fn, int line) {
+
+void Read_UIDG(Nation* NT, U_Grp* UG, char* Name, GFILE* f1, char* fn, int line)
+{
 	int n;
 	char gg[128];
 	char gx[128];
 	int z = Gscanf(f1, "%d", &n);
-	if (z != 1) {
+	if (z != 1)
+	{
 		sprintf(gx, "%s, line %d :Invalid group definition for %s", fn, line, Name);
 		Errx(gx);
 	};
@@ -1867,9 +1988,11 @@ void Read_UIDG(Nation* NT, U_Grp* UG, char* Name, GFILE* f1, char* fn, int line)
 	UG->UIDS = new word[n];
 	UG->UVAL = new word[n];
 	int v;
-	for (int i = 0; i < n; i++) {
+	for (int i = 0; i < n; i++)
+	{
 		z = Gscanf(f1, "%s%d", gg, &v);
-		if (z != 2) {
+		if (z != 2)
+		{
 			sprintf(gx, "%s, line %d :Invalid group definition for %s", fn, line, Name);
 			Errx(gx);
 		};
@@ -1877,23 +2000,29 @@ void Read_UIDG(Nation* NT, U_Grp* UG, char* Name, GFILE* f1, char* fn, int line)
 		UG->UVAL[i] = v;
 	};
 };
-word ReadWORD(char* Name, char* gy, char* fn, int Line) {
+
+word ReadWORD(char* Name, char* gy, char* fn, int Line)
+{
 	int n;
 	char gx[128];
 	int z = sscanf(gy, "%d", &n);
-	if (z != 1) {
+	if (z != 1)
+	{
 		sprintf(gx, "%s, line %d :Invalid integer value of %s", fn, Line, Name);
 		Errx(gx);
 	};
 	return n;
 };
-void LoadAI(char* fn, Nation* NT) {
+
+void LoadAI(char* fn, Nation* NT)
+{
 	char gg[128];
 	char gx[128];
 	char gy[128];
 	GFILE* f1 = Gopen(fn, "rt");
 
-	if (!int(f1)) {
+	if (!int(f1))
+	{
 		sprintf(gg, "Could not open %s", fn);
 		Errx(gg);
 		return;
@@ -1913,211 +2042,239 @@ void LoadAI(char* fn, Nation* NT) {
 	memset(NT->AI_Devlp, 0, sizeof NT->AI_Devlp);
 	int line = 1;
 	int mode = 0;
-	do {
+	do
+	{
 		z = Gscanf(f1, "%s", gg);
-		if (z) {
-			if (gg[0] == '#') {
+		if (z)
+		{
+			if (gg[0] == '#')
+			{
 				if (!strcmp(gg, "#DEFGRP"))mode = 1;
+				else if (!strcmp(gg, "#REQ"))mode = 2;
+				else if (!strcmp(gg, "#TODO"))mode = 3;
+				else if (!strcmp(gg, "#ENDREQ"))
+				{
+					mode = 4;
+					NT->N_AI_Levels++;
+				}
+				else if (!strcmp(gg, "#DEF"))mode = 5;
+				else if (!strcmp(gg, "#DEFG"))mode = 6;
+				else if (!strcmp(gg, "#PBALANCE"))mode = 7;
+				else if (!strcmp(gg, "#GOLDMINEMATRIX"))mode = 8;
+				else if (!strcmp(gg, "#IRONMINEMATRIX"))mode = 9;
+				else if (!strcmp(gg, "#COALMINEMATRIX"))mode = 10;
+				else if (!strcmp(gg, "#END"))mode = 255;
 				else
-					if (!strcmp(gg, "#REQ"))mode = 2;
-					else
-						if (!strcmp(gg, "#TODO"))mode = 3;
-						else
-							if (!strcmp(gg, "#ENDREQ")) {
-								mode = 4;
-								NT->N_AI_Levels++;
-							}
-							else
-								if (!strcmp(gg, "#DEF"))mode = 5;
-								else
-									if (!strcmp(gg, "#DEFG"))mode = 6;
-									else
-										if (!strcmp(gg, "#PBALANCE"))mode = 7;
-										else
-											if (!strcmp(gg, "#GOLDMINEMATRIX"))mode = 8;
-											else
-												if (!strcmp(gg, "#IRONMINEMATRIX"))mode = 9;
-												else
-													if (!strcmp(gg, "#COALMINEMATRIX"))mode = 10;
-													else
-														if (!strcmp(gg, "#END"))mode = 255;
-														else {
-															sprintf(gx, "%s, line %d :Undefined AI directive : %s", fn, line, gg);
-															Errx(gx);
-														};
+				{
+					sprintf(gx, "%s, line %d :Undefined AI directive : %s", fn, line, gg);
+					Errx(gx);
+				};
 			}
-			else {
-				if (gg[0] != '/') {
-					switch (mode) {
-					case 1:		//#DEFGRP
+			else
+			{
+				if (gg[0] != '/')
+				{
+					switch (mode)
+					{
+					case 1: //#DEFGRP
 						break;
 					case 2:
-					{//#REQ
-						int dkind = 0;
-						if (!strcmp(gg, "$MONEY")) {
-							dkind = 16;
-							Gscanf(f1, "%s", gg);
-						};
-						int kind = 0;
-						int N = NT->NMon;
-						GeneralObject** GOG = NT->Mon;
-						int k;
-						for (k = 0; k < N&&strcmp(GOG[k]->MonsterID, gg); k++);
-						if (k >= N) {
-							NewUpgrade** NUG = NT->UPGRADE;
-							N = NT->NUpgrades;
-							for (k = 0; k < N&&strcmp(NUG[k]->Name, gg); k++);
-							if (k >= N) {
-								k = SearchStr(grp, gg, ngrp);
-								if (k == -1) {
-									sprintf(gx, "%s, line %d :Unknown ID: %s", fn, line, gg);
-									Errx(gx);
-								}
-								else kind = 2;
-							}
-							else kind = 1;
-						};
-						z = Gscanf(f1, "%d", &parm1);
-						int nai = NT->N_AI_Levels;
-						int nar = NT->N_AI_Req[nai];
-						if (nar) {
-							//sAI_Req* sar=NT->AI_Req[nai];
-							NT->AI_Req[nai] = (sAI_Req*)realloc(NT->AI_Req[nai], (nar + 1) * sizeof sAI_Req);
-							NT->N_AI_Req[nai]++;
-						}
-						else {
-							NT->AI_Req[nai] = new sAI_Req[nar + 1];
-							NT->N_AI_Req[nai]++;
-						};
-						sAI_Req* ARE = &NT->AI_Req[nai][nar];
-						ARE->Kind = kind + dkind;
-						ARE->ObjID = k;
-						ARE->Amount = parm1;
-						NLine(f1);
-						line++;
-					};
-					break;
-					case 3:
-					{//#TODO
-						if (gg[0] == '$') {
-							byte Kind = 0xFF;
-							int Arg1 = 0;
-							if (!strcmp(gg, "$SELO"))Kind = 1;
-							else if (!strcmp(gg, "$ARMY"))Kind = 2;
-							else if (!strcmp(gg, "$SCIENCE"))Kind = 3;
-							else {
-								//specials
-								if (!strcmp(gg, "$MAX_WORKERS")) {
-									if (Gscanf(f1, "%d", &Arg1) != 1) {
-										sprintf(gx, "%s, line %d :Invalid integer value of %s", fn, line, gg);
-										Errx(gx);
-									};
-									Kind = 4;
-								};
+						{
+							//#REQ
+							int dkind = 0;
+							if (!strcmp(gg, "$MONEY"))
+							{
+								dkind = 16;
+								Gscanf(f1, "%s", gg);
 							};
-							if (Kind == 0xFF) {
-								sprintf(gx, "%s, line %d :Unknown command: %s", fn, line, gg);
-								Errx(gx);
-							};
-							int nai = NT->N_AI_Levels;
-							int ncm = NT->N_AI_Cmd[nai];
-							if (ncm) {
-								NT->AI_Cmd[nai] = (sAI_Cmd*)realloc(NT->AI_Cmd[nai], (ncm + 1) * sizeof sAI_Cmd);
-								NT->N_AI_Cmd[nai]++;
-							}
-							else {
-								NT->AI_Cmd[nai] = new sAI_Cmd;
-								NT->N_AI_Cmd[nai]++;
-							};
-							sAI_Cmd* SCM = NT->AI_Cmd[nai] + ncm;
-							memset(SCM->Info, 0, sizeof SCM->Info);
-							SCM->Kind = Kind;
-							if (Kind < 4) {
-								int z = Gscanf(f1, "%d", &parm1);
-								if (z != 1) {
-									sprintf(gx, "%s, line %d :Incorrect amount or resources for %s", fn, line, gg);
-									Errx(gx);
-								};
-								for (int k = 0; k < parm1; k++) {
-									z = Gscanf(f1, "%s%d", gy, &parm2);
-									if (z != 2) {
-										sprintf(gx, "%s, line %d :Incorrect parameters for %s", fn, line, gg);
-										Errx(gx);
-									};
-									int rk = GetResID(gy);
-									if (!(rk < 8)) {
-										sprintf(gx, "%s, line %d :Unknownn resource %s", fn, line, gg);
-										Errx(gx);
-									};
-									SCM->Info[rk] = parm2;
-								};
-							}
-							else
-								if (Kind == 4)SCM->Info[0] = Arg1;
-							NLine(f1);
-							line++;
-						}
-						else {
 							int kind = 0;
 							int N = NT->NMon;
 							GeneralObject** GOG = NT->Mon;
 							int k;
-							for (k = 0; k < N&&strcmp(GOG[k]->MonsterID, gg); k++);
-							if (k >= N) {
+							for (k = 0; k < N && strcmp(GOG[k]->MonsterID, gg); k++);
+							if (k >= N)
+							{
 								NewUpgrade** NUG = NT->UPGRADE;
 								N = NT->NUpgrades;
-								for (k = 0; k < N&&strcmp(NUG[k]->Name, gg); k++);
-								if (k >= N) {
-									sprintf(gx, "%s, line %d :Unknown ID: %s", fn, line, gg);
-									Errx(gx);
+								for (k = 0; k < N && strcmp(NUG[k]->Name, gg); k++);
+								if (k >= N)
+								{
+									k = SearchStr(grp, gg, ngrp);
+									if (k == -1)
+									{
+										sprintf(gx, "%s, line %d :Unknown ID: %s", fn, line, gg);
+										Errx(gx);
+									}
+									else kind = 2;
 								}
 								else kind = 1;
 							};
-							z = Gscanf(f1, "%d%s%d", &parm1, gy, &parm3);
+							z = Gscanf(f1, "%d", &parm1);
 							int nai = NT->N_AI_Levels;
-							int ndr = NT->N_AI_Devlp[nai];
-							if (ndr) {
-								NT->AI_Devlp[nai] = (sAI_Devlp*)realloc(NT->AI_Devlp[nai], (ndr + 1) * sizeof sAI_Devlp);
-								NT->N_AI_Devlp[nai]++;
+							int nar = NT->N_AI_Req[nai];
+							if (nar)
+							{
+								//sAI_Req* sar=NT->AI_Req[nai];
+								NT->AI_Req[nai] = (sAI_Req*)realloc(NT->AI_Req[nai], (nar + 1) * sizeof sAI_Req);
+								NT->N_AI_Req[nai]++;
 							}
-							else {
-								NT->AI_Devlp[nai] = new sAI_Devlp[ndr + 1];
-								NT->N_AI_Devlp[nai]++;
+							else
+							{
+								NT->AI_Req[nai] = new sAI_Req[nar + 1];
+								NT->N_AI_Req[nai]++;
 							};
-							sAI_Devlp* ARE = &NT->AI_Devlp[nai][ndr];
-							ARE->Kind = kind;
+							sAI_Req* ARE = &NT->AI_Req[nai][nar];
+							ARE->Kind = kind + dkind;
 							ARE->ObjID = k;
 							ARE->Amount = parm1;
-							if (gy[0] == '$') {
-								if (!strcmp(gy, "$SELO"))ARE->Source = 0;
-								else if (!strcmp(gy, "$ARMY"))ARE->Source = 1;
-								else if (!strcmp(gy, "$SCIENCE"))ARE->Source = 2;
-								else {
-									sprintf(gx, "%s,line %d : Unknown branch:%s", fn, line, gy);
-									Errx(gx);
-								};
-								z = Gscanf(f1, "%d", &parm2);
-								if (z != 1) {
-									sprintf(gx, "%s,line %d : Invalid percent of consuming for %s.", fn, line, gg);
-									Errx(gx);
-								};
-							}
-							else {
-								ARE->Source = 0xFF;
-								z = sscanf(gy, "%d", &parm2);
-								if (z != 1) {
-									sprintf(gx, "%s,line %d : Invalid percent of consuming for %s.", fn, line, gg);
-									Errx(gx);
-								};
-							};
-							ARE->GoldPercent = parm2;
-							ARE->AtnPercent = div(parm3 * 32768, 100).quot;
 							NLine(f1);
 							line++;
 						};
-					};
-					break;
-					case 5://#DEF
+						break;
+					case 3:
+						{
+							//#TODO
+							if (gg[0] == '$')
+							{
+								byte Kind = 0xFF;
+								int Arg1 = 0;
+								if (!strcmp(gg, "$SELO"))Kind = 1;
+								else if (!strcmp(gg, "$ARMY"))Kind = 2;
+								else if (!strcmp(gg, "$SCIENCE"))Kind = 3;
+								else
+								{
+									//specials
+									if (!strcmp(gg, "$MAX_WORKERS"))
+									{
+										if (Gscanf(f1, "%d", &Arg1) != 1)
+										{
+											sprintf(gx, "%s, line %d :Invalid integer value of %s", fn, line, gg);
+											Errx(gx);
+										};
+										Kind = 4;
+									};
+								};
+								if (Kind == 0xFF)
+								{
+									sprintf(gx, "%s, line %d :Unknown command: %s", fn, line, gg);
+									Errx(gx);
+								};
+								int nai = NT->N_AI_Levels;
+								int ncm = NT->N_AI_Cmd[nai];
+								if (ncm)
+								{
+									NT->AI_Cmd[nai] = (sAI_Cmd*)realloc(NT->AI_Cmd[nai], (ncm + 1) * sizeof sAI_Cmd);
+									NT->N_AI_Cmd[nai]++;
+								}
+								else
+								{
+									NT->AI_Cmd[nai] = new sAI_Cmd;
+									NT->N_AI_Cmd[nai]++;
+								};
+								sAI_Cmd* SCM = NT->AI_Cmd[nai] + ncm;
+								memset(SCM->Info, 0, sizeof SCM->Info);
+								SCM->Kind = Kind;
+								if (Kind < 4)
+								{
+									int z = Gscanf(f1, "%d", &parm1);
+									if (z != 1)
+									{
+										sprintf(gx, "%s, line %d :Incorrect amount or resources for %s", fn, line, gg);
+										Errx(gx);
+									};
+									for (int k = 0; k < parm1; k++)
+									{
+										z = Gscanf(f1, "%s%d", gy, &parm2);
+										if (z != 2)
+										{
+											sprintf(gx, "%s, line %d :Incorrect parameters for %s", fn, line, gg);
+											Errx(gx);
+										};
+										int rk = GetResID(gy);
+										if (!(rk < 8))
+										{
+											sprintf(gx, "%s, line %d :Unknownn resource %s", fn, line, gg);
+											Errx(gx);
+										};
+										SCM->Info[rk] = parm2;
+									};
+								}
+								else
+									if (Kind == 4)SCM->Info[0] = Arg1;
+								NLine(f1);
+								line++;
+							}
+							else
+							{
+								int kind = 0;
+								int N = NT->NMon;
+								GeneralObject** GOG = NT->Mon;
+								int k;
+								for (k = 0; k < N && strcmp(GOG[k]->MonsterID, gg); k++);
+								if (k >= N)
+								{
+									NewUpgrade** NUG = NT->UPGRADE;
+									N = NT->NUpgrades;
+									for (k = 0; k < N && strcmp(NUG[k]->Name, gg); k++);
+									if (k >= N)
+									{
+										sprintf(gx, "%s, line %d :Unknown ID: %s", fn, line, gg);
+										Errx(gx);
+									}
+									else kind = 1;
+								};
+								z = Gscanf(f1, "%d%s%d", &parm1, gy, &parm3);
+								int nai = NT->N_AI_Levels;
+								int ndr = NT->N_AI_Devlp[nai];
+								if (ndr)
+								{
+									NT->AI_Devlp[nai] = (sAI_Devlp*)realloc(NT->AI_Devlp[nai], (ndr + 1) * sizeof sAI_Devlp);
+									NT->N_AI_Devlp[nai]++;
+								}
+								else
+								{
+									NT->AI_Devlp[nai] = new sAI_Devlp[ndr + 1];
+									NT->N_AI_Devlp[nai]++;
+								};
+								sAI_Devlp* ARE = &NT->AI_Devlp[nai][ndr];
+								ARE->Kind = kind;
+								ARE->ObjID = k;
+								ARE->Amount = parm1;
+								if (gy[0] == '$')
+								{
+									if (!strcmp(gy, "$SELO"))ARE->Source = 0;
+									else if (!strcmp(gy, "$ARMY"))ARE->Source = 1;
+									else if (!strcmp(gy, "$SCIENCE"))ARE->Source = 2;
+									else
+									{
+										sprintf(gx, "%s,line %d : Unknown branch:%s", fn, line, gy);
+										Errx(gx);
+									};
+									z = Gscanf(f1, "%d", &parm2);
+									if (z != 1)
+									{
+										sprintf(gx, "%s,line %d : Invalid percent of consuming for %s.", fn, line, gg);
+										Errx(gx);
+									};
+								}
+								else
+								{
+									ARE->Source = 0xFF;
+									z = sscanf(gy, "%d", &parm2);
+									if (z != 1)
+									{
+										sprintf(gx, "%s,line %d : Invalid percent of consuming for %s.", fn, line, gg);
+										Errx(gx);
+									};
+								};
+								ARE->GoldPercent = parm2;
+								ARE->AtnPercent = div(parm3 * 32768, 100).quot;
+								NLine(f1);
+								line++;
+							};
+						};
+						break;
+					case 5: //#DEF
 						Gscanf(f1, "%s", gx);
 						if (!strcmp(gg, "PEASANT"))NT->UID_PEASANT = Get_UID(NT, gx, fn, line);
 						else if (!strcmp(gg, "MINE"))NT->UID_MINE = Get_UID(NT, gx, fn, line);
@@ -2127,37 +2284,42 @@ void LoadAI(char* fn, Nation* NT) {
 						else if (!strcmp(gg, "MINE_UPGRADE2_RADIUS"))NT->MINE_UPGRADE2_RADIUS = ReadWORD(gg, gx, fn, line);
 						else if (!strcmp(gg, "DEFAULT_MAX_WORKERS"))NT->DEFAULT_MAX_WORKERS = ReadWORD(gg, gx, fn, line);
 						else if (!strcmp(gg, "MIN_PEASANT_BRIGADE"))NT->MIN_PBRIG = ReadWORD(gg, gx, fn, line);
-						else {
+						else
+						{
 							sprintf(gy, "%s, line %d :Unknown ID: %s", fn, line, gg);
 							Errx(gy);
 						};
 						line++;
 						NLine(f1);
 						break;
-					case 6://#DEFG
+					case 6: //#DEFG
 						if (!strcmp(gg, "MINEUP"))Read_UIDG(NT, &NT->UGRP_MINEUP, gg, f1, fn, line);
-						else {
+						else
+						{
 							sprintf(gy, "%s, line %d :Unknown ID: %s (section #DEF)", fn, line, gx);
 							Errx(gy);
 						};
 						line++;
 						NLine(f1);
 						break;
-					case 7://#PBALANCE
+					case 7: //#PBALANCE
 						z = sscanf(gg, "%d", &parm1);
 						NLine(f1);
 						line++;
-						if (z != 1) {
+						if (z != 1)
+						{
 							sprintf(gy, "%s, line %d :Unknown number for #PBALANCE", fn, line);
 							Errx(gy);
 						};
 						NT->NPBal = parm1;
 						NT->PBalance = new word[parm1 << 2];
-						for (i = 0; i < parm1; i++) {
+						for (i = 0; i < parm1; i++)
+						{
 							int n1, n2, n3, n4;
 							int t = i << 2;
 							z = Gscanf(f1, "%d%d%d%d", &n1, &n2, &n3, &n4);
-							if (z != 4) {
+							if (z != 4)
+							{
 								sprintf(gy, "%s, line %d :Invalid parameters for #PBALANCE", fn, line);
 								Errx(gy);
 							};
@@ -2170,15 +2332,15 @@ void LoadAI(char* fn, Nation* NT) {
 						};
 						break;
 					};
-
 				}
-				else {
+				else
+				{
 					NLine(f1);
 					line++;
 				};
 			};
-
 		};
-	} while (z&&mode != 255);
+	}
+	while (z && mode != 255);
 	for (int p = 0; p < ngrp; p++)free(grp[p]);
 };

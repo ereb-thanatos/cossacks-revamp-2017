@@ -4,9 +4,9 @@
  * flying monsters, on-water monsters...
  */
 
- //Catch division by zero by "overloading" div()
- //(in case we will be able to link dynamically sometime, this causes no linking warnings)
-div_t __cdecl SecureDivision( int const numerator, int const denominator );
+//Catch division by zero by "overloading" div()
+//(in case we will be able to link dynamically sometime, this causes no linking warnings)
+div_t __cdecl SecureDivision(int const numerator, int const denominator);
 #define div(x,y) SecureDivision(x,y)
 
 #pragma pack(1)
@@ -83,9 +83,9 @@ extern int MaxPointIndex;
 extern int MaxLineIndex;
 extern int StratLx;
 
-extern short* THMap;// Map of heights in vertices
-extern byte* TexMap;//Map of textures in vertices
-extern byte* SectMap;//Map of sections on lines
+extern short* THMap; // Map of heights in vertices
+extern byte* TexMap; //Map of textures in vertices
+extern byte* SectMap; //Map of sections on lines
 
 extern int MAXCIOFS;
 extern int TSX;
@@ -99,7 +99,7 @@ struct Coor3D
 	int x, y, z;
 };
 
-typedef void HandlePro( int );
+typedef void HandlePro(int);
 
 class Weapon;
 class SelGroup;
@@ -108,21 +108,21 @@ class NewMonster;
 //Описание одной клетки на карте(без картинки)
 struct MapCell
 {
-	bool WaterLock : 1;	//Клетка недоступна для водных
-	bool AirLock : 1;	//Клетка недоступна для летающих
-	bool TempLock : 1;	//Признак временной недоступности
-	byte LayerID;		//Нижний слой на карте-объект типа МЕСТОРОЖДЕНИЕ
-	word MonsterID;		//Номер монстра в таблице объектов  
-	word BuildingID;	//Номер здания в таблице объектов
-	word FlyID;			//Летающий объект
-};//8 bytes
+	bool WaterLock : 1; //Клетка недоступна для водных
+	bool AirLock : 1; //Клетка недоступна для летающих
+	bool TempLock : 1; //Признак временной недоступности
+	byte LayerID; //Нижний слой на карте-объект типа МЕСТОРОЖДЕНИЕ
+	word MonsterID; //Номер монстра в таблице объектов  
+	word BuildingID; //Номер здания в таблице объектов
+	word FlyID; //Летающий объект
+}; //8 bytes
 
 //Элемент в таблице объектов
 struct ObjectRef
 {
-	unsigned ObjID : 8;		//Тип объекта
-	unsigned Location : 2;	//Наземный/Водный/Летающий/Всех типов
-	void* lpObj;			//Ссылка на объект
+	unsigned ObjID : 8; //Тип объекта
+	unsigned Location : 2; //Наземный/Водный/Летающий/Всех типов
+	void* lpObj; //Ссылка на объект
 };
 
 //Максимальное количество объектов: 65535
@@ -135,17 +135,17 @@ class Brigade;
 //Описание анимации
 struct OneSlide
 {
-	word  FileID;	//Номер файла анимации
-	small dx;		//Смещение спрайта по горизонтали
-	small dy;		//Смещение спрайта по горизонтали
-	word  spr;		//Номер спрайта в данном файле
-	word SoundID;	//Номер звука
+	word FileID; //Номер файла анимации
+	small dx; //Смещение спрайта по горизонтали
+	small dy; //Смещение спрайта по горизонтали
+	word spr; //Номер спрайта в данном файле
+	word SoundID; //Номер звука
 };
 
 typedef OneSlide MovieType[256];
 typedef MovieType* lpOneMovie;
 
-struct  Octant
+struct Octant
 {
 	byte count;
 	byte ticks;
@@ -160,7 +160,7 @@ typedef Octant Animation[8];
 struct MoreAnimation
 {
 	Octant* Anm;
-	word WhatFor;	//Как будет использоваться данная анимация
+	word WhatFor; //Как будет использоваться данная анимация
 	word Kind;
 };
 
@@ -179,9 +179,9 @@ struct ObjIcon
 #define EmptyID 0
 
 //---------------------SYCRO------------------
-int RandNew( char*, int );
-void AddRandNew( char*, int, int );
-void AddUN( char* File, int Line, int Param, int Type );
+int RandNew(char*, int);
+void AddRandNew(char*, int, int);
+void AddUN(char* File, int Line, int Param, int Type);
 
 #define rando() RandNew(__FILE__,__LINE__)
 
@@ -224,10 +224,11 @@ public:
 };
 
 #define NAttTypes 4
+
 struct FogRec
 {
-	word  NWeap;
-	int   WProb;
+	word NWeap;
+	int WProb;
 	word* Weap;
 };
 
@@ -265,10 +266,11 @@ public:
 	FormGroupDescription();
 	~FormGroupDescription();
 
-	void Load( GFILE* f );
+	void Load(GFILE* f);
 };
 
 extern FormGroupDescription FormGrp;
+
 class OrderDescription
 {
 public:
@@ -354,12 +356,13 @@ struct OneAddStage
 
 	short* FireX[2];
 	short* FireY[2];
-	short  NFires[2];
+	short NFires[2];
 
 	int Cost[8];
 };
 
 #define MaxAStages 5
+
 struct ComplexBuilding
 {
 	byte Mask;
@@ -369,8 +372,8 @@ struct ComplexBuilding
 class NewMonster
 {
 public:
-	NewAnimation MotionL;//first part of motion
-	NewAnimation MotionR;//second part of motion
+	NewAnimation MotionL; //first part of motion
+	NewAnimation MotionR; //second part of motion
 	NewAnimation MotionLB;
 	NewAnimation MotionRB;
 	NewAnimation MiniStepL;
@@ -419,27 +422,27 @@ public:
 
 	byte TransXMask;
 
-	word AttackRadius1[NAttTypes];		//начальный радиус атаки в зависимости от типа
-	word AttackRadius2[NAttTypes];		//конечный  радиус атаки в зависимости от типа
-	word DetRadius1[NAttTypes];			//Радиус, по которому определяется какой тип атаки использовать
+	word AttackRadius1[NAttTypes]; //начальный радиус атаки в зависимости от типа
+	word AttackRadius2[NAttTypes]; //конечный  радиус атаки в зависимости от типа
+	word DetRadius1[NAttTypes]; //Радиус, по которому определяется какой тип атаки использовать
 	word DetRadius2[NAttTypes];
-	word AttackRadiusAdd[NAttTypes];	//добавка к радиусу атаки при условии, 
-										//что юнит в сострянии немедленно атаковать
-	Weapon* DamWeap[NAttTypes];			//оружие для поражения(пуля,ядро,...)
+	word AttackRadiusAdd[NAttTypes]; //добавка к радиусу атаки при условии, 
+	//что юнит в сострянии немедленно атаковать
+	Weapon* DamWeap[NAttTypes]; //оружие для поражения(пуля,ядро,...)
 
-	byte Rate[NAttTypes];			//16=x1 rate
+	byte Rate[NAttTypes]; //16=x1 rate
 	word AttackPause[NAttTypes];
-	short AngleUp[NAttTypes];		//64=45degrees,32=arctan(1/2)degrees
+	short AngleUp[NAttTypes]; //64=45degrees,32=arctan(1/2)degrees
 	short AngleDn[NAttTypes];
 	short MinDamage[NAttTypes];
 	short MaxDamage[NAttTypes];
 	short DamageRadius[NAttTypes];
-	word  DamageDecr[NAttTypes];
-	byte  WeaponKind[NAttTypes];
-	byte  AttackMask[NAttTypes];
+	word DamageDecr[NAttTypes];
+	byte WeaponKind[NAttTypes];
+	byte AttackMask[NAttTypes];
 
-	word  MyIndex;
-	short SrcZPoint;				//additional height of the weapon
+	word MyIndex;
+	short SrcZPoint; //additional height of the weapon
 	short DstZPoint;
 	word NLockPt;
 	byte* LockX;
@@ -523,7 +526,7 @@ public:
 	int Ves;
 
 	short AddShotRadius;
-	byte  PromaxPercent;
+	byte PromaxPercent;
 
 	word NBuildPt;
 	char* BuildPtX;
@@ -552,9 +555,9 @@ public:
 
 	short* FireX[2];
 	short* FireY[2];
-	short  NFires[2];
+	short NFires[2];
 	byte MaxResPortion[8];
-	int  NeedRes[8];
+	int NeedRes[8];
 	int CenterMX;
 	int CenterMY;
 	int BRadius;
@@ -585,7 +588,7 @@ public:
 	word Time, Kind;
 	short AnmUpShift;
 	short* Bars3D;
-	short  NBars;
+	short NBars;
 	char* Name;
 
 	//fogging & fire
@@ -597,8 +600,8 @@ public:
 	word SpriteVisual;
 	byte ExplosionMedia;
 	byte EMediaRadius;
-	byte LockType;		//0-Land,1-Water
-	byte MotionStyle;	//0-Soldiers,1-Cavalery,2-Sheeps,3-Fly
+	byte LockType; //0-Land,1-Water
+	byte MotionStyle; //0-Soldiers,1-Cavalery,2-Sheeps,3-Fly
 	NewAnimation* Veslo;
 	NewAnimation* Reflection;
 	byte VisionType;
@@ -624,8 +627,8 @@ public:
 	short* HideTriY;
 	short NHideTri;
 
-	word  Razbros;
-	word  ExplRadius;
+	word Razbros;
+	word ExplRadius;
 
 	word ResConsumer;
 	byte ResConsID;
@@ -644,7 +647,7 @@ public:
 	word FishAmount;
 	byte InfType;
 	word PictureID;
-	byte Force;//for AI
+	byte Force; //for AI
 	//for strongholds siege
 	byte MinOposit;
 	byte MaxOposit;
@@ -658,38 +661,38 @@ public:
 	Flags3D* FLAGS;
 	char* MD_File;
 	NewMonster();
-	bool CreateFromFile( char* Name );
-	NewAnimation* LoadNewAnimationByName( char* Name );
+	bool CreateFromFile(char* Name);
+	NewAnimation* LoadNewAnimationByName(char* Name);
 	AdvCharacter* AdvChar;
 };
 
 class AdvCharacter
 {
 public:
-	word		AttackRadius1[NAttTypes];
-	word		AttackRadius2[NAttTypes];
-	word		DetRadius1[NAttTypes];
-	word		DetRadius2[NAttTypes];
-	word		AttackPause[NAttTypes];
-	short		MaxDamage[NAttTypes];
-	byte		WeaponKind[NAttTypes];
-	byte		Rate[NAttTypes];
-	byte		Protection[16];
-	int			NeedRes[8];
-	word		MaxInside;
-	word		ProduceStages;
-	word		Life;
-	word		Shield;
-	byte		FishSpeed;
-	word		FishAmount;
-	word        Razbros;
+	word AttackRadius1[NAttTypes];
+	word AttackRadius2[NAttTypes];
+	word DetRadius1[NAttTypes];
+	word DetRadius2[NAttTypes];
+	word AttackPause[NAttTypes];
+	short MaxDamage[NAttTypes];
+	byte WeaponKind[NAttTypes];
+	byte Rate[NAttTypes];
+	byte Protection[16];
+	int NeedRes[8];
+	word MaxInside;
+	word ProduceStages;
+	word Life;
+	word Shield;
+	byte FishSpeed;
+	word FishAmount;
+	word Razbros;
 
-	word        MinR_Attack;
-	word		MaxR_Attack;
-	word        MaxDam;
-	short       ResEff;
+	word MinR_Attack;
+	word MaxR_Attack;
+	word MaxDam;
+	short ResEff;
 
-	bool		Changed;
+	bool Changed;
 };
 
 class NewUpgrade
@@ -704,28 +707,34 @@ public:
 	word IconSpriteID;
 	char IconPosition;
 	byte NatID;
-	word  Cost[8];
+	word Cost[8];
 	byte CtgUpgrade;
 	byte CtgType;
+
 	union
 	{
-		int  NCtg;
-		int  CtgValue;
+		int NCtg;
+		int CtgValue;
 	};
-	word*    CtgGroup;
+
+	word* CtgGroup;
 	byte UnitType;
+
 	union
 	{
 		int NUnits;
 		int UnitValue;
 	};
+
 	word* UnitGroup;
 	byte ValueType;
+
 	union
 	{
-		int  Value;
-		int  NValues;
+		int Value;
+		int NValues;
 	};
+
 	int* ValGroup;
 
 	//mechanics
@@ -761,7 +770,7 @@ public:
 	bool AATT : 1;
 	bool P100 : 1;
 	bool T3X3 : 1;
-	bool FWEAP : 1;//огненное оружие
+	bool FWEAP : 1; //огненное оружие
 	bool AGold : 1;
 	bool AWood : 1;
 	bool Submarine : 1;
@@ -787,12 +796,12 @@ public:
 	word IDforUFO;
 	byte Kind;
 	word MaxAutoAmount;
-	word Useful[NBRANCH];//полезность объекта для каждой из отраслей
-	word SpUsef[NBRANCH];//удельная полезность
+	word Useful[NBRANCH]; //полезность объекта для каждой из отраслей
+	word SpUsef[NBRANCH]; //удельная полезность
 	word AbsNeedPrio;
 	word AbsNeedCount;
 	word LifeShotLost;
-	int	 cost;
+	int cost;
 	word delay;
 	byte WepSpeed;
 	byte WepDelay;
@@ -821,13 +830,13 @@ public:
 	byte SizeX;
 	byte SizeY;
 
-	byte ResourceID[4];		//Индекс необходимого ресурса
-	word ResAmount[4];		//Сколько необходимо для постройки 
-	word NAnm;				//Количество доступных анимаций
-	MoreAnimation *lpFAnim;	//Анимация с описанием применения 
+	byte ResourceID[4]; //Индекс необходимого ресурса
+	word ResAmount[4]; //Сколько необходимо для постройки 
+	word NAnm; //Количество доступных анимаций
+	MoreAnimation* lpFAnim; //Анимация с описанием применения 
 	AdvCharacter* MoreCharacter;
 
-	void GetMonsterCostString( char* st );
+	void GetMonsterCostString(char* st);
 	void CloseGO();
 };
 
@@ -852,7 +861,7 @@ class ParameterUpgrade : public GeneralObject
 };
 
 class OneObject;
-typedef void ReportFn( OneObject* Sender );
+typedef void ReportFn(OneObject* Sender);
 
 //Описание командного блока
 //Приказы 1-го уровня
@@ -868,7 +877,7 @@ struct Order1
 	//если приоритет прерывания выше приоритета выполнения
 	byte PrioryLevel;
 	byte OrderType;
-	byte OrderTime;//=0 if very fast
+	byte OrderTime; //=0 if very fast
 	//=1 - стоять на месте 
 	//=2 - перейти в точку с координатами (x,y)
 	//=3 - следовать за объектом (obj)
@@ -879,6 +888,7 @@ struct Order1
 
 	//Информация по каждому типу приказов
 	ReportFn* DoLink;
+
 	union
 	{
 		struct
@@ -982,11 +992,11 @@ struct Order1
 			short dx, dy;
 			word NextX, NextY, NextTop;
 		} SmartSend;
-
 	} info;
 };
 
 class GOrder;
+
 struct GlobalIconInfo
 {
 	HandlePro* HPLeft;
@@ -997,8 +1007,8 @@ struct GlobalIconInfo
 	char* Hint;
 };
 
-typedef bool GOrderFn( OneObject* OB, GOrder* GOR, int LParam, int RParam );
-typedef int IconInfo( GOrder* GOR, int IcoIndex, OneObject* OB, GlobalIconInfo* GIN );
+typedef bool GOrderFn(OneObject* OB, GOrder* GOR, int LParam, int RParam);
+typedef int IconInfo(GOrder* GOR, int IcoIndex, OneObject* OB, GlobalIconInfo* GIN);
 
 class GOrder
 {
@@ -1007,7 +1017,7 @@ public:
 	GOrderFn* Disconnect;
 	GOrderFn* KillOrder;
 	IconInfo* GetIcon;
-	void*     Data;
+	void* Data;
 	GOrder();
 	~GOrder();
 };
@@ -1023,7 +1033,7 @@ public:
 	byte delay;
 	short NeedFires;
 	short RealFires;
-	void  Erase();
+	void Erase();
 };
 
 class FireInfo
@@ -1039,6 +1049,7 @@ class OneObject
 {
 public:
 	Nation* Nat;
+
 	union
 	{
 		GeneralObject* General;
@@ -1046,35 +1057,36 @@ public:
 		ObjectUpgrade* OUpgrade;
 		ParameterUpgrade* PUpgrade;
 	} Ref;
+
 	NewMonster* newMons;
 	//-----------new path algoritm variables----------------
 	short* PathX;
 	short* PathY;
-	word Index;//номер этого монстра
-//--------------------------------------------//
-//-----------begin of saving cluster----------//
-//--------------------------------------------//
+	word Index; //номер этого монстра
+	//--------------------------------------------//
+	//-----------begin of saving cluster----------//
+	//--------------------------------------------//
 	bool NeedPath;
 	word CPdestX;
 	word CPdestY;
 	word NIPoints;
 	word CurIPoint;
-	word NIndex;	//индекс в национальном списке
+	word NIndex; //индекс в национальном списке
 	byte Selected;
 	byte ImSelected;
 	bool SelectedTemp : 1;
 	bool Borg : 1;
 	bool Invert : 1;
 	bool Attack : 1;
-	bool NoMotion : 1;		//не сдвигаться ни прт каких условиях,кроме приказа по армии
-	bool NoFire : 1;		//не открывать огонь по врагу и не привлекать внимания
-	bool NoInitiate : 1;	//не инициировать сражение
-	bool WasInMobilZone : 1;//Был в зоне мобилизации
-	bool TempFlag : 1;		//временный флаг, используемый для сортировки отряда
+	bool NoMotion : 1; //не сдвигаться ни прт каких условиях,кроме приказа по армии
+	bool NoFire : 1; //не открывать огонь по врагу и не привлекать внимания
+	bool NoInitiate : 1; //не инициировать сражение
+	bool WasInMobilZone : 1; //Был в зоне мобилизации
+	bool TempFlag : 1; //временный флаг, используемый для сортировки отряда
 	bool Mobilised : 1;
-	bool MoveInRect : 1;	//установлен, если среди риказов есть приказ о перемещении группы
-	bool DrawUp : 1;		//СТРРPPОИТЬСЯ!!!
-	bool PathBroken : 1;	//Если хоть раз была преграда на пути
+	bool MoveInRect : 1; //установлен, если среди риказов есть приказ о перемещении группы
+	bool DrawUp : 1; //СТРРPPОИТЬСЯ!!!
+	bool PathBroken : 1; //Если хоть раз была преграда на пути
 	bool capBuilding : 1;
 	bool capBuild : 1;
 	bool capBase : 1;
@@ -1098,8 +1110,8 @@ public:
 	bool Collision : 1;
 	bool LeftLeg : 1;
 	//--------------New
-	bool InMotion : 1;	//Выполняется перемещениe(New)
-	bool BackMotion : 1;//шаг назад
+	bool InMotion : 1; //Выполняется перемещениe(New)
+	bool BackMotion : 1; //шаг назад
 	bool HasStatePA : 1;
 	bool NewBuilding : 1;
 	bool Hidden;
@@ -1128,7 +1140,7 @@ public:
 	short bm_PrevTopDst;
 	word Guard;
 	word bm_NextTop;
-	void CreateSmartPath( int x, int y, int dx, int dy );
+	void CreateSmartPath(int x, int y, int dx, int dy);
 	void FindNextSmartPoint();
 	//----------------------------------------
 
@@ -1141,13 +1153,13 @@ public:
 
 	char OverEarth;
 	word Kills;
-	byte LockType;//0-Land,1-Water
+	byte LockType; //0-Land,1-Water
 	byte NothingTime;
 	word BlockInfo;
 	word Sdoxlo;
 	byte BackSteps;
 	byte BackReserv;
-	byte NewState;//0-Normal,1-prepare to attack
+	byte NewState; //0-Normal,1-prepare to attack
 	byte LocalNewState;
 	byte LeftVeslo;
 	byte RightVeslo;
@@ -1201,26 +1213,26 @@ public:
 
 	word BrigadeID;
 	word BrIndex;
-	byte Media;//=0-terrain,=1-on water,=2-on air
+	byte Media; //=0-terrain,=1-on water,=2-on air
 	word AddInside;
 	byte PersonalDelay;
 	short RZ;
 
 	//Flying objects only:
-	int  RealX;//1 pixel=16 length units
-	int  RealY;
-	int  DestX;
-	int  DestY;
-	int  RealVx;
-	int  RealVy;
-	int  BestDist;
-	int  BestHeight;
-	int	 Height;
-	int  ForceX;
-	int  ForceY;
-	int  Radius1;
-	int  Radius2;
-	int  Speed;
+	int RealX; //1 pixel=16 length units
+	int RealY;
+	int DestX;
+	int DestY;
+	int RealVx;
+	int RealVy;
+	int BestDist;
+	int BestHeight;
+	int Height;
+	int ForceX;
+	int ForceY;
+	int Radius1;
+	int Radius2;
+	int Speed;
 	byte GroundState;
 	byte SingleUpgLevel;
 	byte RealDir;
@@ -1253,57 +1265,57 @@ public:
 	NewAnimation* LoLayer;
 
 	//Methods declaration
-	void DefaultSettings( GeneralObject* GO );
-	void NewMonsterSendTo( int x, int y, byte Prio, byte OrdType );
-	void NewMonsterPreciseSendTo( int x, int y, byte Prio, byte OrdType );
-	void NewMonsterSmartSendTo( int x, int y, int dx, int dy, byte Prio, byte OrdType );
+	void DefaultSettings(GeneralObject* GO);
+	void NewMonsterSendTo(int x, int y, byte Prio, byte OrdType);
+	void NewMonsterPreciseSendTo(int x, int y, byte Prio, byte OrdType);
+	void NewMonsterSmartSendTo(int x, int y, int dx, int dy, byte Prio, byte OrdType);
 	void MakeProcess();
 	void MakePreProcess();
-	void WSendTo( int x2, int y2, int Prio );
-	bool AttackObj( word OID, int Prio );
-	bool AttackObj( word OID, int Prio, byte OrdType );
-	bool AttackObj( word OID, int Prio, byte OrdType, word NTimes );
-	void WAttackObj( word OID, int Prio );
-	void FlyAttack( word OID, byte Prio );
-	void AttackPoint( byte x, byte y, byte wep, int Prio );
-	bool AttackPoint( int x, int y, int z, byte Times, byte Flags, byte OrdType );
-	bool NewAttackPoint( int x, int y, int Prio1, byte OrdType, word NTimes );
+	void WSendTo(int x2, int y2, int Prio);
+	bool AttackObj(word OID, int Prio);
+	bool AttackObj(word OID, int Prio, byte OrdType);
+	bool AttackObj(word OID, int Prio, byte OrdType, word NTimes);
+	void WAttackObj(word OID, int Prio);
+	void FlyAttack(word OID, byte Prio);
+	void AttackPoint(byte x, byte y, byte wep, int Prio);
+	bool AttackPoint(int x, int y, int z, byte Times, byte Flags, byte OrdType);
+	bool NewAttackPoint(int x, int y, int Prio1, byte OrdType, word NTimes);
 	void ProcessFly();
-	void CreatePath( int x1, int y1 );
-	void CreateSimplePath( int x1, int y1 );
-	bool CreatePrePath( int x1, int y1 );
-	bool CreatePrePath2( int x1, int y1 );
-	bool CreatePrePath4( int x1, int y1 );
+	void CreatePath(int x1, int y1);
+	void CreateSimplePath(int x1, int y1);
+	bool CreatePrePath(int x1, int y1);
+	bool CreatePrePath2(int x1, int y1);
+	bool CreatePrePath4(int x1, int y1);
 	void ProcessNewMotion();
 	void FreeAsmLink();
 	void Die();
 	void Eliminate();
-	void MakeDamage( int Fundam, int Persist, OneObject* Sender );
-	void MakeDamage( int Fundam, int Persist, OneObject* Sender, byte AttType );
+	void MakeDamage(int Fundam, int Persist, OneObject* Sender);
+	void MakeDamage(int Fundam, int Persist, OneObject* Sender, byte AttType);
 	void SearchVictim();
-	void FreeOrdBlock( Order1* p );
+	void FreeOrdBlock(Order1* p);
 	void ClearOrders();
 	void ProcessMotion();
 	void ProcessAttackMotion();
-	void SendInGroup( byte tx, byte ty, byte x0, byte y0, byte x1, byte y1 );
+	void SendInGroup(byte tx, byte ty, byte x0, byte y0, byte x1, byte y1);
 	void NextStage();
-	bool BuildObj( word OID, int Prio, bool LockPoint, byte OrdType );
-	int CheckAbility( word ID, const bool running_production );
-	void Produce( word ID );
-	void Produce( word ID, word GroupID );
-	bool BuildWall( int xx, int yy, byte Prio, byte OrdType, bool TempBlock );
-	bool DamageWall( word OID, int Prio );
-	void PerformUpgrade( word NewU, word MakerID );
-	void SetDstPoint( int x, int y );
-	void Patrol( int x1, int y1, int x2, int y2, byte prio );
+	bool BuildObj(word OID, int Prio, bool LockPoint, byte OrdType);
+	int CheckAbility(word ID, const bool running_production);
+	void Produce(word ID);
+	void Produce(word ID, word GroupID);
+	bool BuildWall(int xx, int yy, byte Prio, byte OrdType, bool TempBlock);
+	bool DamageWall(word OID, int Prio);
+	void PerformUpgrade(word NewU, word MakerID);
+	void SetDstPoint(int x, int y);
+	void Patrol(int x1, int y1, int x2, int y2, byte prio);
 	void EnableDoubleForce();
 	void DisableDoubleForce();
 	void EnableTripleForce();
 	void DiasableTripleForce();
 	void EnableQuadraForce();
 	void DisableQuadraForce();
-	void ContinueAttackPoint( byte x, byte y, int Prio );
-	void ContinueAttackWall( byte x, byte y, int Prio );
+	void ContinueAttackPoint(byte x, byte y, int Prio);
+	void ContinueAttackWall(byte x, byte y, int Prio);
 	void MakeMeUFO();
 	void WaitForRepair();
 	void MakeMeSit();
@@ -1313,65 +1325,65 @@ public:
 	void UnBlockUnit();
 	void DeletePath();
 	void CheckState();
-	bool CheckLocking( int dx, int dy );
-	void SetDestCoor( int x, int y );
+	bool CheckLocking(int dx, int dy);
+	void SetDestCoor(int x, int y);
 	void EscapeLocking();
-	bool FindPoint( int* x1, int* y1, byte Flags );
+	bool FindPoint(int* x1, int* y1, byte Flags);
 	void ClearBuildPt();
 	bool CheckBlocking();
 	void DeleteBlocking();
 
 	//returns points for damage
-	bool GetDamagePoint( Coor3D* dp, int Precise );
+	bool GetDamagePoint(Coor3D* dp, int Precise);
 
-	void TakeResourceFromSprite( int SID );
-	void SetOrderedUnlimitedMotion( byte OrdType );
-	void ClearOrderedUnlimitedMotion( byte OrdType );
-	void ClearOrderedUnlimitedMotion( byte OrdType, word GroupID );
-	int TakeResource( int x, int y, byte ResID, int Prio, byte OrdType );
+	void TakeResourceFromSprite(int SID);
+	void SetOrderedUnlimitedMotion(byte OrdType);
+	void ClearOrderedUnlimitedMotion(byte OrdType);
+	void ClearOrderedUnlimitedMotion(byte OrdType, word GroupID);
+	int TakeResource(int x, int y, byte ResID, int Prio, byte OrdType);
 	word FindNearestBase();
 
 	//Type:
 	//0 - single order (previous orders will be erased)
 	//1 - add order to the head of link
 	//2 - add order to the tile of link
-	Order1* CreateOrder( byte Type );
+	Order1* CreateOrder(byte Type);
 
 	void DeleteLastOrder();
-	void GetCornerXY( int* x, int* y );
-	bool GoToMine( word ID, byte Prio );
-	bool GoToMine( word ID, byte Prio, byte Type );
-	bool GoToTransport( word ID, byte Prio );
-	void LeaveMine( word Type );
-	void LeaveTransport( word Type );
+	void GetCornerXY(int* x, int* y);
+	bool GoToMine(word ID, byte Prio);
+	bool GoToMine(word ID, byte Prio, byte Type);
+	bool GoToTransport(word ID, byte Prio);
+	void LeaveMine(word Type);
+	void LeaveTransport(word Type);
 	void HideMe();
 	void ShowMe();
-	bool CheckOrderAbility( int LParam, int RParam );
+	bool CheckOrderAbility(int LParam, int RParam);
 	bool CheckOrderAbility();
 	void GlobLock();
 	void GlobUnlock();
 	void Fishing();
 	Brigade* GetBrigade();
 
-	inline int DistTo( int xx, int yy )
+	inline int DistTo(int xx, int yy)
 	{
 		__asm
 		{
-			mov		eax, xx
-			mov		ebx, this
-			mov		edx, [ebx]this.x
-			sub		eax, edx
-			jge		uui
-			neg		eax
-			uui : mov		ecx, yy
-				  mov		edx, [ebx]this.y
-				  sub		ecx, edx
-				  jge		uux
-				  neg		ecx
-				  uux : cmp		ecx, eax
-						jl		uuz
-						mov		eax, ecx
-						uuz :
+			mov eax, xx
+			mov ebx, this
+			mov edx, [ebx]this.x
+			sub eax, edx
+			jge uui
+			neg eax
+			uui : mov ecx, yy
+			mov edx, [ebx]this.y
+			sub ecx, edx
+			jge uux
+			neg ecx
+			uux : cmp ecx, eax
+			jl uuz
+			mov eax, ecx
+			uuz :
 		}
 	};
 	void CloseObject();
@@ -1379,14 +1391,15 @@ public:
 
 //Описание оружия
 class Nation;
+
 class ChildWeapon
 {
 public:
 	Weapon* Child[4];
-	byte    NChildWeapon;
-	byte    MaxChild;
-	byte    MinChild;
-	byte    Type;
+	byte NChildWeapon;
+	byte MaxChild;
+	byte MinChild;
+	byte Type;
 	void InitChild();
 };
 
@@ -1396,28 +1409,28 @@ public:
 	NewAnimation* NewAnm;
 	ChildWeapon Default;
 	ChildWeapon* CustomEx;
-	byte    NCustomEx;
+	byte NCustomEx;
 	Weapon* ShadowWeapon;
 	Weapon* TileWeapon[4];
-	word    TileProbability;
-	byte	NTileWeapon;
-	byte    MinChild;
-	byte    MaxChild;
-	byte    HotFrame;
+	word TileProbability;
+	byte NTileWeapon;
+	byte MinChild;
+	byte MaxChild;
+	byte HotFrame;
 	Weapon* SyncWeapon[4];
-	byte	NSyncWeapon;
-	char    dz;
+	byte NSyncWeapon;
+	char dz;
 	//see scripts
-	short   Damage;
-	short   Radius;
-	short   Speed;
-	short   Times;
-	byte    Transparency;
-	byte    Gravity;
-	byte    Propagation;
-	bool    FullParent : 1;
-	bool    HiLayer : 1;
-	short	SoundID;
+	short Damage;
+	short Radius;
+	short Speed;
+	short Times;
+	byte Transparency;
+	byte Gravity;
+	byte Propagation;
+	bool FullParent : 1;
+	bool HiLayer : 1;
+	short SoundID;
 	word MyIndex;
 };
 
@@ -1426,14 +1439,14 @@ class AnmObject
 {
 public:
 	NewAnimation* NewAnm;
-	int x, y, z;//координаты
-	int vx, vy, vz;//скорости
-	int az;//ускорение
-	int xd, yd, zd;//точка назначения
+	int x, y, z; //координаты
+	int vx, vy, vz; //скорости
+	int az; //ускорение
+	int xd, yd, zd; //точка назначения
 	short Frame;
 	short NTimes;
 	Weapon* Weap;
-	word    Damage;
+	word Damage;
 	OneObject* Sender;
 	word ASerial;
 	word DestObj;
@@ -1443,10 +1456,11 @@ public:
 };
 
 class City;
+
 class Needness
 {
 public:
-	byte NeedType;//==0-monster,==1-Upgrade
+	byte NeedType; //==0-monster,==1-Upgrade
 	word MonID;
 	byte GroupSize;
 	byte Amount;
@@ -1463,16 +1477,16 @@ struct SWPAR
 
 struct sAI_Req
 {
-	byte Kind;//0-unit,1-upgrade,2-group
+	byte Kind; //0-unit,1-upgrade,2-group
 	word ObjID;
-	word Amount;//if upgrade:1-Done 2-Enabled
+	word Amount; //if upgrade:1-Done 2-Enabled
 };
 
 struct sAI_Devlp
 {
-	byte Kind;//0-unit,1-upgrade
-	byte Source;//0-general,1-army,2-selo,3-science
-	byte ConKind;//0-unit,2-group
+	byte Kind; //0-unit,1-upgrade
+	byte Source; //0-general,1-army,2-selo,3-science
+	byte ConKind; //0-unit,2-group
 	word ObjID;
 	word ConID;
 	word Amount;
@@ -1482,23 +1496,23 @@ struct sAI_Devlp
 
 struct sAI_Cmd
 {
-	byte Kind;//1-army,2-selo,3-science
+	byte Kind; //1-army,2-selo,3-science
 	word Info[8];
 };
 
 class Branch
 {
 public:
-	int  RESAM[8];
+	int RESAM[8];
 	word RESP[8];
-	int  RESRM[8];
-	void AddTo( byte ResID, int Amount );
-	void AddPerc( byte ResID, int Amount, int perc );
-	void AddEntire( byte ResID, int Amount );
-	void Check( byte NI );
+	int RESRM[8];
+	void AddTo(byte ResID, int Amount);
+	void AddPerc(byte ResID, int Amount, int perc);
+	void AddEntire(byte ResID, int Amount);
+	void Check(byte NI);
 	void Init();
-	int GetMonsterCostPercent( byte NI, word NIndex );
-	int GetUpgradeCostPercent( byte NI, word NIndex );
+	int GetMonsterCostPercent(byte NI, word NIndex);
+	int GetUpgradeCostPercent(byte NI, word NIndex);
 };
 
 //Описание нации в целом
@@ -1521,7 +1535,7 @@ public:
 	word NKilled[2048];
 	word NProduced[2048];
 	byte SoundMask[2048];
-	byte VictState;//0-? 1-defeat 2-victory
+	byte VictState; //0-? 1-defeat 2-victory
 
 	//----Resource control-------
 	int ResTotal[8];
@@ -1553,7 +1567,7 @@ public:
 	int CasheSize;
 	int TAX_PERCENT;
 	int CASH_PUSH_PROBABILITY;
-	int NationalAI;//0..32768-determines speed of development
+	int NationalAI; //0..32768-determines speed of development
 	int AI_Level_MIN;
 	int AI_Level_MAX;
 	int AI_Forward;
@@ -1578,13 +1592,13 @@ public:
 	int ResSpeed[8];
 
 	byte NNUM;
-	int  NFinf;
+	int NFinf;
 	byte palette[256];
 	byte NMask;
 	word NIcons;
 	WIcon* wIcons[1024];
 	word NCOND;
-	word CLSize[4096];//Access controlling
+	word CLSize[4096]; //Access controlling
 	word* CLRef[4096];
 
 	//Strange weapon prameters
@@ -1595,7 +1609,7 @@ public:
 	word NGrp; //Groups of types definition
 	word GRSize[32];
 	word* GRRef[32];
-	word  GAmount[32];//Result of calculation
+	word GAmount[32]; //Result of calculation
 	word N_AI_Levels;
 	word N_AI_Req[256];
 	word N_AI_Devlp[256];
@@ -1639,30 +1653,30 @@ public:
 	word StoneEff;
 	bool Geology;
 	//---------------Constants--------------//
-	word UID_PEASANT;//EndSave
+	word UID_PEASANT; //EndSave
 	word UID_WALL;
 	word UID_MINE;
 	word UID_HOUSE;
 
 	U_Grp UGRP_MINEUP;
 
-	word  MINE_CAPTURE_RADIUS;
-	word  MINE_UPGRADE1_RADIUS;
-	word  MINE_UPGRADE2_RADIUS;
-	word  DEFAULT_MAX_WORKERS;
-	word  MIN_PBRIG;
+	word MINE_CAPTURE_RADIUS;
+	word MINE_UPGRADE1_RADIUS;
+	word MINE_UPGRADE2_RADIUS;
+	word DEFAULT_MAX_WORKERS;
+	word MIN_PBRIG;
 
-	word  MU1G_PERCENT[3];
-	word  MU1I_PERCENT[3];
-	word  MU1C_PERCENT[3];
+	word MU1G_PERCENT[3];
+	word MU1I_PERCENT[3];
+	word MU1C_PERCENT[3];
 
-	word  MU2G_PERCENT[3];
-	word  MU2I_PERCENT[3];
-	word  MU2C_PERCENT[3];
+	word MU2G_PERCENT[3];
+	word MU2I_PERCENT[3];
+	word MU2C_PERCENT[3];
 
-	word  MU3G_PERCENT[3];
-	word  MU3I_PERCENT[3];
-	word  MU3C_PERCENT[3];
+	word MU3G_PERCENT[3];
+	word MU3I_PERCENT[3];
+	word MU3C_PERCENT[3];
 	//--------------------------------------
 
 	char** History;
@@ -1682,9 +1696,9 @@ public:
 	int MaxUpgMade;
 	word* UpgIDS;
 
-	int*  UpgTime;
-	void AddUpgrade( word ID, int time );
-	void AddPopul( word N );
+	int* UpgTime;
+	void AddUpgrade(word ID, int time);
+	void AddPopul(word N);
 
 	//---------------NEW resource-----------
 	Branch SELO;
@@ -1692,26 +1706,26 @@ public:
 	Branch SCIENCE;
 	Branch GENERAL;
 	//----------------------choose unit menu
-	char***UnitNames;
-	int*   NUnits;
+	char*** UnitNames;
+	int* NUnits;
 	word** UnitsIDS;
 	word FormUnitID;
 	//---------------------------------
 
-	void CreateNation( byte NMask, byte NIndex );
-	int  CreateNewMonsterAt( int x, int y, int n, bool Anyway );
-	void AssignWeapon( Weapon* Wpn, int i );
-	int CreateBuilding( word ID, byte x, byte y );
-	bool CheckBuilding( word ID, byte x, byte y );
-	void GetUpgradeCostString( char* st, word UI );
+	void CreateNation(byte NMask, byte NIndex);
+	int CreateNewMonsterAt(int x, int y, int n, bool Anyway);
+	void AssignWeapon(Weapon* Wpn, int i);
+	int CreateBuilding(word ID, byte x, byte y);
+	bool CheckBuilding(word ID, byte x, byte y);
+	void GetUpgradeCostString(char* st, word UI);
 	void CloseNation();
-	void AddResource( byte Rid, int Amount );
-	void ControlProduce( byte Branch, byte ResID, int Amount );
+	void AddResource(byte Rid, int Amount);
+	void ControlProduce(byte Branch, byte ResID, int Amount);
 };
 
 typedef char** lplpCHAR;
-typedef char*  lpCHAR;
-typedef int*   lpINT;
+typedef char* lpCHAR;
+typedef int* lpINT;
 
 class SelGroup
 {
@@ -1724,10 +1738,10 @@ public:
 	bool CanHelpToFriend : 1;
 	bool Egoizm : 1;
 	SelGroup();
-	void CreateFromSelection( byte NI );
-	void SelectMembers( byte NI, bool Shift );
+	void CreateFromSelection(byte NI);
+	void SelectMembers(byte NI, bool Shift);
 	void DeleteMembers();
-	void ImSelectMembers( byte NI, bool Shift );
+	void ImSelectMembers(byte NI, bool Shift);
 };
 
 //Массив все монстров на карте
@@ -1751,13 +1765,13 @@ void LoadLock();
 #define OneOrdSize 32;
 #define OneOShift 5;
 char* GetAsmBlock();
-void FreeAsmBlock( char* p );
+void FreeAsmBlock(char* p);
 void InitAsmBuf();
 Order1* GetOrdBlock();
 void InitOrdBuf();
 extern Order1 OrdBuf[MaxOrdCount];
-extern bool	AsmUsage[MaxAsmCount];
-extern int	msx;
+extern bool AsmUsage[MaxAsmCount];
+extern int msx;
 extern int msy;
 extern void Except();
 
@@ -1772,20 +1786,20 @@ void CarryOutOrder();
 void doooo();
 extern word Creator;
 extern Nation NAT;
-extern int	smapx;
-extern int	smapy;
-extern int	smaplx;
-extern int	smaply;
+extern int smapx;
+extern int smapy;
+extern int smaplx;
+extern int smaply;
 extern int minix;
-extern int	miniy;
+extern int miniy;
 
 void MakePostProcess();
 void MakeWPostProcess();
 void PrepareProcessing();
 
 extern int Flips;
-extern int	mapx;
-extern int	mapy;
+extern int mapx;
+extern int mapy;
 
 void InitExplosions();
 void ProcessExpl();
@@ -1794,14 +1808,14 @@ extern Weapon Vibux1;
 void CloseExplosions();
 extern byte PlayerMask;
 extern bool EgoFlag;
-void AddAsk( word ReqID, byte x, byte y, char zdx, char zdy );
+void AddAsk(word ReqID, byte x, byte y, char zdx, char zdy);
 extern SelGroup SelSet[80];
 extern Weapon* WPLIST[1024];
 
 void InitZones();
-int CreateZone( int x, int y, int lx, int ly, HandlePro* HPro, int Index, char* Hint );
+int CreateZone(int x, int y, int lx, int ly, HandlePro* HPro, int Index, char* Hint);
 void ControlZones();
-void DeleteZone( int i );
+void DeleteZone(int i);
 void ShowProp();
 void InitPrpBar();
 void ShowAbility();
@@ -1813,51 +1827,51 @@ extern word* ImSerN[8];
 extern word ImNSL[8];
 extern word NSL[8];
 
-void CmdCreateSelection( byte NI, byte x, byte y, byte x1, byte y1 );
-void CmdSendToXY( byte NI, int x, int y, short Dir );
-void CmdAttackObj( byte NI, word ObjID, short DIR );
-void CmdCreateTerrain( byte NI, byte x, byte y, word Type );
-void CmdCreateBuilding( byte NI, int x, int y, word Type );
-void CmdProduceObj( byte NI, word Type );
-void CmdMemSelection( byte NI, byte Index );
-void CmdRememSelection( byte NI, byte Index );
-void CmdBuildObj( byte NI, word ObjID );
-void CmdBuildWall( byte NI, short xx, short yy );
-void CmdRepairWall( byte NI, short xx, short yy );
-void CmdDamageWall( byte NI, word LIN );
-void CmdTakeRes( byte NI, int x, int y, byte ResID );
-void CmdPerformUpgrade( byte NI, word UI );
-void CmdCreateKindSelection( byte NI, byte x, byte y, byte x1, byte y1, byte Kind );
-void CmdCreateTypeSelection( byte NI, byte x, byte y, byte x1, byte y1, word Type );
-void CmdCreateGoodSelection( byte NI, word x, word y, word x1, word y1 );
-void CmdCreateGoodKindSelection( byte NI, word x, word y, word x1, word y1, byte Kind );
-void CmdCreateGoodTypeSelection( byte NI, word x, word y, word x1, word y1, word Type );
-void CmdSetDst( byte NI, int x, int y );
-void CmdSendToPoint( byte NI, byte x, byte y );
-void CmdAttackToXY( byte NI, byte x, byte y );
-void CmdStop( byte NI );
-void CmdStandGround( byte NI );
-void CmdPatrol( byte NI, int x, int y );
-void CmdRepair( byte NI, byte x, byte y );
-void CmdGetResource( byte NI, byte x, byte y );
-void CmdSendToTransport( byte NI, word ID );
-void CmdUnload( byte NI, byte x, byte y );
-void CmdDie( byte NI );
-void CmdContinueAttackPoint( byte NI, byte x, byte y );
-void CmdContinueAttackWall( byte NI, byte x, byte y );
-void CmdSitDown( byte NI );
-void CmdNucAtt( byte NI, byte x, byte y );
-void CmdChooseSelType( byte NI, word ID );
-void CmdChooseUnSelType( byte NI, word ID );
-void CmdGoToMine( byte NI, word ID );
-void CmdLeaveMine( byte NI, word Type );
-void CmdErseBrigs( byte NI );
-void CmdChooseSelBrig( byte NI, word ID );
-void CmdChooseUnSelBrig( byte NI, word ID );
-void CmdMakeStandGround( byte NI );
-void CmdCancelStandGround( byte NI );
-void CmdCrBig( byte NI, int i );
-void CmdSelBrig( byte NI, byte Type, word ID );
+void CmdCreateSelection(byte NI, byte x, byte y, byte x1, byte y1);
+void CmdSendToXY(byte NI, int x, int y, short Dir);
+void CmdAttackObj(byte NI, word ObjID, short DIR);
+void CmdCreateTerrain(byte NI, byte x, byte y, word Type);
+void CmdCreateBuilding(byte NI, int x, int y, word Type);
+void CmdProduceObj(byte NI, word Type);
+void CmdMemSelection(byte NI, byte Index);
+void CmdRememSelection(byte NI, byte Index);
+void CmdBuildObj(byte NI, word ObjID);
+void CmdBuildWall(byte NI, short xx, short yy);
+void CmdRepairWall(byte NI, short xx, short yy);
+void CmdDamageWall(byte NI, word LIN);
+void CmdTakeRes(byte NI, int x, int y, byte ResID);
+void CmdPerformUpgrade(byte NI, word UI);
+void CmdCreateKindSelection(byte NI, byte x, byte y, byte x1, byte y1, byte Kind);
+void CmdCreateTypeSelection(byte NI, byte x, byte y, byte x1, byte y1, word Type);
+void CmdCreateGoodSelection(byte NI, word x, word y, word x1, word y1);
+void CmdCreateGoodKindSelection(byte NI, word x, word y, word x1, word y1, byte Kind);
+void CmdCreateGoodTypeSelection(byte NI, word x, word y, word x1, word y1, word Type);
+void CmdSetDst(byte NI, int x, int y);
+void CmdSendToPoint(byte NI, byte x, byte y);
+void CmdAttackToXY(byte NI, byte x, byte y);
+void CmdStop(byte NI);
+void CmdStandGround(byte NI);
+void CmdPatrol(byte NI, int x, int y);
+void CmdRepair(byte NI, byte x, byte y);
+void CmdGetResource(byte NI, byte x, byte y);
+void CmdSendToTransport(byte NI, word ID);
+void CmdUnload(byte NI, byte x, byte y);
+void CmdDie(byte NI);
+void CmdContinueAttackPoint(byte NI, byte x, byte y);
+void CmdContinueAttackWall(byte NI, byte x, byte y);
+void CmdSitDown(byte NI);
+void CmdNucAtt(byte NI, byte x, byte y);
+void CmdChooseSelType(byte NI, word ID);
+void CmdChooseUnSelType(byte NI, word ID);
+void CmdGoToMine(byte NI, word ID);
+void CmdLeaveMine(byte NI, word Type);
+void CmdErseBrigs(byte NI);
+void CmdChooseSelBrig(byte NI, word ID);
+void CmdChooseUnSelBrig(byte NI, word ID);
+void CmdMakeStandGround(byte NI);
+void CmdCancelStandGround(byte NI);
+void CmdCrBig(byte NI, int i);
+void CmdSelBrig(byte NI, byte Type, word ID);
 
 extern Nation NATIONS[8];
 
@@ -1871,29 +1885,29 @@ extern __declspec( dllexport ) int SCRSizeY;
 extern __declspec( dllexport ) int RSCRSizeX;
 extern __declspec( dllexport ) int RSCRSizeY;
 extern __declspec( dllexport ) int COPYSizeX;
-void CmdGetOil( byte NI, word UI );
+void CmdGetOil(byte NI, word UI);
 
 extern byte NLocks[64][64];
-void SetLock( int x, int y, char val );
+void SetLock(int x, int y, char val);
 
-inline void IncLock( byte x, byte y )
+inline void IncLock(byte x, byte y)
 {
 	NLocks[y >> 2][x >> 2]++;
-	SetLock( x, y, 1 );
+	SetLock(x, y, 1);
 }
 
-inline void DecLock( byte x, byte y )
+inline void DecLock(byte x, byte y)
 {
 	NLocks[y >> 2][x >> 2]--;
-	SetLock( x, y, 1 );
+	SetLock(x, y, 1);
 }
 
 extern bool FASTMODE;
 extern word MAXOBJECT;
 
 void SetupHint();
-void AssignHint( char* s, int time );
-void GetChar( GeneralObject* GO, char* s );
+void AssignHint(char* s, int time);
+void GetChar(GeneralObject* GO, char* s);
 
 extern OneObject OBJECTS[ULIMIT];
 
@@ -1904,13 +1918,13 @@ extern short TAtg[257];
 void SetFlyMarkers();
 void ClearFlyMarkers();
 
-typedef void UniqMethood( int x, int y );
+typedef void UniqMethood(int x, int y);
 
 void HandleSW();
-void CreateStrangeObject( int i, byte NI, int x, int y, word ID );
-void ShowRLCItemMutno( int x, int y, lpRLCTable lprt, int n );
-void ShowRLCItemFired( int x, int y, lpRLCTable lprt, int n );
-bool CheckAttAbility( OneObject* OB, word Patient );
+void CreateStrangeObject(int i, byte NI, int x, int y, word ID);
+void ShowRLCItemMutno(int x, int y, lpRLCTable lprt, int n);
+void ShowRLCItemFired(int x, int y, lpRLCTable lprt, int n);
+bool CheckAttAbility(OneObject* OB, word Patient);
 void PrepareToEdit();
 void PrepareToGame();
 extern int MaxSizeX;
@@ -1924,26 +1938,26 @@ void InitAllGame();
 
 //x,y-coordinates of point on the 2D plane (unit:pix)
 //returnfs index of building,otherwise 0xFFFF
-word DetermineBuilding( int x, int y, byte NMask );
-bool Create3DAnmObject( Weapon* Weap, int xs, int ys, int zs1,
-	int xd, int yd, int zd,
-	OneObject* OB, byte AttType, word DestObj );
-bool Create3DAnmObject( Weapon* Weap, int xs, int ys, int zs1,
-	int xd, int yd, int zd,
-	OneObject* OB, byte AttType, word DestObj, char dz );
-int div24( int y );
-int Prop43( int y );
+word DetermineBuilding(int x, int y, byte NMask);
+bool Create3DAnmObject(Weapon* Weap, int xs, int ys, int zs1,
+                       int xd, int yd, int zd,
+                       OneObject* OB, byte AttType, word DestObj);
+bool Create3DAnmObject(Weapon* Weap, int xs, int ys, int zs1,
+                       int xd, int yd, int zd,
+                       OneObject* OB, byte AttType, word DestObj, char dz);
+int div24(int y);
+int Prop43(int y);
 
-int GETV( char* Name );
-char* GETS( char* Name );
+int GETV(char* Name);
+char* GETS(char* Name);
 
-void LoadAllNations( byte NIndex );
+void LoadAllNations(byte NIndex);
 
-int GetExMedia( char* Name );
+int GetExMedia(char* Name);
 extern NewAnimation** FiresAnm[2];
 extern NewAnimation** PreFires[2];
 extern NewAnimation** PostFires[2];
-extern int            NFiresAnm[2];
+extern int NFiresAnm[2];
 typedef NewAnimation* lpNewAnimation;
 extern int UnitsPerFarm;
 extern int ResPerUnit;
@@ -1958,14 +1972,14 @@ extern byte* NPresence;
 
 //------------sorting by nations-------------
 extern word* NatList[8];
-extern int   NtNUnits[8];
-extern int   NtMaxUnits[8];
+extern int NtNUnits[8];
+extern int NtMaxUnits[8];
 void SetupNatList();
 void InitNatList();
-void AddObject( OneObject* OB );
-void DelObject( OneObject* OB );
-void PlayAnimation( NewAnimation* NA, int Frame, int x, int y );
-void MakeOrderSound( OneObject* OB, byte SMask );
+void AddObject(OneObject* OB);
+void DelObject(OneObject* OB);
+void PlayAnimation(NewAnimation* NA, int Frame, int x, int y);
+void MakeOrderSound(OneObject* OB, byte SMask);
 
 extern int GoldID;
 extern int FoodID;
@@ -1973,7 +1987,7 @@ extern int StoneID;
 extern int TreeID;
 extern int CoalID;
 extern int IronID;
-void UpdateAttackR( AdvCharacter* ADC );
+void UpdateAttackR(AdvCharacter* ADC);
 
 //------------------IDS-----------------//
 #define MelnicaID	0x01
@@ -2074,16 +2088,16 @@ extern int NOClasses;
 extern OrderDescription ElementaryOrders[128];
 extern int NEOrders;
 
-int OScale( int x );
+int OScale(int x);
 extern short LastDirection;
 #define MobilR 1024
-void SetTrianglesState( int xc, int yc, short* xi, short* yi, int NP, bool State );
+void SetTrianglesState(int xc, int yc, short* xi, short* yi, int NP, bool State);
 
 extern DWORD LOADNATMASK;
 extern char NatCharLo[32][8];
 extern char NatCharHi[32][8];
-void RunPF( int i );
-void StopPF( int i );
+void RunPF(int i);
+void StopPF(int i);
 
 extern bool GoAndAttackMode;
 extern int FrmDec;
@@ -2092,23 +2106,23 @@ extern int REALTIME;
 
 typedef DWORD DPID1, FAR *LPDPID;
 
-void CreateTimedHint( char* s, int time );
-void CreateTimedHintEx( char* s, int time, byte opt );
+void CreateTimedHint(char* s, int time);
+void CreateTimedHintEx(char* s, int time, byte opt);
 
 //-----------------New text files------------------//
 extern int LX_fmap;
-word GetV_fmap( int x, int y );
+word GetV_fmap(int x, int y);
 extern int VAL_SHFCX;
 extern int VAL_MAXCX;
 extern int VAL_MAXCIOFS;
 extern short randoma[8192];
 extern word TexFlags[256];
-int AddTHMap( int );
+int AddTHMap(int);
 
 #define SECTMAP(i) (SectMap?SectMap[i]:(word(randoma[word(i&8191)])%3))
 
-word GetNMSL( int i );
-void SetNMSL( int i, word W );
+word GetNMSL(int i);
+void SetNMSL(int i, word W);
 void CleanNMSL();
 extern int LastActionX;
 extern int LastActionY;
@@ -2128,11 +2142,11 @@ extern byte NatRefTBL[8];
 extern word* TopRef;
 extern int TopLx;
 
-__forceinline word SafeTopRef( int x, int y )
+__forceinline word SafeTopRef(int x, int y)
 {
-	if ( x >= 0 && y >= 0 && x < TopLx&&y < TopLx )
+	if (x >= 0 && y >= 0 && x < TopLx && y < TopLx)
 	{
-		return TopRef[x + ( y << TopSH )];
+		return TopRef[x + (y << TopSH)];
 	}
 	else
 	{
@@ -2140,10 +2154,10 @@ __forceinline word SafeTopRef( int x, int y )
 	}
 }
 
-__forceinline void SafeSetTopRef( int x, int y, word Val )
+__forceinline void SafeSetTopRef(int x, int y, word Val)
 {
-	if ( x >= 0 && y >= 0 && x < TopLx&&y < TopLx )
+	if (x >= 0 && y >= 0 && x < TopLx && y < TopLx)
 	{
-		TopRef[x + ( y << TopSH )] = Val;
+		TopRef[x + (y << TopSH)] = Val;
 	}
 };

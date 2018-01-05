@@ -11,22 +11,22 @@ inline int Norma(int x, int y)
 {
 	__asm
 	{
-		mov		eax, x
-		cmp		eax, 0
-		jge		ggg1
-		neg		eax
-		ggg1 : mov		ebx, y
-			   cmp		ebx, 0
-			   jge		ggg2
-			   neg		ebx
-			   ggg2 : mov		ecx, eax
-					  cmp		eax, ebx
-					  ja		ggg3
-					  mov		ecx, ebx
-					  ggg3 : add		ecx, eax
-							 add		ecx, ebx
-							 shr		ecx, 1
-							 mov		eax, ecx
+		mov eax, x
+		cmp eax, 0
+		jge ggg1
+		neg eax
+		ggg1 : mov ebx, y
+		cmp ebx, 0
+		jge ggg2
+		neg ebx
+		ggg2 : mov ecx, eax
+		cmp eax, ebx
+		ja ggg3
+		mov ecx, ebx
+		ggg3 : add ecx, eax
+		add ecx, ebx
+		shr ecx, 1
+		mov eax, ecx
 	}
 }
 #pragma warning(default : 4035)

@@ -15,8 +15,8 @@
 class UdpHolePuncher
 {
 public:
-	void Init( const char *server_addr , const unsigned short port, 
-		const unsigned interval , const long player_id, const char *access_key );
+	void Init(const char* server_addr, const unsigned short port,
+	          const unsigned interval, const long player_id, const char* access_key);
 	void KeepAlive();
 private:
 	bool ready_for_punching_;
@@ -28,4 +28,4 @@ private:
 };
 
 //IntExplorer.dll
-__declspec( dllimport ) char* GetAccessKey( int Index );
+__declspec( dllimport ) char* GetAccessKey(int Index);

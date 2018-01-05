@@ -8,7 +8,9 @@
 void NLine(GFILE*);
 void ErrM(char*);
 void normstr(char* str);
-class GameConstants {
+
+class GameConstants
+{
 	char* names[1024];
 	int nnames;
 	int Values[1024];
@@ -23,22 +25,29 @@ public:
 	bool CheckDef(char* Name);
 };
 
-GameConstants::GameConstants() {
+GameConstants::GameConstants()
+{
 	GFILE* f1 = Gopen("Const.lst", "r");
-	
+
 	nnames = 0;
-	if (f1) {
+	if (f1)
+	{
 		int z, value;
 		char gx[128];
 		char gy[128];
 		char gz[128];
-		do {
+		do
+		{
 			z = Gscanf(f1, "%s", gx);
-			if (z > 0) {
-				if (gx[0] != '/'&&gx[0] != 0) {
-					if (gx[0] == '@') {
+			if (z > 0)
+			{
+				if (gx[0] != '/' && gx[0] != 0)
+				{
+					if (gx[0] == '@')
+					{
 						z = Gscanf(f1, "%s", &gy);
-						if (z != 1) {
+						if (z != 1)
+						{
 							sprintf(gz, "Const.lst: Invalid string %s", gx);
 							ErrM(gz);
 						};
@@ -47,13 +56,15 @@ GameConstants::GameConstants() {
 						strcpy(Strings[nsnames], gy);
 						Snames[nsnames] = new char[strlen(gx) + 1];
 						strcpy(Snames[nsnames], gx);
-						
-						
+
+
 						nsnames++;
 					}
-					else {
+					else
+					{
 						z = Gscanf(f1, "%d", &value);
-						if (z != 1) {
+						if (z != 1)
+						{
 							sprintf(gz, "Const.lst: Invalid integer value of %s", gx);
 							ErrM(gz);
 						};
@@ -63,21 +74,28 @@ GameConstants::GameConstants() {
 						nnames++;
 					};
 				}
-				else {
+				else
+				{
 					NLine(f1);
 				};
 			}
-			else {
+			else
+			{
 				Gclose(f1);
 			};
-		} while (z > 0);
+		}
+		while (z > 0);
 	}
-	else {
+	else
+	{
 		ErrM("Could not load game constants : Const.lst");
 	};
 };
-int GameConstants::GetValue(char* Name) {
-	for (int i = 0; i < nnames; i++) {
+
+int GameConstants::GetValue(char* Name)
+{
+	for (int i = 0; i < nnames; i++)
+	{
 		if (!strcmp(names[i], Name))return Values[i];
 	};
 	char gx[128];
@@ -85,6 +103,7 @@ int GameConstants::GetValue(char* Name) {
 	ErrM(gx);
 	return 0;
 };
+
 bool GameConstants::CheckDef(char* Name)
 {
 	for (int i = 0; i < nnames; i++)
@@ -103,8 +122,11 @@ bool GameConstants::CheckDef(char* Name)
 	}
 	return false;
 };
-char* GameConstants::GetString(char* Name) {
-	for (int i = 0; i < nsnames; i++) {
+
+char* GameConstants::GetString(char* Name)
+{
+	for (int i = 0; i < nsnames; i++)
+	{
 		if (!strcmp(Snames[i], Name))return Strings[i];
 	};
 	char gx[128];
@@ -129,12 +151,18 @@ GameConstants::~GameConstants()
 }
 
 GameConstants GConstant;
-int GETV(char* Name) {
+
+int GETV(char* Name)
+{
 	return GConstant.GetValue(Name);
 };
-char* GETS(char* Name) {
+
+char* GETS(char* Name)
+{
 	return GConstant.GetString(Name);
 };
-bool CHKV(char* Name) {
+
+bool CHKV(char* Name)
+{
 	return GConstant.CheckDef(Name);
 };

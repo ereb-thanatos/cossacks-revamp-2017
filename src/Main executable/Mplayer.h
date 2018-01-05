@@ -4,10 +4,10 @@ struct EXBUFFER
 {
 	DWORD Size;
 	bool Enabled;
-	DWORD Sign;//0xF376425E
-	DWORD RealTime;//if(??==0xFFFFFFFF)-empty buffer
+	DWORD Sign; //0xF376425E
+	DWORD RealTime; //if(??==0xFFFFFFFF)-empty buffer
 	DWORD RandIndex;
-	byte  Data[4096];
+	byte Data[4096];
 };
 
 struct OnePing
@@ -34,19 +34,20 @@ public:
 	PingSumm();
 	~PingSumm();
 	void ClearPingInfo();
-	void AddPing( DWORD DPID, DWORD From, DWORD To, DWORD Back );
-	void AddPlayer( DWORD DPID );
-	int GetTimeDifference( DWORD DPID );
-	int CheckPlayer( DWORD DPID );
+	void AddPing(DWORD DPID, DWORD From, DWORD To, DWORD Back);
+	void AddPlayer(DWORD DPID);
+	int GetTimeDifference(DWORD DPID);
+	int CheckPlayer(DWORD DPID);
 };
+
 extern PingSumm PSUMM;
 
 struct BACKUPSTR
 {
-	DWORD  ID;
+	DWORD ID;
 	DWORD RealTime;
 	byte* Data;
-	int   L;
+	int L;
 };
 
 class PLAYERSBACKUP
@@ -57,8 +58,8 @@ public:
 	PLAYERSBACKUP();
 	~PLAYERSBACKUP();
 	void Clear();
-	void AddInf( byte* BUF, int L, DWORD ID, int RT );
-	void SendInfoAboutTo( DWORD ID, DWORD TO, DWORD RT );
+	void AddInf(byte* BUF, int L, DWORD ID, int RT);
+	void SendInfoAboutTo(DWORD ID, DWORD TO, DWORD RT);
 };
 
 struct SingleRetr
@@ -76,9 +77,9 @@ public:
 	int MaxRET;
 	RETRANS();
 	~RETRANS();
-	void AddOneRet( DWORD TO, DWORD From, DWORD RT );
-	void AddSection( DWORD TO, DWORD From, DWORD RT );
-	void CheckRetr( DWORD From, DWORD RT );
+	void AddOneRet(DWORD TO, DWORD From, DWORD RT);
+	void AddSection(DWORD TO, DWORD From, DWORD RT);
+	void CheckRetr(DWORD From, DWORD RT);
 	void Clear();
 };
 
@@ -100,14 +101,15 @@ struct RoomInfo
 	unsigned udp_interval; //Udp hole punching packet interval
 	char udp_server[16]; //IP of udp hole punching server
 };
+
 extern RoomInfo GlobalRIF;
 
 extern bool use_gsc_network_protocol;
 
-__declspec( dllimport ) int Process_GSC_ChatWindow( bool Active, RoomInfo* RIF );
+__declspec( dllimport ) int Process_GSC_ChatWindow(bool Active, RoomInfo* RIF);
 __declspec( dllimport ) void LeaveGSCRoom();
-__declspec( dllimport ) void StartGSCGame( char* Options, char* Map,
-	int NPlayers, int* Profiles, char** Nations, int* Teams, int* Colors );
+__declspec( dllimport ) void StartGSCGame(char* Options, char* Map,
+                                          int NPlayers, int* Profiles, char** Nations, int* Teams, int* Colors);
 
 struct OnePlayerReport
 {
@@ -120,5 +122,5 @@ struct OnePlayerReport
 	word NBornUnits;
 };
 
-__declspec( dllimport ) void ReportGSCGame( int time, int NPlayers, OnePlayerReport* OPR );
-__declspec( dllimport ) void ReportAliveState( int NPlayers, int* Profiles );
+__declspec( dllimport ) void ReportGSCGame(int time, int NPlayers, OnePlayerReport* OPR);
+__declspec( dllimport ) void ReportAliveState(int NPlayers, int* Profiles);

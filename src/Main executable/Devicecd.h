@@ -1,18 +1,19 @@
 #include <mmsystem.h>
 typedef void VOIDFN();
+
 class CDeviceCD
 {
-// Construction
+	// Construction
 public:
 	CDeviceCD();
 
-// Attributes
+	// Attributes
 public:
 
-// Operations
+	// Operations
 public:
 
-// Implementation
+	// Implementation
 public:
 	bool Play(DWORD Track);
 	bool SetVolume(DWORD Volume);

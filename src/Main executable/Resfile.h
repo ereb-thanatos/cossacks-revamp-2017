@@ -15,11 +15,11 @@ ResFile RRewrite(LPCSTR lpFileName);
 //Getting size of the resource file
 DWORD RFileSize(ResFile hFile);
 // Setting file position 
-DWORD RSeek(ResFile hFile,int pos);
+DWORD RSeek(ResFile hFile, int pos);
 //Reading the file
-DWORD RBlockRead(ResFile hFile,LPVOID lpBuffer,DWORD BytesToRead);
+DWORD RBlockRead(ResFile hFile, LPVOID lpBuffer, DWORD BytesToRead);
 //Writing the file
-DWORD RBlockWrite(ResFile hFile,LPVOID lpBuffer,DWORD BytesToWrite);
+DWORD RBlockWrite(ResFile hFile, LPVOID lpBuffer, DWORD BytesToWrite);
 //Returns last error
 DWORD IOresult(void);
 //Close the file

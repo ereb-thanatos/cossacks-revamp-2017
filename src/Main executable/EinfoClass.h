@@ -1,23 +1,29 @@
 #define MAXTOW 24
 extern int NTows;
 #define TSSHIFT (4+8)
-struct HumanShip{
+
+struct HumanShip
+{
 	word ID;
 	word SN;
-	int x,y;
+	int x, y;
 	int Force;
 	int Life;
 	int R;
 };
-struct HShipsGroup{
-	int xs,ys;
-	int xL,yL;
-	int xR,yR;
+
+struct HShipsGroup
+{
+	int xs, ys;
+	int xL, yL;
+	int xR, yR;
 	int Ns, Force;
 	int CTop;
 	int R;
 };
-class EnemyInfo{
+
+class EnemyInfo
+{
 public:
 	GlobalArmyInfo GAINF;
 	byte Mask;
@@ -28,8 +34,8 @@ public:
 	word* SupMortLastTime;
 	word EnmBuildList[128];
 	word EnmBuildSN[128];
-	int  NEnmBuild;
-	int  NEnWalls;
+	int NEnmBuild;
+	int NEnWalls;
 	word WallsX[200];
 	word WallsY[200];
 	word TowsID[MAXTOW];
@@ -57,16 +63,16 @@ public:
 	int NHSHIPS;
 	int ShipsForce;
 	word TopAreasDanger[1024];
-	
+
 	void InitInflMap();
 	void ClearTow(OneObject* OB);
 	void AddTow(OneObject* OB);
 	void ProcessTow();
 	void InitSuperMortiraCells();
-	word ResearchCellForSupermortira(int cell,int MinDistance,int MaxDistance);
-	word SearchDangerousPlaceForEnemy(int* utx,int* uty,int MINR,int MAXR);
-	bool FindSafePlace(int* utx,int* uty);
-	word SearchBestEnemyAndPlaceForSupermortira(OneObject* OB,int* BestX,int* BestY);
+	word ResearchCellForSupermortira(int cell, int MinDistance, int MaxDistance);
+	word SearchDangerousPlaceForEnemy(int* utx, int* uty, int MINR, int MAXR);
+	bool FindSafePlace(int* utx, int* uty);
+	word SearchBestEnemyAndPlaceForSupermortira(OneObject* OB, int* BestX, int* BestY);
 	void CreateEnmBuildList();
 	void CreateProtectionMap();
 	void CreateWallsList();
@@ -76,33 +82,33 @@ public:
 	void InitBuildSafety();
 	void CreateBuildSafetyMap();
 	void RefreshSafeMap();
-	byte GetSafeVal(int x,int y);
-	void ShowSafetyInfo(int x,int y);
-	void AddSafePoint(int x,int y,word Index,word SN,word Prio);
-	void ClearSafePoint(int x,int y,word Index);
+	byte GetSafeVal(int x, int y);
+	void ShowSafetyInfo(int x, int y);
+	void AddSafePoint(int x, int y, word Index, word SN, word Prio);
+	void ClearSafePoint(int x, int y, word Index);
 	void InitSafeInfo();
 	void CloseSafeInfo();
 	void CheckSafeInfo();
-	SafeCellInfo* GetCellInfo(int x,int y);
-	void RegisterSafePoint(OneObject* OB,int x,int y);
+	SafeCellInfo* GetCellInfo(int x, int y);
+	void RegisterSafePoint(OneObject* OB, int x, int y);
 	void InitResearchSafeCell();
-	void ResearchSafeObject(OneObject* OB,int MinR,int MaxR,int pstart);
-	void ResearchSafeCells(int MinR,int MaxR);
+	void ResearchSafeObject(OneObject* OB, int MinR, int MaxR, int pstart);
+	void ResearchSafeCells(int MinR, int MaxR);
 	void Clear();
 	void ResearchHumanAttackPlaces();
 	void ClearPlaces();
 	void RegisterHumanShips();
-	int  GetMaxForceOnTheWay(int TopStart,int FinalTop);
+	int GetMaxForceOnTheWay(int TopStart, int FinalTop);
 	void ResearchShipsGroups();
-	int  GetShipsForce(int x,int y,int r);
+	int GetShipsForce(int x, int y, int r);
 	void ClearIslands();
 
 	void ALLOCATE();
 	void FREE();
-
-
 };
-class GlobalEnemyInfo{
+
+class GlobalEnemyInfo
+{
 public:
 	EnemyInfo* EINF[8];
 	void Clear();
@@ -112,6 +118,7 @@ public:
 	void ClearTow(OneObject* OB);
 	~GlobalEnemyInfo();
 	GlobalEnemyInfo();
-	bool FindNearestEnemy(byte NNUM,int* x,int* y,bool TowerFear,int Min,bool Defence);
+	bool FindNearestEnemy(byte NNUM, int* x, int* y, bool TowerFear, int Min, bool Defence);
 };
+
 extern GlobalEnemyInfo GNFO;

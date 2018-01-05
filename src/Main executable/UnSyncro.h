@@ -23,8 +23,14 @@ public:
 	void Clear();
 	void Save();
 	void Copy(Syncro* Syn);
-	Syncro() {};
-	~Syncro() {};
+
+	Syncro()
+	{
+	};
+
+	~Syncro()
+	{
+	};
 };
 
 extern Syncro SYN;

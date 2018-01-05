@@ -35,13 +35,13 @@ The following makes PROTOTYPES default to 0 if it has not already
 #ifdef __cplusplus
 extern "C" {
 #endif
-	
+
 #ifndef PROTOTYPES
 #define PROTOTYPES 1
 #endif
 
 /* POINTER defines a generic pointer type */
-typedef unsigned char *POINTER;
+typedef unsigned char* POINTER;
 
 /* UINT2 defines a two byte word */
 typedef unsigned short int UINT2;
@@ -60,10 +60,11 @@ If using PROTOTYPES, then PROTO_LIST returns the list, otherwise it
 #endif
 
 /* MD5 context. */
-typedef struct {
-  UINT4 state[4];                                           /* state (ABCD) */
-  UINT4 count[2];                /* number of bits, modulo 2^64 (lsb first) */
-  unsigned char buffer[64];                                 /* input buffer */
+typedef struct
+{
+	UINT4 state[4]; /* state (ABCD) */
+	UINT4 count[2]; /* number of bits, modulo 2^64 (lsb first) */
+	unsigned char buffer[64]; /* input buffer */
 } MD5_CTX;
 
 void MD5Init PROTO_LIST ((MD5_CTX *));

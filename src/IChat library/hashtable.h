@@ -1,4 +1,4 @@
- #ifndef _HASHTABLE_H
+#ifndef _HASHTABLE_H
 #define _HASHTABLE_H
 
 /* File: hashtable.h
@@ -17,7 +17,7 @@
  * in Enter & Lookup performance in constant-time.  The HashTable also supports 
  * iterating over all elements by use of mapping function.
  */
- 
+
 /* Type: HashTable
  * ----------------
  * Defines the HashTable type itself. The client can declare variables of type 
@@ -28,7 +28,7 @@
  * create new tables. The struct declaration below is "incomplete"- the 
  * implementation details are literally not visible in the client .h file.
  */
-typedef struct HashImplementation *HashTable;
+typedef struct HashImplementation* HashTable;
 
 
 /* TableHashFn
@@ -42,7 +42,7 @@ typedef struct HashImplementation *HashTable;
  * For best performance, the hash function should be designed to 
  * uniformly distribute elements over the available number of buckets.
  */
-typedef int (*TableHashFn)(const void *elem, int numBuckets);
+typedef int (*TableHashFn)(const void* elem, int numBuckets);
 
 
 /* TableCompareFn
@@ -56,21 +56,21 @@ typedef int (*TableHashFn)(const void *elem, int numBuckets);
  * If elem1 is "greater than" elem2, return a positive number.
  * If the two elements are "equal", return 0.
  */
-typedef int (*TableCompareFn)(const void *elem1, const void *elem2);
- /* TableMapFn
- * ----------
- * TableMapFn defines the space of functions that can be used to map over
- * the elements in a HashTable.  A map function is called with a pointer to
- * the element and a client data pointer passed in from the original caller.
- */
-typedef void (*TableMapFn)(void *elem, void *clientData);
+typedef int (*TableCompareFn)(const void* elem1, const void* elem2);
+/* TableMapFn
+* ----------
+* TableMapFn defines the space of functions that can be used to map over
+* the elements in a HashTable.  A map function is called with a pointer to
+* the element and a client data pointer passed in from the original caller.
+*/
+typedef void (*TableMapFn)(void* elem, void* clientData);
 
- /* TableMapFn2
- * ----------
- * Same as TableMapFn, but can return 0 to stop the mapping.
- * Used by TableMap2.
- */
-typedef int (*TableMapFn2)(void *elem, void *clientData);
+/* TableMapFn2
+* ----------
+* Same as TableMapFn, but can return 0 to stop the mapping.
+* Used by TableMap2.
+*/
+typedef int (*TableMapFn2)(void* elem, void* clientData);
 
 
 /* TableElementFreeFn
@@ -80,7 +80,7 @@ typedef int (*TableMapFn2)(void *elem, void *clientData);
  * or when the entire array of elements is freed.  The cleanup function is 
  * called with a pointer to an element about to be deleted.
  */
-typedef void (*TableElementFreeFn)(void *elem);
+typedef void (*TableElementFreeFn)(void* elem);
 
 #ifdef __cplusplus
 extern "C" {
@@ -118,26 +118,26 @@ extern "C" {
  *
  */
 
-HashTable TableNew(int elemSize, int nBuckets, 
-                   TableHashFn hashFn, TableCompareFn compFn, 
- 					 TableElementFreeFn freeFn);
+HashTable TableNew(int elemSize, int nBuckets,
+                   TableHashFn hashFn, TableCompareFn compFn,
+                   TableElementFreeFn freeFn);
 
 HashTable TableNew2(int elemSize, int nBuckets, int nChains,
-                   TableHashFn hashFn, TableCompareFn compFn, 
- 					 TableElementFreeFn freeFn);
+                    TableHashFn hashFn, TableCompareFn compFn,
+                    TableElementFreeFn freeFn);
 
 
- /* TableFree
- * ----------
- * Frees up all the memory for the table and its elements. It DOES NOT 
- * automatically free memory owned by pointers embedded in the elements. This 
- * would require knowledge of the structure of the elements which the HashTable 
- * does not have.  However, it will iterate over the elements calling
- * the elementFreeFn earlier supplied to TableNew and therefore, the client, 
- * who knows what the elements are,can do the appropriate deallocation of any 
- * embedded pointers through that function.
- * After calling this, the value of what table points to is undefined.
- */
+/* TableFree
+* ----------
+* Frees up all the memory for the table and its elements. It DOES NOT 
+* automatically free memory owned by pointers embedded in the elements. This 
+* would require knowledge of the structure of the elements which the HashTable 
+* does not have.  However, it will iterate over the elements calling
+* the elementFreeFn earlier supplied to TableNew and therefore, the client, 
+* who knows what the elements are,can do the appropriate deallocation of any 
+* embedded pointers through that function.
+* After calling this, the value of what table points to is undefined.
+*/
 void TableFree(HashTable table);
 
 
@@ -146,7 +146,6 @@ void TableFree(HashTable table);
  * Returns the number of elements currently in the table.
  */
 int TableCount(HashTable table);
-
 
 
 /* TableEnter
@@ -158,7 +157,7 @@ int TableCount(HashTable table);
  * use the contents of the new element to replace the previous element, 
  * calling the free function on the replaced element.
  */
-void TableEnter(HashTable table, const void *newElem);
+void TableEnter(HashTable table, const void* newElem);
 
 /* TableRemove
  * ----------
@@ -166,7 +165,7 @@ void TableEnter(HashTable table, const void *newElem);
  * the function returns 0. If it exists, it returns 1 and calls the
  * free function on the removed element.
  */
-int TableRemove(HashTable table, const void *delElem);
+int TableRemove(HashTable table, const void* delElem);
 
 
 /* TableLookup
@@ -176,8 +175,7 @@ int TableRemove(HashTable table, const void *delElem);
  * matching element, returns NULL. Calling this function does not 
  * re-arrange or change contents of the table or modify elemKey in any way.
  */
-void *TableLookup(HashTable table, const void *elemKey);
-
+void* TableLookup(HashTable table, const void* elemKey);
 
 
 /* TableMap
@@ -189,13 +187,13 @@ void *TableLookup(HashTable table, const void *elemKey);
  * if necessary.  If no client data is required, this argument should be NULL.
  * An assert is raised if the map function is NULL.
  */
-void TableMap(HashTable table, TableMapFn fn, void *clientData);
+void TableMap(HashTable table, TableMapFn fn, void* clientData);
 
 /* TableMapSafe
  * -----------
  * Same as TableMap, but allows elements to be freed during the mapping.
  */
-void TableMapSafe(HashTable table, TableMapFn fn, void *clientData);
+void TableMapSafe(HashTable table, TableMapFn fn, void* clientData);
 
 /* TableMap2
  * -----------
@@ -204,7 +202,7 @@ void TableMapSafe(HashTable table, TableMapFn fn, void *clientData);
  * it was stopped at will be returned.  If it wasn't stopped, then NULL
  * will be returned.
  */
-void * TableMap2(HashTable table, TableMapFn2 fn, void *clientData);
+void* TableMap2(HashTable table, TableMapFn2 fn, void* clientData);
 
 /* TableClear
  * -----------

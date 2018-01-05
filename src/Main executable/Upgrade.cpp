@@ -19,9 +19,9 @@ Upgrade::Upgrade()
 {
 	NUpgrades = 0;
 };
-void PerformUpgradeLink( OneObject* OBJ );
+void PerformUpgradeLink(OneObject* OBJ);
 
-void OneObject::PerformUpgrade( word NewU, word MakerID )
+void OneObject::PerformUpgrade(word NewU, word MakerID)
 {
 	if (CheckOrderAbility())
 		return;
@@ -72,7 +72,7 @@ void OneObject::PerformUpgrade( word NewU, word MakerID )
 	for (int i = 0; i < 8; i++)
 	{
 		AddXRESRC( NNUM, i, -NU->Cost[i] );
-		Nat->ControlProduce( NU->Branch, i, -NU->Cost[i] );
+		Nat->ControlProduce(NU->Branch, i, -NU->Cost[i]);
 		if (Use == MineID)
 		{
 			Nat->ResOnMines[i] += NU->Cost[i];
@@ -83,7 +83,7 @@ void OneObject::PerformUpgrade( word NewU, word MakerID )
 	Order1* Or1 = GetOrdBlock();
 	Or1->PrioryLevel = 96;
 	Or1->NextOrder = LocalOrder;
-	Or1->OrderType = 75;//Upgrade
+	Or1->OrderType = 75; //Upgrade
 	Or1->OrderTime = 0;
 	Or1->DoLink = &PerformUpgradeLink;
 	Or1->info.PUpgrade.NewUpgrade = NewU;
@@ -94,7 +94,7 @@ void OneObject::PerformUpgrade( word NewU, word MakerID )
 	Order1* LOR = LocalOrder;
 	LocalOrder = Or1;
 
-	if (!( NU->Individual || NU->StageUp ))
+	if (!(NU->Individual || NU->StageUp))
 	{
 		NU->Enabled = false;
 		NU->PermanentEnabled = false;
@@ -105,10 +105,11 @@ void OneObject::PerformUpgrade( word NewU, word MakerID )
 	Ready = false;
 }
 
-void CreateTimedHint( char* s, int time );
+void CreateTimedHint(char* s, int time);
 extern int tmtmt;
 extern int StartTmtmt;
-void PerformUpgradeLink( OneObject* OBJ )
+
+void PerformUpgradeLink(OneObject* OBJ)
 {
 	word OI = OBJ->LocalOrder->info.PUpgrade.NewUpgrade;
 	Nation* NT = OBJ->Nat;
@@ -127,19 +128,18 @@ void PerformUpgradeLink( OneObject* OBJ )
 		{
 			OBU = Group[MID];
 		};
-		if (!( NUP->Individual || NUP->StageUp ))NUP->Done = true;
-		PerformNewUpgrade( &NATIONS[OBJ->NNUM], OI, OBU );
-		OBJ->Nat->AddUpgrade( OI, tmtmt + StartTmtmt );
+		if (!(NUP->Individual || NUP->StageUp))NUP->Done = true;
+		PerformNewUpgrade(&NATIONS[OBJ->NNUM], OI, OBU);
+		OBJ->Nat->AddUpgrade(OI, tmtmt + StartTmtmt);
 		if (NI == MyNation)
 		{
 			char ccc[200];
-			sprintf( ccc, UPGMADE, NUP->Message );
-			CreateTimedHint( ccc, kMinorMessageDisplayTime );//Improvement complete: %s
+			sprintf(ccc, UPGMADE, NUP->Message);
+			CreateTimedHint(ccc, kMinorMessageDisplayTime); //Improvement complete: %s
 			LastActionX = OBJ->RealX >> 4;
 			LastActionY = OBJ->RealY >> 4;
 		};
 		OBJ->DeleteLastOrder();
 		OBJ->SingleUpgLevel++;
-
 	};
 };

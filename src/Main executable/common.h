@@ -56,7 +56,7 @@ extern __declspec(dllimport) int selected_network_protocol;
 extern __declspec(dllimport) bool TOTALEXIT;
 extern __declspec(dllimport) int LastKey;
 
-__declspec(dllimport) void CBar(int x0,int y0,int Lx0,int Ly0,byte c);
+__declspec(dllimport) void CBar(int x0, int y0, int Lx0, int Ly0, byte c);
 __declspec(dllimport) bool MMItemChoose(SimpleDialog* SD);
 __declspec(dllimport) int GETV(char* Name);
 __declspec(dllimport) char* GETS(char* Name);

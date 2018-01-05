@@ -1,5 +1,7 @@
 class OneObject;
-class SimpleUTP{
+
+class SimpleUTP
+{
 public:
 	char* Message;
 	byte NLinks;
@@ -21,29 +23,38 @@ public:
 	word Stage;
 };
 
-class UTP1:public SimpleUTP{
+class UTP1 : public SimpleUTP
+{
 public:
 	byte ResType;
 	byte AddVal;
 };
-class UTP2:public SimpleUTP{
+
+class UTP2 : public SimpleUTP
+{
 public:
 	word MID;
 	byte CharID;
 	byte AddVal;
 };
-class UTP3:public SimpleUTP{
+
+class UTP3 : public SimpleUTP
+{
 public:
 	word FinalMID;
 };
-class Upgrade{
+
+class Upgrade
+{
 public:
-	union{
+	union
+	{
 		UTP1* utp1[1024];
 		UTP2* utp2[1024];
 		UTP3* utp3[1024];
 		SimpleUTP* utp[1024];
 	};
+
 	int NUpgrades;
 	Upgrade();
 };

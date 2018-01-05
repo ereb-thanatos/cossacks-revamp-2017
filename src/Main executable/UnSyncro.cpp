@@ -21,53 +21,53 @@ extern bool RecordMode;
 extern byte PlayGameMode;
 char CURLOG[32];
 
-void WriteRec( char* s )
+void WriteRec(char* s)
 {
-	if ( !( PlayGameMode || RecordMode ) )
+	if (!(PlayGameMode || RecordMode))
 	{
 		return;
 	}
 
-	if ( GetTickCount() - prevrtime > 10000 )
+	if (GetTickCount() - prevrtime > 10000)
 	{
-		if ( FX )
+		if (FX)
 		{
-			fclose( FX );
-			if ( PlayGameMode )
+			fclose(FX);
+			if (PlayGameMode)
 			{
-				FX = fopen( "lox1.log", "a" );
-				strcpy( CURLOG, "lox1.log" );
+				FX = fopen("lox1.log", "a");
+				strcpy(CURLOG, "lox1.log");
 			}
 			else
 			{
-				FX = fopen( "lox0.log", "a" );
-				strcpy( CURLOG, "lox0.log" );
+				FX = fopen("lox0.log", "a");
+				strcpy(CURLOG, "lox0.log");
 			}
 		}
 		prevrtime = GetTickCount();
 	}
-	if ( !FX )
+	if (!FX)
 	{
-		if ( PlayGameMode )
+		if (PlayGameMode)
 		{
-			FX = fopen( "lox1.log", "a" );
-			strcpy( CURLOG, "lox1.log" );
+			FX = fopen("lox1.log", "a");
+			strcpy(CURLOG, "lox1.log");
 		}
 		else
 		{
-			FX = fopen( "lox0.log", "a" );
-			strcpy( CURLOG, "lox0.log" );
+			FX = fopen("lox0.log", "a");
+			strcpy(CURLOG, "lox0.log");
 		}
 	}
-	fprintf( FX, s );
+	fprintf(FX, s);
 }
 
 extern int tmtmt;
 extern DWORD RealTime;
 
-void Syncro::Copy( Syncro* Syn )
+void Syncro::Copy(Syncro* Syn)
 {
-	memcpy( Syn->RSL, RSL, NSlots * sizeof RandSlot );
+	memcpy(Syn->RSL, RSL, NSlots * sizeof RandSlot);
 	Syn->NSlots = NSlots;
 	NSlots = 0;
 }
@@ -79,13 +79,13 @@ extern char LASTFILE[128];
 extern int LastLine;
 char* LastFile;
 
-int RandNew( char* File, int Line )
+int RandNew(char* File, int Line)
 {
 	LastFile = File;
 	LastLine = Line;
 	int r = randoma[rpos];
-	rpos = ( rpos + 1 ) & 8191;
-	if ( SYN.NSlots < maxUline )
+	rpos = (rpos + 1) & 8191;
+	if (SYN.NSlots < maxUline)
 	{
 		RandSlot* RS = SYN.RSL + SYN.NSlots;
 		RS->FileName = File;

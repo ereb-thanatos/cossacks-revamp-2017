@@ -16,38 +16,36 @@
 
 CGSCset::CGSCset()
 {
-
 }
 
 CGSCset::~CGSCset()
 {
-
 }
 
-LPGSCfile CGSCset::gOpenFile( LPCSTR lpcsFileName, bool Only )
+LPGSCfile CGSCset::gOpenFile(LPCSTR lpcsFileName, bool Only)
 {
-	LPGSCfile		gFile = NULL;
-	HANDLE			hFindFile;
-	WIN32_FIND_DATA	FindData;
-	BOOL			isArch = TRUE;
+	LPGSCfile gFile = NULL;
+	HANDLE hFindFile;
+	WIN32_FIND_DATA FindData;
+	BOOL isArch = TRUE;
 
 	if (!Only)
 	{
-		hFindFile = FindFirstFile( lpcsFileName, &FindData );
+		hFindFile = FindFirstFile(lpcsFileName, &FindData);
 		if (hFindFile != INVALID_HANDLE_VALUE)
 		{
 			isArch = FALSE;
 		}
-		FindClose( hFindFile );
+		FindClose(hFindFile);
 	}
 
 	if (isArch)
 	{
-		LPGSCArchList	pArchList = m_ArchList;
+		LPGSCArchList pArchList = m_ArchList;
 
 		while (pArchList)
 		{
-			gFile = pArchList->m_Arch->GetFileHandle( lpcsFileName );
+			gFile = pArchList->m_Arch->GetFileHandle(lpcsFileName);
 			if (gFile)
 			{
 				gFile->m_Arch = pArchList->m_Arch;
@@ -65,16 +63,16 @@ LPGSCfile CGSCset::gOpenFile( LPCSTR lpcsFileName, bool Only )
 		gFile->m_Position = 0;
 		gFile->m_Arch = NULL;
 
-		gFile->m_FileHandle = DWORD( CreateFile( lpcsFileName,
-			GENERIC_READ | GENERIC_WRITE,
-			FILE_SHARE_READ | FILE_SHARE_WRITE,
-			NULL,
-			OPEN_EXISTING,
-			FILE_ATTRIBUTE_NORMAL,
-			0 ) );
+		gFile->m_FileHandle = DWORD(CreateFile(lpcsFileName,
+		                                       GENERIC_READ | GENERIC_WRITE,
+		                                       FILE_SHARE_READ | FILE_SHARE_WRITE,
+		                                       NULL,
+		                                       OPEN_EXISTING,
+		                                       FILE_ATTRIBUTE_NORMAL,
+		                                       0));
 
 		// just in case
-		if (gFile->m_FileHandle == (DWORD) INVALID_HANDLE_VALUE) 
+		if (gFile->m_FileHandle == (DWORD)INVALID_HANDLE_VALUE)
 		{
 			delete gFile;
 			return NULL;
@@ -84,7 +82,7 @@ LPGSCfile CGSCset::gOpenFile( LPCSTR lpcsFileName, bool Only )
 	return gFile;
 }
 
-VOID CGSCset::gCloseFile( LPGSCfile gFile )
+VOID CGSCset::gCloseFile(LPGSCfile gFile)
 {
 	//BUGFIX: Exception when closing game via Alt+F4
 	if (nullptr == gFile)
@@ -94,29 +92,29 @@ VOID CGSCset::gCloseFile( LPGSCfile gFile )
 
 	if (gFile->m_Flags)
 	{
-		gFile->m_Arch->CloseFileHandle( gFile );
+		gFile->m_Arch->CloseFileHandle(gFile);
 	}
 	else
 	{
-		CloseHandle( HANDLE( gFile->m_FileHandle ) );
+		CloseHandle(HANDLE(gFile->m_FileHandle));
 	}
 }
 
-VOID CGSCset::gReadFile( LPGSCfile gFile, LPBYTE lpbBuffer, DWORD dwSize )
+VOID CGSCset::gReadFile(LPGSCfile gFile, LPBYTE lpbBuffer, DWORD dwSize)
 {
-	DWORD	dwBytesRead = 0;
+	DWORD dwBytesRead = 0;
 
 	if (gFile->m_Flags)
 	{
-		gFile->m_Arch->ReadFile( gFile, lpbBuffer, dwSize );
+		gFile->m_Arch->ReadFile(gFile, lpbBuffer, dwSize);
 	}
 	else
 	{
-		ReadFile( HANDLE( gFile->m_FileHandle ), lpbBuffer, dwSize, &dwBytesRead, NULL );
+		ReadFile(HANDLE(gFile->m_FileHandle), lpbBuffer, dwSize, &dwBytesRead, NULL);
 	};
 }
 
-VOID CGSCset::gSeekFile( LPGSCfile gFile, DWORD dwPosition )
+VOID CGSCset::gSeekFile(LPGSCfile gFile, DWORD dwPosition)
 {
 	if (gFile->m_Flags)
 	{
@@ -124,11 +122,11 @@ VOID CGSCset::gSeekFile( LPGSCfile gFile, DWORD dwPosition )
 	}
 	else
 	{
-		SetFilePointer( HANDLE( gFile->m_FileHandle ), dwPosition, NULL, FILE_BEGIN );
+		SetFilePointer(HANDLE(gFile->m_FileHandle), dwPosition, NULL, FILE_BEGIN);
 	}
 }
 
-DWORD CGSCset::gFilePos( LPGSCfile gFile )
+DWORD CGSCset::gFilePos(LPGSCfile gFile)
 {
 	if (gFile->m_Flags)
 	{
@@ -136,18 +134,18 @@ DWORD CGSCset::gFilePos( LPGSCfile gFile )
 	}
 	else
 	{
-		return SetFilePointer( HANDLE( gFile->m_FileHandle ), 0, NULL, FILE_BEGIN );
+		return SetFilePointer(HANDLE(gFile->m_FileHandle), 0, NULL, FILE_BEGIN);
 	};
 }
 
-VOID AddItem( LPGSCFileList pFileList, LPCSTR lpcsFileName )
+VOID AddItem(LPGSCFileList pFileList, LPCSTR lpcsFileName)
 {
-	LPGSCFileList	pList = pFileList, pItem;
-	BOOL	Exists = FALSE;
+	LPGSCFileList pList = pFileList, pItem;
+	BOOL Exists = FALSE;
 
 	while (pList)
 	{
-		if (!strcmp( pList->m_FileName, lpcsFileName ))
+		if (!strcmp(pList->m_FileName, lpcsFileName))
 		{
 			Exists = TRUE;
 			break;
@@ -164,26 +162,25 @@ VOID AddItem( LPGSCFileList pFileList, LPCSTR lpcsFileName )
 
 		pItem = new TGSCFileList;
 		pItem->m_NextEntry = NULL;
-		strcpy( pItem->m_FileName, lpcsFileName );
+		strcpy(pItem->m_FileName, lpcsFileName);
 
 		pList->m_NextEntry = pItem;
-
 	};
 }
 
-LPGSCFindInfo CGSCset::gFindFirst( LPCSTR lpcsMask )
+LPGSCFindInfo CGSCset::gFindFirst(LPCSTR lpcsMask)
 {
 	LPGSCFindInfo lpFindInfo = NULL;
-	WIN32_FIND_DATA	FindData;
-	HANDLE	hFindFile;
-	LPGSCFileList	lpFileList = NULL;
+	WIN32_FIND_DATA FindData;
+	HANDLE hFindFile;
+	LPGSCFileList lpFileList = NULL;
 
-	CHAR	sUpMask[64];
+	CHAR sUpMask[64];
 	ZeroMemory( sUpMask, 64 );
-	strcpy( sUpMask, lpcsMask );
-	_strupr( sUpMask );
+	strcpy(sUpMask, lpcsMask);
+	_strupr(sUpMask);
 
-	hFindFile = FindFirstFile( sUpMask, &FindData );
+	hFindFile = FindFirstFile(sUpMask, &FindData);
 
 	if (hFindFile != INVALID_HANDLE_VALUE)
 	{
@@ -195,27 +192,27 @@ LPGSCFindInfo CGSCset::gFindFirst( LPCSTR lpcsMask )
 		lpFindInfo->m_FileList = lpFileList;
 		lpFindInfo->m_Pos = lpFileList;
 		lpFileList->m_NextEntry = NULL;
-		strcpy( lpFileList->m_FileName, FindData.cFileName );
-		_strupr( FindData.cFileName );
+		strcpy(lpFileList->m_FileName, FindData.cFileName);
+		_strupr(FindData.cFileName);
 
-		while (FindNextFile( hFindFile, &FindData ))
+		while (FindNextFile(hFindFile, &FindData))
 		{
 			lpFileList->m_NextEntry = new TGSCFileList;
 			lpFileList = lpFileList->m_NextEntry;
 			lpFileList->m_NextEntry = NULL;
-			strcpy( lpFileList->m_FileName, FindData.cFileName );
-			_strupr( FindData.cFileName );
+			strcpy(lpFileList->m_FileName, FindData.cFileName);
+			_strupr(FindData.cFileName);
 		};
 	};
 
-	FindClose( hFindFile );
+	FindClose(hFindFile);
 
-	LPGSCArchList	pArchList = m_ArchList;
-	LPGSCFindData	pFindData;
+	LPGSCArchList pArchList = m_ArchList;
+	LPGSCFindData pFindData;
 
 	while (pArchList)
 	{
-		pFindData = pArchList->m_Arch->FindFile( sUpMask );
+		pFindData = pArchList->m_Arch->FindFile(sUpMask);
 
 		if (pFindData)
 		{
@@ -229,14 +226,14 @@ LPGSCFindInfo CGSCset::gFindFirst( LPCSTR lpcsMask )
 				lpFindInfo->m_FileList = lpFileList;
 				lpFindInfo->m_Pos = lpFileList;
 				lpFileList->m_NextEntry = NULL;
-				strcpy( lpFileList->m_FileName, pFindData->m_FileName );
+				strcpy(lpFileList->m_FileName, pFindData->m_FileName);
 			}
 			else
-				AddItem( lpFindInfo->m_FileList, pFindData->m_FileName );
+				AddItem(lpFindInfo->m_FileList, pFindData->m_FileName);
 
-			while (pArchList->m_Arch->NextFile( pFindData ))
+			while (pArchList->m_Arch->NextFile(pFindData))
 			{
-				AddItem( lpFindInfo->m_FileList, pFindData->m_FileName );
+				AddItem(lpFindInfo->m_FileList, pFindData->m_FileName);
 			};
 		};
 
@@ -245,25 +242,25 @@ LPGSCFindInfo CGSCset::gFindFirst( LPCSTR lpcsMask )
 
 	if (lpFindInfo)
 	{
-		strcpy( lpFindInfo->m_FileName, lpFindInfo->m_Pos->m_FileName );
+		strcpy(lpFindInfo->m_FileName, lpFindInfo->m_Pos->m_FileName);
 		return lpFindInfo;
 	}
 	else
 		return NULL;
 }
 
-BOOL CGSCset::gFindNext( LPGSCFindInfo gFindInfo )
+BOOL CGSCset::gFindNext(LPGSCFindInfo gFindInfo)
 {
 	gFindInfo->m_Pos = gFindInfo->m_Pos->m_NextEntry;
 
 	if (gFindInfo->m_Pos)
 	{
-		strcpy( gFindInfo->m_FileName, gFindInfo->m_Pos->m_FileName );
+		strcpy(gFindInfo->m_FileName, gFindInfo->m_Pos->m_FileName);
 		return TRUE;
 	}
 	else
 	{
-		LPGSCFileList	lpFileList1, lpFileList2;
+		LPGSCFileList lpFileList1, lpFileList2;
 
 		lpFileList2 = gFindInfo->m_FileList;
 
@@ -279,8 +276,8 @@ BOOL CGSCset::gFindNext( LPGSCFindInfo gFindInfo )
 
 		return FALSE;
 	}
-
 }
+
 void GSC_OpenError();
 
 //Loads specified *.gs1 and *.gsc archives
@@ -298,28 +295,28 @@ BOOL CGSCset::gOpen()
 
 	m_ArchList = nullptr;
 
-	hFindFile = FindFirstFile( "override.gsc", &FindData );
+	hFindFile = FindFirstFile("override.gsc", &FindData);
 	if (INVALID_HANDLE_VALUE != hFindFile)
 	{
 		pArchList = new TGSCArchList;
 		m_ArchList = pArchList;
 		pArchList->m_NextArch = nullptr;
 		pArchList->m_Arch = new CGSCarch;
-		pArchList->m_Arch->Open( FindData.cFileName );
+		pArchList->m_Arch->Open(FindData.cFileName);
 
-		while (FindNextFile( hFindFile, &FindData ))
+		while (FindNextFile(hFindFile, &FindData))
 		{
 			pArchList->m_NextArch = new TGSCArchList;
 			pArchList = pArchList->m_NextArch;
 
 			pArchList->m_Arch = new CGSCarch;
 			pArchList->m_NextArch = nullptr;
-			pArchList->m_Arch->Open( FindData.cFileName );
+			pArchList->m_Arch->Open(FindData.cFileName);
 		}
 	}
-	FindClose( hFindFile );
+	FindClose(hFindFile);
 
-	hFindFile = FindFirstFile( "resources.gsc", &FindData );
+	hFindFile = FindFirstFile("resources.gsc", &FindData);
 	if (INVALID_HANDLE_VALUE != hFindFile)
 	{
 		if (nullptr == m_ArchList)
@@ -335,15 +332,15 @@ BOOL CGSCset::gOpen()
 
 		pArchList->m_NextArch = nullptr;
 		pArchList->m_Arch = new CGSCarch;
-		pArchList->m_Arch->Open( FindData.cFileName );
+		pArchList->m_Arch->Open(FindData.cFileName);
 
-		while (FindNextFile( hFindFile, &FindData ))
+		while (FindNextFile(hFindFile, &FindData))
 		{
 			pArchList->m_NextArch = new TGSCArchList;
 			pArchList = pArchList->m_NextArch;
 			pArchList->m_Arch = new CGSCarch;
 			pArchList->m_NextArch = nullptr;
-			pArchList->m_Arch->Open( FindData.cFileName );
+			pArchList->m_Arch->Open(FindData.cFileName);
 		}
 	}
 	else
@@ -351,14 +348,14 @@ BOOL CGSCset::gOpen()
 		retval = FALSE;
 	}
 
-	FindClose( hFindFile );
+	FindClose(hFindFile);
 
 	return retval;
 }
 
 VOID CGSCset::gClose()
 {
-	LPGSCArchList	lpArchList1, lpArchList2;
+	LPGSCArchList lpArchList1, lpArchList2;
 
 	lpArchList2 = m_ArchList;
 
@@ -372,26 +369,25 @@ VOID CGSCset::gClose()
 
 		delete lpArchList1;
 	};
-
 }
 
-DWORD CGSCset::gFileSize( LPGSCfile gFile )
+DWORD CGSCset::gFileSize(LPGSCfile gFile)
 {
-	if (gFile->m_Flags)//m_Flags = 1 means it's in an archive
+	if (gFile->m_Flags) //m_Flags = 1 means it's in an archive
 	{
-		return gFile->m_Arch->GetFileSize( gFile );
+		return gFile->m_Arch->GetFileSize(gFile);
 	}
 	else
 	{
-		return GetFileSize( HANDLE( gFile->m_FileHandle ), NULL );
+		return GetFileSize(HANDLE(gFile->m_FileHandle), NULL);
 	};
 }
 
-LPBYTE CGSCset::gMapFile( LPGSCfile gFile )
+LPBYTE CGSCset::gMapFile(LPGSCfile gFile)
 {
 	if (gFile->m_Flags)
 	{
-		return gFile->m_Arch->GetFileData( gFile );
+		return gFile->m_Arch->GetFileData(gFile);
 	}
 	else
 	{
@@ -399,7 +395,7 @@ LPBYTE CGSCset::gMapFile( LPGSCfile gFile )
 	};
 }
 
-BOOL CGSCset::gWriteFile( LPGSCfile gFile, LPBYTE lpbBuffer, DWORD dwSize )
+BOOL CGSCset::gWriteFile(LPGSCfile gFile, LPBYTE lpbBuffer, DWORD dwSize)
 {
 	DWORD dwBytesWritten;
 	if (gFile->m_Flags)
@@ -408,13 +404,12 @@ BOOL CGSCset::gWriteFile( LPGSCfile gFile, LPBYTE lpbBuffer, DWORD dwSize )
 	}
 	else
 	{
-		WriteFile( HANDLE( gFile->m_FileHandle ), lpbBuffer, dwSize, &dwBytesWritten, NULL );
+		WriteFile(HANDLE(gFile->m_FileHandle), lpbBuffer, dwSize, &dwBytesWritten, NULL);
 		return TRUE;
 	};
-
 }
 
-LPGSCfile CGSCset::gWriteOpen( LPCSTR lpcsFileName )
+LPGSCfile CGSCset::gWriteOpen(LPCSTR lpcsFileName)
 {
 	LPGSCfile gFile;
 
@@ -423,14 +418,14 @@ LPGSCfile CGSCset::gWriteOpen( LPCSTR lpcsFileName )
 	gFile->m_Position = 0;
 	gFile->m_Arch = NULL;
 
-	gFile->m_FileHandle = DWORD( CreateFile( lpcsFileName,
-		GENERIC_READ | GENERIC_WRITE,
-		FILE_SHARE_READ,
-		NULL,
-		CREATE_ALWAYS,
-		FILE_ATTRIBUTE_NORMAL,
-		0 ) );
-	if (gFile->m_FileHandle == (DWORD) INVALID_HANDLE_VALUE)
+	gFile->m_FileHandle = DWORD(CreateFile(lpcsFileName,
+	                                       GENERIC_READ | GENERIC_WRITE,
+	                                       FILE_SHARE_READ,
+	                                       NULL,
+	                                       CREATE_ALWAYS,
+	                                       FILE_ATTRIBUTE_NORMAL,
+	                                       0));
+	if (gFile->m_FileHandle == (DWORD)INVALID_HANDLE_VALUE)
 	{
 		delete gFile;
 		return NULL;

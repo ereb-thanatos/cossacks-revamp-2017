@@ -1,4 +1,5 @@
-class InternetStream{
+class InternetStream
+{
 public:
 	bool LocalFile;
 	int CurPosition;
@@ -7,10 +8,12 @@ public:
 	char HashName[128];
 	bool Open(char* Name);
 	void Close();
-	int ReadSomething(byte* Buf,int MaxLen,bool Scroll,bool Blocking);
+	int ReadSomething(byte* Buf, int MaxLen, bool Scroll, bool Blocking);
 	int Error();
 };
-class RecordGame{
+
+class RecordGame
+{
 public:
 	InternetStream STREAM;
 	byte* Stream;
@@ -26,7 +29,7 @@ public:
 	void AddEmptyRecord();
 	void AddByte(byte v);
 	void AddShort(short v);
-	void AddBuf(byte* Data,int Size);
+	void AddBuf(byte* Data, int Size);
 	void ReadStream(char* Name);
 	void TryToFlushNetworkStream(bool Final);
 	bool Extract();
@@ -35,5 +38,6 @@ public:
 	RecordGame();
 	~RecordGame();
 };
+
 extern RecordGame RGAME;
 extern bool RecordMode;

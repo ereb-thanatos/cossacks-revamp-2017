@@ -1,10 +1,13 @@
-struct StrHashItem{
+struct StrHashItem
+{
 	int NStr;
 	int MaxStr;
 	char** Str;
 	int* Value;
 };
-class StrHash{
+
+class StrHash
+{
 public:
 	StrHashItem SHI[256];
 	int LastIndex;

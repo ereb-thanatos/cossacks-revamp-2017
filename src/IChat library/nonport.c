@@ -145,10 +145,10 @@ time_t time(time_t *timer)
 
 #endif /* __mips64 */
 
-unsigned long current_time()  //returns current time in msec
-{ 
+unsigned long current_time() //returns current time in msec
+{
 #ifdef _WIN32
-	return (GetTickCount()); 
+	return (GetTickCount());
 #endif
 #ifdef _MACOS
 	return (TickCount() * 50) / 3;
@@ -222,8 +222,6 @@ void SocketStartUp()
 	WSADATA data;
 	WSAStartup(0x0101, &data);
 #endif
-
-
 }
 
 void SocketShutDown()
@@ -231,18 +229,18 @@ void SocketShutDown()
 #if defined(_WIN32) || defined(_MACOS)
 	WSACleanup();
 #endif
-
 }
 
 #include <string.h>
 #include <stdlib.h>
-char * goastrdup(const char *src)
+
+char* goastrdup(const char* src)
 {
-	char *res;
-	if(src == NULL)      //PANTS|02.11.00|check for NULL before strlen
+	char* res;
+	if (src == NULL) //PANTS|02.11.00|check for NULL before strlen
 		return NULL;
 	res = (char *)gsimalloc(strlen(src) + 1);
-	if(res != NULL)      //PANTS|02.02.00|check for NULL before strcpy
+	if (res != NULL) //PANTS|02.02.00|check for NULL before strcpy
 		strcpy(res, src);
 	return res;
 }
@@ -279,30 +277,30 @@ char *_strupr(char *string)
 int SetSockBlocking(SOCKET sock, int isblocking)
 {
 #ifdef __KATANA__
-	#ifdef KGTRN_ACCESS
+#ifdef KGTRN_ACCESS
 		short   argp;
-	#endif
-	#ifdef KGTRN_PLANET_WEB
+#endif
+#ifdef KGTRN_PLANET_WEB
 		long argp;
-	#endif
-	#ifdef KGTRN_NEXGEN
+#endif
+#ifdef KGTRN_NEXGEN
 		int argp;
-	#endif
+#endif
 #else
 	unsigned long argp;
 #endif
-	int rcode; 
-	
+	int rcode;
+
 	if (isblocking)
 		argp = 0;
 	else
 		argp = 1;
 #ifdef __KATANA__
 
-	#ifdef KGTRN_ACCESS
+#ifdef KGTRN_ACCESS
 		rcode = setsockopt(sock, SOL_SOCKET, SO_NOBLK,(char *)&argp, sizeof(argp));
-	#endif
-	#ifdef KGTRN_PLANET_WEB
+#endif
+#ifdef KGTRN_PLANET_WEB
 		if ( (argp = net_fcntl( sock, F_GETFL, 0)) < 0 )
 			return -1;
 		if (isblocking)
@@ -310,8 +308,8 @@ int SetSockBlocking(SOCKET sock, int isblocking)
 		else
 			argp |= O_NONBLOCK;	
 		rcode = net_fcntl( sock, F_SETFL, argp );
-	#endif
-	#ifdef KGTRN_NEXGEN
+#endif
+#ifdef KGTRN_NEXGEN
 		if ( (argp = fcntlsocket( sock, F_GETFL, 0)) < 0 )
 			return -1;
 		if (isblocking)
@@ -319,13 +317,13 @@ int SetSockBlocking(SOCKET sock, int isblocking)
 		else
 			argp |= O_NONBLOCK;	
 		rcode = fcntlsocket( sock, F_SETFL, argp );		
-	#endif
+#endif
 #else
-	#ifdef __mips64
+#ifdef __mips64
 		rcode = setsockopt(sock, SOL_SOCKET, (isblocking) ? SO_BIO : SO_NBIO, &argp, sizeof(argp));
-	#else
-		rcode = ioctlsocket(sock, FIONBIO, &argp);
-	#endif
+#else
+	rcode = ioctlsocket(sock, FIONBIO, &argp);
+#endif
 #endif
 	if (rcode == 0)
 		return 1;
@@ -344,7 +342,7 @@ int DisableNagle(SOCKET sock)
 
 	rcode = setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (char *)&noDelay, sizeof(int));
 
-	return (rcode != SOCKET_ERROR);	
+	return (rcode != SOCKET_ERROR);
 
 #endif
 }
@@ -471,7 +469,7 @@ struct hostent *pwgethostbyname(const char *name)
 
 #endif //PWEB
 
- 
+
 #endif //KATANA
 
 #ifdef __mips64
@@ -495,9 +493,9 @@ static long nextlongrand(long seed)
 {
 	unsigned
 
-	long lo, hi;
-	lo = RANa *(long)(seed & 0xFFFF);
-	hi = RANa *(long)((unsigned long)seed >> 16);
+		long lo, hi;
+	lo = RANa * (long)(seed & 0xFFFF);
+	hi = RANa * (long)((unsigned long)seed >> 16);
 	lo += (hi & 0x7FFF) << 16;
 
 	if (lo > LONGRAND_MAX)
@@ -512,18 +510,18 @@ static long nextlongrand(long seed)
 		lo &= LONGRAND_MAX;
 		++lo;
 	}
-	return(long)lo;
+	return (long)lo;
 }
 
 
-static long longrand(void)/* return next random long */
+static long longrand(void) /* return next random long */
 {
 	randomnum = nextlongrand(randomnum);
 	return randomnum;
 }
 
 
-static void Util_RandSeed(unsigned long seed)/* to seed it */
+static void Util_RandSeed(unsigned long seed) /* to seed it */
 {
 	randomnum = seed ? (seed & LONGRAND_MAX) : 1;
 	/* nonzero seed */
@@ -532,10 +530,10 @@ static void Util_RandSeed(unsigned long seed)/* to seed it */
 
 static int Util_RandInt(int low, int high)
 {
-	int range = high-low;
+	int range = high - low;
 	int num = longrand() % range;
 
-	return(num + low);
+	return (num + low);
 }
 
 
@@ -573,10 +571,9 @@ const char * GOAGetUniqueID(void)
 #endif //__mips64
 
 
-
 #if (defined(_WIN32) || defined(UNDER_UNIX)) && !defined(UNDER_CE)
 
-static void GenerateID(char *keyval)
+static void GenerateID(char* keyval)
 {
 	int i;
 	const char crypttab[63] = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -587,15 +584,15 @@ static void GenerateID(char *keyval)
 		seed = (l1.LowPart ^ l1.HighPart);
 	else
 		seed = 0;
-	Util_RandSeed(seed ^ GetTickCount() ^ (unsigned long) time(0) ^ clock());
+	Util_RandSeed(seed ^ GetTickCount() ^ (unsigned long)time(0) ^ clock());
 #else
 	Util_RandSeed(time(NULL) ^ clock());
 #endif
 	for (i = 0; i < 19; i++)
 		if (i == 4 || i == 9 || i == 14)
 			keyval[i] = '-';
-	else
-		keyval[i] = crypttab[Util_RandInt(0, 62)];
+		else
+			keyval[i] = crypttab[Util_RandInt(0, 62)];
 	keyval[19] = 0;
 }
 
@@ -604,13 +601,12 @@ static void GenerateID(char *keyval)
 #endif
 
 
-const char * GOAGetUniqueID(void)
+const char* GOAGetUniqueID(void)
 {
 	static char keyval[PATH_MAX] = "";
 	unsigned int ret;
 
 	int docreate;
-
 
 
 #ifdef _WIN32
@@ -637,15 +633,16 @@ const char * GOAGetUniqueID(void)
 	}
 #endif
 
-	if (ret != 0 || strlen(keyval) != 19)//need to generate a new key
+	if (ret != 0 || strlen(keyval) != 19) //need to generate a new key
 	{
 		GenerateID(keyval);
 #ifdef _WIN32
 		if (docreate)
 		{
-			ret = RegCreateKeyEx(HKEY_CURRENT_USER, REG_KEY, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &thekey, &disp);
+			ret = RegCreateKeyEx(HKEY_CURRENT_USER, REG_KEY, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &thekey,
+			                     &disp);
 		}
-		RegSetValueEx(thekey, "Crypt", 0, REG_SZ, keyval, strlen(keyval)+1);
+		RegSetValueEx(thekey, "Crypt", 0, REG_SZ, keyval, strlen(keyval) + 1);
 #else
 		f = fopen("id.bin","w");
 		if (f)
@@ -666,7 +663,7 @@ const char * GOAGetUniqueID(void)
 	memmove(keyval + 8, keyval + 10, 4);
 	memmove(keyval + 12, keyval + 15, 4);
 	keyval[16] = '\0';
-	
+
 	return keyval;
 }
 

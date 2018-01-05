@@ -17,6 +17,7 @@ public:
 	void Draw(int x, int y);
 	void DrawTransparent(int x, int y);
 	~SQPicture();
+
 	int GetLx()
 	{
 		if (!PicPtr)
@@ -25,6 +26,7 @@ public:
 		}
 		return PicPtr[0];
 	};
+
 	int GetLy()
 	{
 		if (!PicPtr)
@@ -42,7 +44,7 @@ class DialogsSystem;
 class DIALOGS_API SimpleDialog;
 class DIALOGS_API VScrollBar;
 
-class DIALOGS_API SimpleDialog 
+class DIALOGS_API SimpleDialog
 {
 public:
 	bool Enabled : 1;
@@ -51,7 +53,7 @@ public:
 	bool MouseOver : 1;
 	bool NeedToDraw : 1;
 	bool MouseOverActive : 1;
-	bool IsActive : 1;//drop-down panel is active
+	bool IsActive : 1; //drop-down panel is active
 	bool Visible : 1;
 	bool AllocHint : 1;
 	bool NeedRedrawAll;
@@ -87,7 +89,8 @@ public:
 #define OK_SOUND     0x5421
 #define CANCEL_SOUND 0x7513
 
-class DIALOGS_API Picture :public SimpleDialog {
+class DIALOGS_API Picture : public SimpleDialog
+{
 public:
 	SQPicture* PassivePicture;
 	SQPicture* ActivePicture;
@@ -95,7 +98,9 @@ public:
 	bool Transparent : 1;
 	Picture() { SimpleDialog; };
 };
-class DIALOGS_API RLCPicture :public SimpleDialog {
+
+class DIALOGS_API RLCPicture : public SimpleDialog
+{
 public:
 	RLCTable* PassivePicture;
 	byte ppic;
@@ -105,7 +110,8 @@ public:
 	byte dpic;
 };
 
-class DIALOGS_API GPPicture :public SimpleDialog {
+class DIALOGS_API GPPicture : public SimpleDialog
+{
 public:
 	int dx, dy;
 	int FileID;
@@ -113,25 +119,29 @@ public:
 	int Nation;
 };
 
-class DIALOGS_API TextMessage {
+class DIALOGS_API TextMessage
+{
 	char* Message;
 	RLCFont* Font;
 	byte Align;
 };
 
-class DIALOGS_API TextButton :public SimpleDialog {
+class DIALOGS_API TextButton : public SimpleDialog
+{
 public:
 	char* Message;
 	RLCFont* ActiveFont;
 	RLCFont* PassiveFont;
 	RLCFont* DisabledFont;
-	int	xc;
+	int xc;
 	int yc;
 	int ActiveDX;
 	int ActiveDY;
 	byte Align;
 };
-class DIALOGS_API GP_TextButton :public TextButton {
+
+class DIALOGS_API GP_TextButton : public TextButton
+{
 public:
 	char* Message;
 	RLCFont* ActiveFont;
@@ -145,23 +155,26 @@ public:
 	int Nx;
 	int OneLx;
 };
-class DIALOGS_API UniversalButton :public TextButton {
+
+class DIALOGS_API UniversalButton : public TextButton
+{
 public:
 	char* Message;
 	RLCFont* ActiveFont;
 	RLCFont* PassiveFont;
 	RLCFont* SelectedFont;
-	int  FontDy;
-	int  FontDx;
+	int FontDy;
+	int FontDx;
 	bool Center;
-	int  GP_File;
-	int  SpritesSet[30];
-	int  Group;
-	int  State;
+	int GP_File;
+	int SpritesSet[30];
+	int Group;
+	int State;
 	bool Tiling;
 };
 
-class DIALOGS_API VideoButton :public SimpleDialog {
+class DIALOGS_API VideoButton : public SimpleDialog
+{
 public:
 	int GP_on;
 	int GP_off;
@@ -171,7 +184,9 @@ public:
 	int Stage;
 	int LastTime;
 };
-class DIALOGS_API VScrollBar :public SimpleDialog {
+
+class DIALOGS_API VScrollBar : public SimpleDialog
+{
 public:
 	int SMaxPos, SPos;
 	int sbx, sby, sblx, sbly;
@@ -202,7 +217,9 @@ public:
 	//----------
 	int StartGP_Spr;
 };
-class DIALOGS_API BpxTextButton :public TextButton {
+
+class DIALOGS_API BpxTextButton : public TextButton
+{
 public:
 	SQPicture* PassivePicture;
 	SQPicture* ActivePicture;
@@ -211,7 +228,9 @@ public:
 
 typedef void procDrawBoxElement(int x, int y, int Lx, int Ly, int Index, byte Active, int param);
 #define MaxColumn 16
-class DIALOGS_API ComplexBox :public SimpleDialog {
+
+class DIALOGS_API ComplexBox : public SimpleDialog
+{
 public:
 	procDrawBoxElement* DRAWPROC;
 	int N;
@@ -226,7 +245,9 @@ public:
 	int param;
 	VScrollBar* VS;
 };
-class DIALOGS_API Canvas :public SimpleDialog {
+
+class DIALOGS_API Canvas : public SimpleDialog
+{
 public:
 	int BottomY;
 	int L;
@@ -241,18 +262,24 @@ public:
 	void AddCText(int x, int y, char* Text, RLCFont* Font);
 	void CheckSize(int sz);
 };
-class DIALOGS_API CustomBox :public SimpleDialog {
+
+class DIALOGS_API CustomBox : public SimpleDialog
+{
 public:
 	procDrawBoxElement* DRAWPROC;
 	int param;
 };
-struct ListBoxItem {
+
+struct ListBoxItem
+{
 	char* Message;
 	int Param1;
 	byte Flags;
 	ListBoxItem* NextItem;
 };
-class DIALOGS_API ListBox :public SimpleDialog {
+
+class DIALOGS_API ListBox : public SimpleDialog
+{
 public:
 	ListBoxItem* FirstItem;
 	ListBoxItem* LastItem;
@@ -262,7 +289,7 @@ public:
 	RLCFont* DFont;
 	byte ny;
 	byte oneLy;
-	int	 oneLx;
+	int oneLx;
 	int NItems;
 	int CurItem;
 	int FLItem;
@@ -280,7 +307,9 @@ public:
 	void SetFirstPos(int i);
 	void SetCurrentItem(int i);
 };
-class DIALOGS_API RLCListBox :public SimpleDialog {
+
+class DIALOGS_API RLCListBox : public SimpleDialog
+{
 public:
 	//RLCTable Items;
 	int GPIndex;
@@ -288,11 +317,13 @@ public:
 	int NItems;
 	byte BackColor;
 	byte SelColor;
-	int  XPos;
-	int  MaxXpos;
+	int XPos;
+	int MaxXpos;
 	bool Done;
 };
-class DIALOGS_API InputBox :public SimpleDialog {
+
+class DIALOGS_API InputBox : public SimpleDialog
+{
 public:
 	char* Str;
 	size_t CursPos;
@@ -304,8 +335,11 @@ public:
 	bool Centering;
 	bool Anonim;
 };
+
 class DIALOGS_API DialogsSystem;
-class DIALOGS_API CheckBox :public SimpleDialog {
+
+class DIALOGS_API CheckBox : public SimpleDialog
+{
 public:
 	DialogsSystem* DS;
 	SQPicture* OnPic;
@@ -325,14 +359,15 @@ public:
 	short Sprite3;
 };
 
-class DIALOGS_API ColoredBar :public SimpleDialog
+class DIALOGS_API ColoredBar : public SimpleDialog
 {
 public:
 	byte color;
 	byte Style;
 };
 
-class DIALOGS_API ChatViewer :public SimpleDialog {
+class DIALOGS_API ChatViewer : public SimpleDialog
+{
 public:
 	char*** Mess;
 	char*** Names;
@@ -342,15 +377,19 @@ public:
 	int OneLy;
 	int ScrNy;
 };
-struct LineInfo {
+
+struct LineInfo
+{
 	bool NeedFormat;
 	word LineSize;
 	word NSpaces;
-	int  Offset;
-	int  NextOffset;
+	int Offset;
+	int NextOffset;
 	word LineWidth;
 };
-class DIALOGS_API TextViewer :public SimpleDialog {
+
+class DIALOGS_API TextViewer : public SimpleDialog
+{
 public:
 	char* TextPtr;
 	int TextSize;
@@ -363,15 +402,17 @@ public:
 	void GetNextLine(LineInfo*);
 	void CreateLinesList();
 	char** LinePtrs;
-	word*  LineSize;
-	word*  LineWidth;
-	bool*  NeedFormat;
-	word*  NSpaces;
+	word* LineSize;
+	word* LineWidth;
+	bool* NeedFormat;
+	word* NSpaces;
 	VScrollBar* VS;
 	void AssignScroll(VScrollBar* SB);
 	void LoadFile(char* Name);
 };
-class DIALOGS_API BPXView :public SimpleDialog {
+
+class DIALOGS_API BPXView : public SimpleDialog
+{
 public:
 	byte* Ptr;
 	int OneLx;
@@ -386,8 +427,11 @@ public:
 	bool EnableSelection;
 	VScrollBar* VSC;
 };
+
 class DIALOGS_API WinComboBox;
-class DIALOGS_API WinComboBox :public SimpleDialog {
+
+class DIALOGS_API WinComboBox : public SimpleDialog
+{
 public:
 	RLCFont* ActiveFont;
 	RLCFont* PassiveFont;
@@ -408,7 +452,7 @@ public:
 	void Clear();
 };
 
-class DIALOGS_API ComboBox :public SimpleDialog 
+class DIALOGS_API ComboBox : public SimpleDialog
 {
 public:
 	RLCFont* ActiveFont;
@@ -437,9 +481,9 @@ public:
 	int CurLine;
 	//--------new--------
 	VScrollBar* VS;
-	int  MaxLY;
-	int  YPos;
-	int  DLX;
+	int MaxLY;
+	int YPos;
+	int DLX;
 	//--------ruler(new!!)------
 	bool rulermode;
 	int MinDeal;
@@ -451,17 +495,22 @@ public:
 	void Clear();
 };
 
-class DIALOGS_API GP_Button :public SimpleDialog {
+class DIALOGS_API GP_Button : public SimpleDialog
+{
 public:
 	int GP_File;
 	int ActiveFrame;
 	int PassiveFrame;
 };
-struct OnePage {
+
+struct OnePage
+{
 	int x, y, x1, y1;
 	int Index;
 };
-class DIALOGS_API GP_PageControl :public SimpleDialog {
+
+class DIALOGS_API GP_PageControl : public SimpleDialog
+{
 public:
 	int GP_File;
 	int CurPage;
@@ -469,12 +518,16 @@ public:
 	int NPages;
 	void AddPage(int x0, int y0, int x1, int y1, int Index);
 };
-class DIALOGS_API BorderEx :public SimpleDialog {
+
+class DIALOGS_API BorderEx : public SimpleDialog
+{
 public:
 	int ymid;
 	byte Style;
 };
-class DIALOGS_API CustomBorder :public SimpleDialog {
+
+class DIALOGS_API CustomBorder : public SimpleDialog
+{
 public:
 	int GP;
 	int BOR_N[8];
@@ -483,7 +536,7 @@ public:
 	int FILL_A;
 };
 
-class DIALOGS_API DialogsSystem 
+class DIALOGS_API DialogsSystem
 {
 public:
 	short OkSound;
@@ -492,7 +545,7 @@ public:
 	int HintX, HintY;
 	char* Hint;
 	char DefaultHint[1024];
-	int	BaseX, BaseY;
+	int BaseX, BaseY;
 
 	//Pointer array to all dialogs
 	SimpleDialog* DSS[MAXDLG];
@@ -513,139 +566,144 @@ public:
 	void RefreshView();
 	void CloseDialogs();
 	void SetFonts(RLCFont* Active,
-		RLCFont* Passive,
-		RLCFont* Disabled,
-		RLCFont* Message);
+	              RLCFont* Passive,
+	              RLCFont* Disabled,
+	              RLCFont* Message);
 	Picture* addPicture(SimpleDialog* Parent, int x, int y,
-		SQPicture* Active,
-		SQPicture* Passive,
-		SQPicture* Disabled);
+	                    SQPicture* Active,
+	                    SQPicture* Passive,
+	                    SQPicture* Disabled);
 	GPPicture* addGPPicture(SimpleDialog* Parent,
-		int dx, int dy, int FileID, int SpriteID);
+	                        int dx, int dy, int FileID, int SpriteID);
 	RLCPicture* addRLCPicture(SimpleDialog* Parent, int x, int y,
-		RLCTable* Active, byte apic,
-		RLCTable* Passive, byte ppic,
-		RLCTable* Disabled, byte dpic);
+	                          RLCTable* Active, byte apic,
+	                          RLCTable* Passive, byte ppic,
+	                          RLCTable* Disabled, byte dpic);
 	TextMessage* addTextMessage(SimpleDialog* Parent, int x, int y, char* str, RLCFont* Font, byte Align);
 	TextMessage* addsTextMessage(SimpleDialog* Parent, int x, int y, char* str);
 	TextButton* addTextButton(SimpleDialog* Parent, int x, int y, char* str,
-		RLCFont* Active,
-		RLCFont* Passive,
-		RLCFont* Disabled,
-		byte Align);//==0-left, ==1-center,  ==2-right
+	                          RLCFont* Active,
+	                          RLCFont* Passive,
+	                          RLCFont* Disabled,
+	                          byte Align); //==0-left, ==1-center,  ==2-right
 	TextButton* addsTextButton(SimpleDialog* Parent, int x, int y, char* str);
 	GP_TextButton* addGP_TextButton(SimpleDialog* Parent, int x, int y, char* str,
-		int GP_File, int Sprite, RLCFont* Active, RLCFont* Passive);
+	                                int GP_File, int Sprite, RLCFont* Active, RLCFont* Passive);
 	GP_TextButton* addGP_TextButtonLimited(SimpleDialog* Parent, int x, int y, char* str,
-		int GP_File, int SpriteActive, int SpritePassive, int Lx, RLCFont* Active, RLCFont* Passive);
+	                                       int GP_File, int SpriteActive, int SpritePassive, int Lx, RLCFont* Active,
+	                                       RLCFont* Passive);
 	GP_Button* addGP_Button(SimpleDialog* Parent, int x, int y, int GP_File, int Active, int Passsive);
 	BpxTextButton* addBpxTextButton(SimpleDialog* Parent, int x, int y, char* str,
-		RLCFont* Active,
-		RLCFont* Passive,
-		RLCFont* Disabled,
-		SQPicture* pActive,
-		SQPicture* pPassive,
-		SQPicture* pDisabled);
+	                                RLCFont* Active,
+	                                RLCFont* Passive,
+	                                RLCFont* Disabled,
+	                                SQPicture* pActive,
+	                                SQPicture* pPassive,
+	                                SQPicture* pDisabled);
 	VScrollBar* addVScrollBar(SimpleDialog* Parent, int x, int y, int MaxPos, int Pos,
-		SQPicture* btn_up0,
-		SQPicture* btn_up1,
-		SQPicture* btn_up1p,
-		SQPicture* btn_dn0,
-		SQPicture* btn_dn1,
-		SQPicture* btn_dn1p,
-		SQPicture* sbar0,
-		SQPicture* sbar1,
-		SQPicture* marker);
+	                          SQPicture* btn_up0,
+	                          SQPicture* btn_up1,
+	                          SQPicture* btn_up1p,
+	                          SQPicture* btn_dn0,
+	                          SQPicture* btn_dn1,
+	                          SQPicture* btn_dn1p,
+	                          SQPicture* sbar0,
+	                          SQPicture* sbar1,
+	                          SQPicture* marker);
 	VScrollBar* addHScrollBar(SimpleDialog* Parent, int x, int y, int MaxPos, int Pos,
-		SQPicture* btn_up0,
-		SQPicture* btn_up1,
-		SQPicture* btn_up1p,
-		SQPicture* btn_dn0,
-		SQPicture* btn_dn1,
-		SQPicture* btn_dn1p,
-		SQPicture* sbar0,
-		SQPicture* sbar1,
-		SQPicture* marker);
+	                          SQPicture* btn_up0,
+	                          SQPicture* btn_up1,
+	                          SQPicture* btn_up1p,
+	                          SQPicture* btn_dn0,
+	                          SQPicture* btn_dn1,
+	                          SQPicture* btn_dn1p,
+	                          SQPicture* sbar0,
+	                          SQPicture* sbar1,
+	                          SQPicture* marker);
 	ListBox* addListBox(SimpleDialog* Parent, int x, int y, int Ny,
-		SQPicture* ItemPic,
-		RLCFont* AFont,
-		RLCFont* PFont,
-		VScrollBar* VS);
+	                    SQPicture* ItemPic,
+	                    RLCFont* AFont,
+	                    RLCFont* PFont,
+	                    VScrollBar* VS);
 	ListBox* addListBox(SimpleDialog* Parent,
-		int x, int y, int Ny, int Lx, int Ly,
-		RLCFont* AFont,
-		RLCFont* PFont,
-		VScrollBar* VS);
+	                    int x, int y, int Ny, int Lx, int Ly,
+	                    RLCFont* AFont,
+	                    RLCFont* PFont,
+	                    VScrollBar* VS);
 	ListBox* addGP_ListBox(SimpleDialog* Parent, int x, int y, int Ny,
-		int GP_File, int Sprite, int Ly,
-		RLCFont* AFont,
-		RLCFont* PFont,
-		VScrollBar* VS);
+	                       int GP_File, int Sprite, int Ly,
+	                       RLCFont* AFont,
+	                       RLCFont* PFont,
+	                       VScrollBar* VS);
 	ComplexBox* addComplexBox(int x, int y, int Ny, int OneLy,
-		procDrawBoxElement* PDRAW, int GP_File, int Spr);
+	                          procDrawBoxElement* PDRAW, int GP_File, int Spr);
 	CustomBox* addCustomBox(int x, int y, int Lx, int Ly, procDrawBoxElement* PDRAW);
-	InputBox* addInputBox(SimpleDialog* Parent, int x, int y, char* str, int Len, SQPicture* Panel, RLCFont* RFont, RLCFont* AFont);
-	InputBox* addInputBox(SimpleDialog* Parent, int x, int y, char* str, int Len, int Lx, int Ly, RLCFont* RFont, RLCFont* AFont, bool Centering);
+	InputBox* addInputBox(SimpleDialog* Parent, int x, int y, char* str, int Len, SQPicture* Panel, RLCFont* RFont,
+	                      RLCFont* AFont);
+	InputBox* addInputBox(SimpleDialog* Parent, int x, int y, char* str, int Len, int Lx, int Ly, RLCFont* RFont,
+	                      RLCFont* AFont, bool Centering);
 	InputBox* DialogsSystem::addInputBox(SimpleDialog* Parent,
-		int x, int y, char* str,
-		int Len,
-		int Lx, int Ly,
-		RLCFont* RFont,
-		RLCFont* AFont);
+	                                     int x, int y, char* str,
+	                                     int Len,
+	                                     int Lx, int Ly,
+	                                     RLCFont* RFont,
+	                                     RLCFont* AFont);
 	CheckBox* addCheckBox(SimpleDialog* Parent, int x, int y, char* Message,
-		int group, bool State,
-		SQPicture* OnPict,
-		SQPicture* OffPict,
-		RLCFont* Font,
-		RLCFont* AFont);
+	                      int group, bool State,
+	                      SQPicture* OnPict,
+	                      SQPicture* OffPict,
+	                      RLCFont* Font,
+	                      RLCFont* AFont);
 	CheckBox* DialogsSystem::addGP_CheckBox(SimpleDialog* Parent,
-		int x, int y, char* message, RLCFont* a_font, RLCFont* p_font,
-		int group, bool State,
-		int GP, int active, int passive, int mouseover);
+	                                        int x, int y, char* message, RLCFont* a_font, RLCFont* p_font,
+	                                        int group, bool State,
+	                                        int GP, int active, int passive, int mouseover);
 	SimpleDialog* addViewPort(int x, int y, int Nx, int Ny);
 	ColoredBar* addViewPort2(int x, int y, int Nx, int Ny, byte Color);
 	ColoredBar* addColoredBar(int x, int y, int Nx, int Ny, byte c);
 	TextViewer* addTextViewer(SimpleDialog* Parent, int x, int y, int Lx, int Ly, char* TextFile, RLCFont* TFont);
-	BPXView* addBPXView(SimpleDialog* Parent, int x, int y, int OneLx, int OneLy, int Nx, int Ny, int RealNy, byte* Ptr, VScrollBar* VSC);
-	RLCListBox* addRLCListBox(SimpleDialog* Parent, int x, int y, int Lx, int Ly, int GPIndex, byte BGColor, byte SelColor);
+	BPXView* addBPXView(SimpleDialog* Parent, int x, int y, int OneLx, int OneLy, int Nx, int Ny, int RealNy, byte* Ptr,
+	                    VScrollBar* VSC);
+	RLCListBox* addRLCListBox(SimpleDialog* Parent, int x, int y, int Lx, int Ly, int GPIndex, byte BGColor,
+	                          byte SelColor);
 	ComboBox* addComboBox(SimpleDialog* Parent, int x, int y, int Lx, int Ly, int LineLy,
-		byte BackColor, byte BorderColor,
-		RLCFont* ActiveFont, RLCFont* PassiveFont,
-		char* Contence);
+	                      byte BackColor, byte BorderColor,
+	                      RLCFont* ActiveFont, RLCFont* PassiveFont,
+	                      char* Contence);
 	ComboBox* addGP_ComboBox(SimpleDialog* Parent, int x, int y, int GP_File,
-		int UpPart, int Center, int DownPart,
-		RLCFont* ActiveFont, RLCFont* PassiveFont,
-		char* Contence);
+	                         int UpPart, int Center, int DownPart,
+	                         RLCFont* ActiveFont, RLCFont* PassiveFont,
+	                         char* Contence);
 	ComboBox* addGP_ComboBoxDLX(SimpleDialog* Parent, int x, int y, int LX, int GP_File,
-		int UpPart, int Center, int DownPart,
-		RLCFont* ActiveFont, RLCFont* PassiveFont,
-		char* Contence);
+	                            int UpPart, int Center, int DownPart,
+	                            RLCFont* ActiveFont, RLCFont* PassiveFont,
+	                            char* Contence);
 	WinComboBox* addWinComboBox(SimpleDialog* Parent, char* Message, int x, int y, int Lx, int Ly,
-		int ListX, int ListY, int ListLx, int ListLy,
-		RLCFont* ActiveFont, RLCFont* PassiveFont,
-		WinComboBox** Group, int NInGroup, int CurBox);
+	                            int ListX, int ListY, int ListLx, int ListLy,
+	                            RLCFont* ActiveFont, RLCFont* PassiveFont,
+	                            WinComboBox** Group, int NInGroup, int CurBox);
 	GP_PageControl* addPageControl(SimpleDialog* Parent, int x, int y, int GF_File, int FirstIndex);
 	VScrollBar* addGP_ScrollBar(SimpleDialog* Parent, int x, int y,
-		int MaxPos, int Pos, int GP_File,
-		int ScrIndex, int LineIndex, int ScrDx, int ScrDy);
+	                            int MaxPos, int Pos, int GP_File,
+	                            int ScrIndex, int LineIndex, int ScrDx, int ScrDy);
 	VScrollBar* addGP_ScrollBarL(SimpleDialog* Parent, int x, int y,
-		int MaxPos, int Pos, int GP_File,
-		int ScrIndex, int LineLx, int LineLy, int ScrDx, int ScrDy);
+	                             int MaxPos, int Pos, int GP_File,
+	                             int ScrIndex, int LineLx, int LineLy, int ScrDx, int ScrDy);
 	VScrollBar* addNewGP_VScrollBar(SimpleDialog* Parent, int x, int y, int Ly,
-		int MaxPos, int Pos, int GP_File, int Sprite);
+	                                int MaxPos, int Pos, int GP_File, int Sprite);
 	VideoButton* addVideoButton(SimpleDialog* Parent, int x, int y, int GP1, int GP2);
 	CustomBorder* addCustomBorder(int x, int y, int x1, int y1, int gp, int* bn, int* ba, int fill_n, int fill_a);
 	GP_TextButton* addStdGP_TextButton(int x, int y, int Lx, char* str,
-		int GP_File, int Sprite, RLCFont* Active, RLCFont* Passive);
+	                                   int GP_File, int Sprite, RLCFont* Active, RLCFont* Passive);
 	ChatViewer* addChatViewer(SimpleDialog* Parent, int x, int y, int Ny, int OneLy, int OneLx
-		, char*** Mess, char*** Name, int* Nchats);
+	                          , char*** Mess, char*** Name, int* Nchats);
 	SimpleDialog* addClipper(int x0, int y0, int x1, int y1);
 	Canvas* AddCanvas(int x, int y, int Lx, int Ly);
 	BorderEx* addBorder(int x, int y, int x1, int y1, int Ymid, byte Style);
 	//--------------------New style elements---------------//
 	UniversalButton* addUniversalButton(int x, int y, int Lx, char* str, int GP_File,
-		int* SprSet, int Group, int NowSelected, bool tiling,
-		RLCFont* Active, RLCFont* Passive, RLCFont* Selected);
+	                                    int* SprSet, int Group, int NowSelected, bool tiling,
+	                                    RLCFont* Active, RLCFont* Passive, RLCFont* Selected);
 	UniversalButton* addTextureStrip(int x, int y, int Lx, int GP_File, int L, int C1, int C2, int C3, int R, bool Tiling);
 };
 

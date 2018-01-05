@@ -1,10 +1,12 @@
-class ResDiscr{
+class ResDiscr
+{
 public:
 	bool Enabled;
 	char Name[32];
 	char ResIDS[32];
 	ResDiscr();
 };
+
 void LoadRDS();
 //extern int RESRC[8][8];
 extern int RESADD[8][8];
@@ -28,7 +30,9 @@ extern int GATT_Icon;
 extern int PATR_X;
 extern int PATR_Y;
 extern int PATR_Icon;
-struct SingleAI_Desc{
+
+struct SingleAI_Desc
+{
 	char* NationID;
 	char* Message;
 	char* Peasant_ID;
@@ -38,7 +42,9 @@ struct SingleAI_Desc{
 	int NWaterAI;
 	char** WaterAI;
 };
-class AI_Description{
+
+class AI_Description
+{
 public:
 	int NAi;
 	int NComp;
@@ -46,4 +52,5 @@ public:
 	AI_Description();
 	~AI_Description();
 };
+
 extern AI_Description GlobalAI;

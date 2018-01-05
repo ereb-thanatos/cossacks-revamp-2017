@@ -16,15 +16,15 @@ struct PlayerInfo
 	char name[32];
 	DPID1 PlayerID;
 	byte NationID;
-	byte ColorID;//7 player colors coded as 0x00 - 0x06
+	byte ColorID; //7 player colors coded as 0x00 - 0x06
 	byte GroupID;
-	char MapName[36 + 8];//60-16-1-7-4 (?)
+	char MapName[36 + 8]; //60-16-1-7-4 (?)
 	int ProfileID;
 	DWORD Game_GUID;
-	byte UserParam[7];//Values of additional game options
+	byte UserParam[7]; //Values of additional game options
 	byte Rank;
 	word COMPINFO[8];
-	int  CHKSUMM;
+	int CHKSUMM;
 	byte MapStyle;
 	byte HillType;
 	byte StartRes;
@@ -43,6 +43,6 @@ struct PlayerInfo
 	//Didn't want to resize UserParam because 'word Version' would be moved.
 	//This way you can recognize and be recognized by old 1.35 as new version.
 	byte UserParam2[3];
-	
+
 	int speed_mode;
 };

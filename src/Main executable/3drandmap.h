@@ -1,24 +1,32 @@
-
-struct MineRec{
+struct MineRec
+{
 	char* Name;
-	int Ng,Ni,Nc;
+	int Ng, Ni, Nc;
 };
-struct ResRec{
+
+struct ResRec
+{
 	char* Name;
 	int RES[8];
 };
-struct PlRec{
+
+struct PlRec
+{
 	int NPlayers;
 	char* name;
 };
-struct StyleRec{
+
+struct StyleRec
+{
 	char* Name;
 	char* Style;
 	int NPl;
 	int AI_Style;
 	PlRec* Players;
 };
-class RandomMapDesc{
+
+class RandomMapDesc
+{
 public:
 	int NMINES;
 	int MINES_DEF;
@@ -37,7 +45,9 @@ public:
 	void Close();
 	void Load(char* Name);
 };
-class GlobalProgress{
+
+class GlobalProgress
+{
 public:
 	int NWeights;
 	int StageID[64];
@@ -47,10 +57,11 @@ public:
 	int CurPosition;
 	int MaxPosition;
 	void Setup();
-	void AddPosition(int ID,int Weight,int Max);
+	void AddPosition(int ID, int Weight, int Max);
 	void SetCurrentStage(int ID);
 	void SetCurrentPosition(int Pos);
 	int GetCurProgress();
 	GlobalProgress();
 };
+
 extern GlobalProgress GPROG;

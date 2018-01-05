@@ -1,9 +1,11 @@
 #pragma pack(1)
-struct Radio{
+struct Radio
+{
 	char* xi;
 	char* yi;
 	word N;
 };
+
 #define RRad 90
 extern Radio Rarr[RRad];
 
@@ -30,7 +32,9 @@ extern word* TopRef;
 #define SI_FarLand  8192
 #define SI_Okrug    16384
 #define SI_Central  32768
-struct StrategyInfo{
+
+struct StrategyInfo
+{
 public:
 	word BuildInfo;
 	byte NPeasants;
@@ -40,32 +44,37 @@ public:
 	byte NTowers;
 	byte NPushek;
 };
-struct Area{
+
+struct Area
+{
 	short x;
 	short y;
-	byte  Importance;
+	byte Importance;
 	byte NTrees;
 	byte NStones;
 	//01-gold
 	//02-iron
 	//04-coal
-	word  NMines;
+	word NMines;
 	word* MinesIdx;
-	word  NLinks;
+	word NLinks;
 	word* Link;
 	word MaxLink;
 	StrategyInfo SINF[8];
 };
-struct MediaTop{
+
+struct MediaTop
+{
 	word* MotionLinks;
 	word* LinksDist;
 	word* TopRef;
 	int NAreas;
 	Area* TopMap;
 };
+
 extern MediaTop GTOP[2];
 extern Area* TopMap;
-extern int   NAreas;
+extern int NAreas;
 extern int MaxArea;
 extern word* MotionLinks;
 extern word* LinksDist;
@@ -77,7 +86,7 @@ void CreateStrategyInfo();
 #define WCLLX 4
 extern word* WTopRef;
 extern Area* WTopMap;
-extern int   WNAreas;
+extern int WNAreas;
 extern int WMaxArea;
 extern word* WMotionLinks;
 extern word* WLinksDist;
@@ -86,6 +95,6 @@ void InitTopChange();
 void ClearTopChange();
 void AddChTop(word TopID);
 void AddSurroundingAreas(word TopID);
-void DynamicalLockTopCell(int x,int y);
-void DynamicalUnLockTopCell(int x,int y);
+void DynamicalLockTopCell(int x, int y);
+void DynamicalUnLockTopCell(int x, int y);
 void ProcessDynamicalTopology();

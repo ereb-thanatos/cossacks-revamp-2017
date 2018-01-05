@@ -10,22 +10,22 @@
 class CWave //: public CObject
 {
 protected:
-    DWORD m_waveSize;
-    BOOL m_waveOK;
-    char* m_pWave;
-    WAVEFORMATEX m_waveFormatEx;
+	DWORD m_waveSize;
+	BOOL m_waveOK;
+	char* m_pWave;
+	WAVEFORMATEX m_waveFormatEx;
 
 public:
-    CWave(char* fileName);
-    ~CWave();
+	CWave(char* fileName);
+	~CWave();
 
-    DWORD GetWaveSize();
-    LPWAVEFORMATEX GetWaveFormatPtr();
-    char* GetWaveDataPtr();
-    BOOL WaveOK();
+	DWORD GetWaveSize();
+	LPWAVEFORMATEX GetWaveFormatPtr();
+	char* GetWaveDataPtr();
+	BOOL WaveOK();
 
 protected:
-    BOOL LoadWaveFile(char* fileName);
+	BOOL LoadWaveFile(char* fileName);
 };
 
 #endif
