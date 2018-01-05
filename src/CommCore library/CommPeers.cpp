@@ -78,11 +78,11 @@ BOOL CCommCore::EnumPeers()
 		{
 			if (m_PeerList[i].m_Id == m_piNumber)
 			{
-				lpEnumProc( m_piNumber, m_szUserName );
+				lpEnumProc(m_piNumber, m_szUserName);
 			}
 			else
 			{
-				lpEnumProc( m_PeerList[i].m_Id, m_PeerList[i].m_szUserName );
+				lpEnumProc(m_PeerList[i].m_Id, m_PeerList[i].m_szUserName);
 			}
 		}
 	}

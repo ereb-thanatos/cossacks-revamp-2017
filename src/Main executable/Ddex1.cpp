@@ -94,7 +94,7 @@ bool fixed;
 const int kCtrlStickyTime = 50;
 
 //Minimal delay between two PostDrawGameProcess() returns, in ms
-const unsigned int kPostDrawInterval = 16;//~60 Hz
+const unsigned int kPostDrawInterval = 16; //~60 Hz
 
 //Time of the last PostDrawGameProcess() return
 unsigned long prev_postdraw_time = 0;
@@ -155,7 +155,7 @@ int tmtmt;
 
 //Last used display resolutions for both modes
 int exRealLx, exRealLy;
-int ex_other_RealLx, ex_other_RealLy;//Necessary for saving settings
+int ex_other_RealLx, ex_other_RealLy; //Necessary for saving settings
 
 static int Light = 0;
 
@@ -243,7 +243,7 @@ __declspec( dllexport ) bool KeyPressed;
 __declspec( dllexport ) int LastKey;
 
 void InitDialogs();
-void SFLB_LoadGame( char* fnm, bool LoadNation );
+void SFLB_LoadGame(char* fnm, bool LoadNation);
 
 void CheckGP();
 void ClearMaps();
@@ -268,34 +268,36 @@ void ProcessSprites();
 void ProcessUFO();
 void RenderAllMap();
 void Reset3D();
-void SaveGame( char* fnm, char* gg, int ID );
-void SelectAllBuildings( byte NI );
+void SaveGame(char* fnm, char* gg, int ID);
+void SelectAllBuildings(byte NI);
 
-void SetLight( int Ldx, int Ldy, int Ldz );
+void SetLight(int Ldx, int Ldy, int Ldz);
 void TestTriangle();
-void WinnerControl( bool );
+void WinnerControl(bool);
 void makeFden();
 int processMainMenu();
 
 //For parallel processable tasks
-typedef void EventHandPro( void* );
+typedef void EventHandPro(void*);
+
 struct EventsTag
 {
 	EventHandPro* Pro;
-	int	Type;
-	int	Handle;
+	int Type;
+	int Handle;
 	bool Blocking;
 	void* Param;
 };
 
 void PlayerMenuWork();
-int GetResID( char* );
+int GetResID(char*);
 
 EventsTag Events[maxTask];
-int RegisterEventHandler( EventHandPro* pro, int Type, void* param )
+
+int RegisterEventHandler(EventHandPro* pro, int Type, void* param)
 {
 	int i;
-	for (i = 0; int( Events[i].Pro ) && i < maxTask; i++);
+	for (i = 0; int(Events[i].Pro) && i < maxTask; i++);
 	if (i >= maxTask)
 	{
 		return -1;
@@ -309,9 +311,9 @@ int RegisterEventHandler( EventHandPro* pro, int Type, void* param )
 	return i;
 }
 
-void CloseEventHandler( int i )
+void CloseEventHandler(int i)
 {
-	memset( &Events[i], 0, sizeof Events[i] );
+	memset(&Events[i], 0, sizeof Events[i]);
 }
 
 HWND hwnd;
@@ -337,14 +339,14 @@ void ClearModes()
 	MEditMode = false;
 	LockMode = 0;
 	WaterEditMode = false;
-	SetWallBuildMode( 0xFF, 0 );
+	SetWallBuildMode(0xFF, 0);
 	TexMapMod = false;
 	RiverEditMode = 0;
 	ClearCurve();
 	TexPieceMode = 0;
 }
 
-void TimerProc( void )
+void TimerProc(void)
 {
 	if (PlayerMenuMode == 1)
 	{
@@ -353,16 +355,16 @@ void TimerProc( void )
 		{
 			if (Events[j].Pro)
 			{
-				( *( Events[j].Pro ) ) ( Events[j].Param );
+				(*(Events[j].Pro))(Events[j].Param);
 			}
 		}
-		SetRLCWindow( 0, 1, MaxSizeX, RSCRSizeY - 1, ScrWidth );
+		SetRLCWindow(0, 1, MaxSizeX, RSCRSizeY - 1, ScrWidth);
 	}
 	else
 	{
-		SetRLCWindow( 0, 1, MaxSizeY, RSCRSizeY - 1, ScrWidth );
+		SetRLCWindow(0, 1, MaxSizeY, RSCRSizeY - 1, ScrWidth);
 	}
-	HandleMouse( mouseX, mouseY );
+	HandleMouse(mouseX, mouseY);
 	MFix();
 	FlipPages();
 }
@@ -371,14 +373,14 @@ void TimerProc( void )
 void LoadEconomy();
 void LoadNations();
 void LoadWeapon();
-void LoadNation( char* fn, byte msk, byte NIndex );
+void LoadNation(char* fn, byte msk, byte NIndex);
 void LoadAllNewMonsters();
 void InitNewMonstersSystem();
 void LoadWaveAnimations();
 extern NewAnimation* Shar;
 void DoGen();
 void InitDeathList();
-char* GetTextByID( char* ID );
+char* GetTextByID(char* ID);
 void LoadBorders();
 
 void SetupArrays();
@@ -396,20 +398,22 @@ extern char USERMISSPATH[128];
 void ClipCursorToWindowArea()
 {
 	if (!window_mode)
-	{//Just in case
+	{
+		//Just in case
 		return;
 	}
 
 	if (!InGame && !InEditor)
-	{//Reset mouse locking in menues
-		ClipCursor( nullptr );
+	{
+		//Reset mouse locking in menues
+		ClipCursor(nullptr);
 		return;
 	}
 
 	//Determine absolute coordinates of window client area
 	RECT client_coords;
-	GetClientRect( hwnd, &client_coords );
-	MapWindowPoints( hwnd, nullptr, (LPPOINT) &client_coords, 2 );
+	GetClientRect(hwnd, &client_coords);
+	MapWindowPoints(hwnd, nullptr, (LPPOINT) & client_coords, 2);
 
 	//Necessary for correct cursor capture
 	//Using exact ClientRect causes cursor to freeze short of
@@ -417,13 +421,14 @@ void ClipCursorToWindowArea()
 	client_coords.right--;
 	client_coords.bottom--;
 
-	ClipCursor( &client_coords );
+	ClipCursor(&client_coords);
 }
 
 void ResizeAndCenterWindow()
 {
 	if (!window_mode)
-	{//Just in case
+	{
+		//Just in case
 		return;
 	}
 
@@ -432,7 +437,7 @@ void ResizeAndCenterWindow()
 	window_size.left = 0;
 	window_size.right = RealLx;
 	window_size.bottom = RealLy;
-	AdjustWindowRect( &window_size, window_style, FALSE );
+	AdjustWindowRect(&window_size, window_style, FALSE);
 
 	int width = window_size.right - window_size.left;
 	int height = window_size.bottom - window_size.top;
@@ -449,11 +454,11 @@ void ResizeAndCenterWindow()
 		y = 0;
 	}
 
-	MoveWindow( hwnd, x, y, width, height, TRUE );
+	MoveWindow(hwnd, x, y, width, height, TRUE);
 
 	ClipCursorToWindowArea();
 
-	SetCursorPos( screen_width / 2, screen_height / 2 );
+	SetCursorPos(screen_width / 2, screen_height / 2);
 }
 
 //Load ids, textures etc
@@ -472,16 +477,16 @@ bool Loading()
 	LoadFon();
 	LoadRDS();
 
-	GoldID = GetResID( "GOLD" );
-	FoodID = GetResID( "FOOD" );
-	StoneID = GetResID( "STONE" );
-	TreeID = GetResID( "WOOD" );
-	CoalID = GetResID( "COAL" );
-	IronID = GetResID( "IRON" );
+	GoldID = GetResID("GOLD");
+	FoodID = GetResID("FOOD");
+	StoneID = GetResID("STONE");
+	TreeID = GetResID("WOOD");
+	CoalID = GetResID("COAL");
+	IronID = GetResID("IRON");
 	LoadEconomy();
 
 	Loadtextures();
-	LoadFog( 1 );
+	LoadFog(1);
 	LoadTiles();
 	LoadLock();
 	LoadNewAimations();
@@ -492,23 +497,23 @@ bool Loading()
 	LoadAllNewMonsters();
 	LoadWaveAnimations();
 
-	LoadAllNations( 0 );
-	LoadAllNations( 1 );
-	LoadAllNations( 2 );
-	LoadAllNations( 3 );
-	LoadAllNations( 4 );
-	LoadAllNations( 5 );
-	LoadAllNations( 6 );
-	LoadAllNations( 7 );
+	LoadAllNations(0);
+	LoadAllNations(1);
+	LoadAllNations(2);
+	LoadAllNations(3);
+	LoadAllNations(4);
+	LoadAllNations(5);
+	LoadAllNations(6);
+	LoadAllNations(7);
 
-	CITY[0].CreateCity( 0 );
-	CITY[1].CreateCity( 1 );
-	CITY[2].CreateCity( 2 );
-	CITY[3].CreateCity( 3 );
-	CITY[4].CreateCity( 4 );
-	CITY[5].CreateCity( 5 );
-	CITY[6].CreateCity( 6 );
-	CITY[7].CreateCity( 7 );
+	CITY[0].CreateCity(0);
+	CITY[1].CreateCity(1);
+	CITY[2].CreateCity(2);
+	CITY[3].CreateCity(3);
+	CITY[4].CreateCity(4);
+	CITY[5].CreateCity(5);
+	CITY[6].CreateCity(6);
+	CITY[7].CreateCity(7);
 
 	InitTopChange();
 	LoadPalettes();
@@ -516,177 +521,182 @@ bool Loading()
 
 	SetMyNation( 0 );
 
-	FormationStr = GetTextByID( "FORMATION" );
+	FormationStr = GetTextByID("FORMATION");
 
 	return 1;
 }
 
 extern int CurPalette;
-void SaveScreenShot( char* Name )
+
+void SaveScreenShot(char* Name)
 {
 	byte PAL[1024];
-	memset( PAL, 0, 1024 );
+	memset(PAL, 0, 1024);
 	char ccx[120];
-	sprintf( ccx, "%d\\agew_1.pal", CurPalette );
-	ResFile f = RReset( ccx );
+	sprintf(ccx, "%d\\agew_1.pal", CurPalette);
+	ResFile f = RReset(ccx);
 	int i;
 	for (i = 0; i < 256; i++)
 	{
 		int ofs = i << 2;
-		RBlockRead( f, PAL + ofs + 2, 1 );
-		RBlockRead( f, PAL + ofs + 1, 1 );
-		RBlockRead( f, PAL + ofs, 1 );
+		RBlockRead(f, PAL + ofs + 2, 1);
+		RBlockRead(f, PAL + ofs + 1, 1);
+		RBlockRead(f, PAL + ofs, 1);
 	};
-	RClose( f );
-	f = RRewrite( Name );
+	RClose(f);
+	f = RRewrite(Name);
 	i = 0x4D42;
-	RBlockWrite( f, &i, 2 );
-	i = RealLx*RealLy + 1080;
-	RBlockWrite( f, &i, 4 );
+	RBlockWrite(f, &i, 2);
+	i = RealLx * RealLy + 1080;
+	RBlockWrite(f, &i, 4);
 	i = 0;
 	int j = 0x436;
-	RBlockWrite( f, &i, 4 );
-	RBlockWrite( f, &j, 4 );
+	RBlockWrite(f, &i, 4);
+	RBlockWrite(f, &j, 4);
 	j = 0x28;
-	RBlockWrite( f, &j, 4 );
-	RBlockWrite( f, &RealLx, 4 );
-	RBlockWrite( f, &RealLy, 4 );
+	RBlockWrite(f, &j, 4);
+	RBlockWrite(f, &RealLx, 4);
+	RBlockWrite(f, &RealLy, 4);
 	j = 0x080001;
-	RBlockWrite( f, &j, 4 );
-	RBlockWrite( f, &i, 4 );
-	RBlockWrite( f, &i, 4 );
+	RBlockWrite(f, &j, 4);
+	RBlockWrite(f, &i, 4);
+	RBlockWrite(f, &i, 4);
 	j = 0x0B12;
-	RBlockWrite( f, &j, 4 );
-	RBlockWrite( f, &j, 4 );
-	RBlockWrite( f, &i, 4 );
-	RBlockWrite( f, &i, 4 );
-	RBlockWrite( f, PAL, 1024 );
+	RBlockWrite(f, &j, 4);
+	RBlockWrite(f, &j, 4);
+	RBlockWrite(f, &i, 4);
+	RBlockWrite(f, &i, 4);
+	RBlockWrite(f, PAL, 1024);
 	for (int i = 0; i < RealLy; i++)
 	{
-		char* pos = (char*) ( int( ScreenPtr ) + ( RealLy - i - 1 )*SCRSizeX );
-		RBlockWrite( f, pos, RealLx );
+		char* pos = (char*)(int(ScreenPtr) + (RealLy - i - 1) * SCRSizeX);
+		RBlockWrite(f, pos, RealLx);
 	};
-	RClose( f );
+	RClose(f);
 };
-void SaveBMP8( char* Name, int lx, int ly, byte* Data )
+
+void SaveBMP8(char* Name, int lx, int ly, byte* Data)
 {
 	byte PAL[1024];
-	memset( PAL, 0, 1024 );
+	memset(PAL, 0, 1024);
 	char ccc[128];
-	sprintf( ccc, "%d\\agew_1.pal", CurPalette );
-	ResFile f = RReset( ccc );
+	sprintf(ccc, "%d\\agew_1.pal", CurPalette);
+	ResFile f = RReset(ccc);
 	int i;
 	for (i = 0; i < 256; i++)
 	{
 		int ofs = i << 2;
-		RBlockRead( f, PAL + ofs + 2, 1 );
-		RBlockRead( f, PAL + ofs + 1, 1 );
-		RBlockRead( f, PAL + ofs, 1 );
+		RBlockRead(f, PAL + ofs + 2, 1);
+		RBlockRead(f, PAL + ofs + 1, 1);
+		RBlockRead(f, PAL + ofs, 1);
 	};
-	RClose( f );
-	f = RRewrite( Name );
+	RClose(f);
+	f = RRewrite(Name);
 	i = 0x4D42;
-	RBlockWrite( f, &i, 2 );
-	i = lx*ly + 1080;
-	RBlockWrite( f, &i, 4 );
+	RBlockWrite(f, &i, 2);
+	i = lx * ly + 1080;
+	RBlockWrite(f, &i, 4);
 	i = 0;
 	int j = 0x436;
-	RBlockWrite( f, &i, 4 );
-	RBlockWrite( f, &j, 4 );
+	RBlockWrite(f, &i, 4);
+	RBlockWrite(f, &j, 4);
 	j = 0x28;
-	RBlockWrite( f, &j, 4 );
+	RBlockWrite(f, &j, 4);
 	int LX = lx;
 	int LY = ly;
-	RBlockWrite( f, &LX, 4 );
-	RBlockWrite( f, &LY, 4 );
+	RBlockWrite(f, &LX, 4);
+	RBlockWrite(f, &LY, 4);
 	j = 0x080001;
-	RBlockWrite( f, &j, 4 );
-	RBlockWrite( f, &i, 4 );
-	RBlockWrite( f, &i, 4 );
+	RBlockWrite(f, &j, 4);
+	RBlockWrite(f, &i, 4);
+	RBlockWrite(f, &i, 4);
 	j = 0x0B12;
-	RBlockWrite( f, &j, 4 );
-	RBlockWrite( f, &j, 4 );
-	RBlockWrite( f, &i, 4 );
-	RBlockWrite( f, &i, 4 );
-	RBlockWrite( f, PAL, 1024 );
+	RBlockWrite(f, &j, 4);
+	RBlockWrite(f, &j, 4);
+	RBlockWrite(f, &i, 4);
+	RBlockWrite(f, &i, 4);
+	RBlockWrite(f, PAL, 1024);
 	for (int i = 0; i < LY; i++)
 	{
-		char* pos = (char*) ( int( Data ) + ( ly - i - 1 )*lx );
-		RBlockWrite( f, pos, lx );
+		char* pos = (char*)(int(Data) + (ly - i - 1) * lx);
+		RBlockWrite(f, pos, lx);
 	};
-	RClose( f );
+	RClose(f);
 };
-void SaveMiniScreenShot( char* Name )
+
+void SaveMiniScreenShot(char* Name)
 {
 	byte PAL[1024];
-	memset( PAL, 0, 1024 );
-	ResFile f = RReset( "agew_1.pal" );
+	memset(PAL, 0, 1024);
+	ResFile f = RReset("agew_1.pal");
 	int i;
 	for (int i = 0; i < 256; i++)
 	{
 		int ofs = i << 2;
-		RBlockRead( f, PAL + ofs + 2, 1 );
-		RBlockRead( f, PAL + ofs + 1, 1 );
-		RBlockRead( f, PAL + ofs, 1 );
+		RBlockRead(f, PAL + ofs + 2, 1);
+		RBlockRead(f, PAL + ofs + 1, 1);
+		RBlockRead(f, PAL + ofs, 1);
 	};
-	RClose( f );
-	f = RRewrite( Name );
+	RClose(f);
+	f = RRewrite(Name);
 	i = 0x4D42;
-	RBlockWrite( f, &i, 2 );
-	i = RealLx*RealLy + 1080;
-	RBlockWrite( f, &i, 4 );
+	RBlockWrite(f, &i, 2);
+	i = RealLx * RealLy + 1080;
+	RBlockWrite(f, &i, 4);
 	i = 0;
 	int j = 0x436;
-	RBlockWrite( f, &i, 4 );
-	RBlockWrite( f, &j, 4 );
+	RBlockWrite(f, &i, 4);
+	RBlockWrite(f, &j, 4);
 	j = 0x28;
-	RBlockWrite( f, &j, 4 );
+	RBlockWrite(f, &j, 4);
 	int LX = RealLx >> 2;
 	int LY = RealLy >> 2;
-	RBlockWrite( f, &LX, 4 );
-	RBlockWrite( f, &LY, 4 );
+	RBlockWrite(f, &LX, 4);
+	RBlockWrite(f, &LY, 4);
 	j = 0x080001;
-	RBlockWrite( f, &j, 4 );
-	RBlockWrite( f, &i, 4 );
-	RBlockWrite( f, &i, 4 );
+	RBlockWrite(f, &j, 4);
+	RBlockWrite(f, &i, 4);
+	RBlockWrite(f, &i, 4);
 	j = 0x0B12;
-	RBlockWrite( f, &j, 4 );
-	RBlockWrite( f, &j, 4 );
-	RBlockWrite( f, &i, 4 );
-	RBlockWrite( f, &i, 4 );
-	RBlockWrite( f, PAL, 1024 );
+	RBlockWrite(f, &j, 4);
+	RBlockWrite(f, &j, 4);
+	RBlockWrite(f, &i, 4);
+	RBlockWrite(f, &i, 4);
+	RBlockWrite(f, PAL, 1024);
 	for (int i = 0; i < LY; i++)
 	{
-		char* pos = (char*) ( int( ScreenPtr ) + ( RealLy - i * 4 - 1 )*SCRSizeX );
-		for (int j = 0; j < LX; j++)RBlockWrite( f, pos + j * 4, 1 );
+		char* pos = (char*)(int(ScreenPtr) + (RealLy - i * 4 - 1) * SCRSizeX);
+		for (int j = 0; j < LX; j++)RBlockWrite(f, pos + j * 4, 1);
 	};
-	RClose( f );
+	RClose(f);
 };
+
 void SaveScreen()
 {
 	char ccc[128];
-	CreateDirectory( "Screenshots", 0 );
+	CreateDirectory("Screenshots", 0);
 	int i;
 	for (i = 0; i < 1000; i++)
 	{
-		sprintf( ccc, "Screenshots\\screen%d.bmp", i );
-		ResFile f = RReset( ccc );
+		sprintf(ccc, "Screenshots\\screen%d.bmp", i);
+		ResFile f = RReset(ccc);
 		if (f == INVALID_HANDLE_VALUE)
 		{
-			RClose( f );
+			RClose(f);
 			goto zzz;
 		};
-		RClose( f );
+		RClose(f);
 	};
 	i = 99;
 zzz:
-	sprintf( ccc, "Screenshots\\screen%d.bmp", i );
-	SaveScreenShot( ccc );
+	sprintf(ccc, "Screenshots\\screen%d.bmp", i);
+	SaveScreenShot(ccc);
 };
 extern bool NoText;
 extern bool SHOWSLIDE;
 void GFieldShow();
-void SaveMiniScreenShot( char* Name );
+void SaveMiniScreenShot(char* Name);
+
 void MiniRenderAllMap()
 {
 	SHOWSLIDE = true;
@@ -700,22 +710,23 @@ void MiniRenderAllMap()
 	{
 		for (int x = 0; x < nx; x++)
 		{
-			mapx = x*smaplx;
-			mapy = y*smaply;
+			mapx = x * smaplx;
+			mapy = y * smaply;
 			GFieldShow();
 			FlipPages();
-			int p = x + y*nx;
-			if (p < 10)sprintf( ccc, "scr00%d.bmp", p );
-			else if (p < 100)sprintf( ccc, "scr0%d.bmp", p );
-			else sprintf( ccc, "scr%d.bmp", p );
-			SaveMiniScreenShot( ccc );
+			int p = x + y * nx;
+			if (p < 10)sprintf(ccc, "scr00%d.bmp", p);
+			else if (p < 100)sprintf(ccc, "scr0%d.bmp", p);
+			else sprintf(ccc, "scr%d.bmp", p);
+			SaveMiniScreenShot(ccc);
 		};
 	};
 	NoText = false;
 };
+
 void RenderAllMap()
 {
-	if (GetKeyState( VK_SHIFT ) & 0x8000)
+	if (GetKeyState(VK_SHIFT) & 0x8000)
 	{
 		MiniRenderAllMap();
 		return;
@@ -731,15 +742,15 @@ void RenderAllMap()
 	{
 		for (int x = 0; x < nx; x++)
 		{
-			mapx = x*smaplx;
-			mapy = y*smaply;
+			mapx = x * smaplx;
+			mapy = y * smaply;
 			GFieldShow();
 			FlipPages();
-			int p = x + y*nx;
-			if (p < 10)sprintf( ccc, "scr00%d.bmp", p );
-			else if (p < 100)sprintf( ccc, "scr0%d.bmp", p );
-			else sprintf( ccc, "scr%d.bmp", p );
-			SaveScreenShot( ccc );
+			int p = x + y * nx;
+			if (p < 10)sprintf(ccc, "scr00%d.bmp", p);
+			else if (p < 100)sprintf(ccc, "scr0%d.bmp", p);
+			else sprintf(ccc, "scr%d.bmp", p);
+			SaveScreenShot(ccc);
 		}
 	}
 	NoText = false;
@@ -750,7 +761,7 @@ void RenderAllMap()
  *
  * finished with all objects we use; release them
  */
-static void finiObjects( void )
+static void finiObjects(void)
 {
 	FreeDDObjects();
 } /* finiObjects */
@@ -759,7 +770,8 @@ static void finiObjects( void )
 MouseStack MSTC[MaxQu];
 MouseStack CURMS;
 int NInStack = 0;
-void AddMouseEvent( int x, int y, bool L, bool R )
+
+void AddMouseEvent(int x, int y, bool L, bool R)
 {
 	if (NInStack < MaxQu)
 	{
@@ -769,8 +781,8 @@ void AddMouseEvent( int x, int y, bool L, bool R )
 		MSTC[NInStack].Rpressed = R;
 		MSTC[NInStack].rLpressed = L;
 		MSTC[NInStack].rRpressed = R;
-		MSTC[NInStack].Control = ( GetKeyState( VK_CONTROL ) & 0x8000 ) != 0;
-		MSTC[NInStack].Shift = ( GetKeyState( VK_SHIFT ) & 0x8000 ) != 0;
+		MSTC[NInStack].Control = (GetKeyState(VK_CONTROL) & 0x8000) != 0;
+		MSTC[NInStack].Shift = (GetKeyState(VK_SHIFT) & 0x8000) != 0;
 		NInStack++;
 	}
 }
@@ -786,7 +798,7 @@ MouseStack* ReadMEvent()
 		CURMS = MSTC[0];
 		if (NInStack > 1)
 		{
-			memcpy( MSTC, MSTC + 1, ( NInStack - 1 ) * sizeof MouseStack );
+			memcpy(MSTC, MSTC + 1, (NInStack - 1) * sizeof MouseStack);
 		}
 		NInStack--;
 		return &CURMS;
@@ -810,25 +822,26 @@ void UnPress()
 		MSTC[i].Rpressed = 0;
 	}
 	unpress = 1;
-	memset( ScanPressed, 0, 256 );
+	memset(ScanPressed, 0, 256);
 }
 
 extern int CurPalette;
-LRESULT CD_MCINotify( WPARAM wFlags, LONG lDevId );
+LRESULT CD_MCINotify(WPARAM wFlags, LONG lDevId);
 int SHIFT_VAL = 0;
-void HandleMouse( int x, int y );
+void HandleMouse(int x, int y);
 extern bool PalDone;
 byte KeyStack[32];
 byte AsciiStack[32];
 int NKeys = 0;
 byte LastAsciiKey = 0;
 
-void AddKey( byte Key, byte Ascii )
+void AddKey(byte Key, byte Ascii)
 {
 	if (32 <= NKeys)
-	{//Push the stack back by one element
-		memcpy( KeyStack, KeyStack + 1, 31 );
-		memcpy( AsciiStack, AsciiStack + 1, 31 );
+	{
+		//Push the stack back by one element
+		memcpy(KeyStack, KeyStack + 1, 31);
+		memcpy(AsciiStack, AsciiStack + 1, 31);
 		NKeys--;
 	}
 	KeyStack[NKeys] = Key;
@@ -838,16 +851,18 @@ void AddKey( byte Key, byte Ascii )
 
 byte LastAscii = 0;
 wchar_t last_unicode = 0;
+
 int ReadKey()
-{//Called only for chat input and resource transfer
+{
+	//Called only for chat input and resource transfer
 	if (NKeys)
 	{
 		byte c = KeyStack[0];
 		LastAscii = AsciiStack[0];
 		if (NKeys)
 		{
-			memcpy( KeyStack, KeyStack + 1, NKeys - 1 );
-			memcpy( AsciiStack, AsciiStack + 1, NKeys - 1 );
+			memcpy(KeyStack, KeyStack + 1, NKeys - 1);
+			memcpy(AsciiStack, AsciiStack + 1, NKeys - 1);
 		}
 		NKeys--;
 		return c;
@@ -870,43 +885,43 @@ short WheelDelta = 0;
 void IAmLeft();
 void LOOSEANDEXITFAST();
 extern bool DoNewInet;
-bool ReadWinString( GFILE* F, char* STR, int Max );
-void OnWTPacket( WPARAM wSerial, LPARAM hCtx );
+bool ReadWinString(GFILE* F, char* STR, int Max);
+void OnWTPacket(WPARAM wSerial, LPARAM hCtx);
 
-void CmdEndGame( byte NI, byte state, byte cause );
+void CmdEndGame(byte NI, byte state, byte cause);
 
-long FAR PASCAL WindowProc( HWND hWnd, UINT message,
-	WPARAM wParam, LPARAM lParam )
+long FAR PASCAL WindowProc(HWND hWnd, UINT message,
+                           WPARAM wParam, LPARAM lParam)
 {
 	static BYTE phase = 0;
 
 	switch (message)
 	{
 	case 0xABCD:
-	{
-		GFILE* F = Gopen( "UserMissions\\start.dat", "r" );
-		if (F)
 		{
-			ReadWinString( F, USERMISSPATH, 120 );
-			Gclose( F );
-			if (lParam == 1)
+			GFILE* F = Gopen("UserMissions\\start.dat", "r");
+			if (F)
 			{
-				RUNMAPEDITOR = 1;
-			}
-			if (lParam == 0)
-			{
-				RUNUSERMISSION = 1;
+				ReadWinString(F, USERMISSPATH, 120);
+				Gclose(F);
+				if (lParam == 1)
+				{
+					RUNMAPEDITOR = 1;
+				}
+				if (lParam == 0)
+				{
+					RUNUSERMISSION = 1;
+				}
 			}
 		}
-	}
-	break;
+		break;
 
-	case 0x020A://WM_MOUSEWHEEL:
-		WheelDelta = (short) HIWORD( wParam );
+	case 0x020A: //WM_MOUSEWHEEL:
+		WheelDelta = (short)HIWORD(wParam);
 		break;
 
 	case MM_MCINOTIFY:
-		CD_MCINotify( wParam, lParam );
+		CD_MCINotify(wParam, lParam);
 		break;
 
 	case WM_LBUTTONDOWN:
@@ -914,8 +929,8 @@ long FAR PASCAL WindowProc( HWND hWnd, UINT message,
 		Lpressed = true;
 		realLpressed = true;
 		fixed = false;
-		SetMPtr( LOWORD( lParam ), HIWORD( lParam ), wParam );
-		AddMouseEvent( mouseX, mouseY, Lpressed, Rpressed );
+		SetMPtr(LOWORD(lParam), HIWORD(lParam), wParam);
+		AddMouseEvent(mouseX, mouseY, Lpressed, Rpressed);
 		break;
 
 	case WM_LBUTTONUP:
@@ -926,13 +941,13 @@ long FAR PASCAL WindowProc( HWND hWnd, UINT message,
 		}
 		realLpressed = false;
 
-		SetMPtr( LOWORD( lParam ), HIWORD( lParam ), wParam );
+		SetMPtr(LOWORD(lParam), HIWORD(lParam), wParam);
 
-		AddMouseEvent( mouseX, mouseY, Lpressed, Rpressed );
+		AddMouseEvent(mouseX, mouseY, Lpressed, Rpressed);
 
 		//Double click
-		if (!BuildMode//BUGFIX: Prevent unit selection while placing buildings
-			&& ( abs( mouseX - LastUMX ) + abs( mouseY - LastUMY ) ) < 16
+		if (!BuildMode //BUGFIX: Prevent unit selection while placing buildings
+			&& (abs(mouseX - LastUMX) + abs(mouseY - LastUMY)) < 16
 			&& GetTickCount() - LastUTime < 600)
 		{
 			//Select all units of selected type on screen
@@ -951,9 +966,9 @@ long FAR PASCAL WindowProc( HWND hWnd, UINT message,
 		fixed = false;
 		if (ScreenPtr)
 		{
-			SetMPtr( LOWORD( lParam ), HIWORD( lParam ), wParam );
+			SetMPtr(LOWORD(lParam), HIWORD(lParam), wParam);
 		}
-		AddMouseEvent( mouseX, mouseY, Lpressed, Rpressed );
+		AddMouseEvent(mouseX, mouseY, Lpressed, Rpressed);
 		break;
 
 	case WM_RBUTTONUP:
@@ -966,17 +981,17 @@ long FAR PASCAL WindowProc( HWND hWnd, UINT message,
 		realRpressed = false;
 		if (ScreenPtr)
 		{
-			SetMPtr( LOWORD( lParam ), HIWORD( lParam ), wParam );
+			SetMPtr(LOWORD(lParam), HIWORD(lParam), wParam);
 		}
-		AddMouseEvent( mouseX, mouseY, Lpressed, Rpressed );
+		AddMouseEvent(mouseX, mouseY, Lpressed, Rpressed);
 		break;
 
 	case WM_MOUSEMOVE:
 		if (ScreenPtr)
 		{
-			if (LOWORD( lParam ) != mouseX || HIWORD( lParam ) != mouseY)
+			if (LOWORD(lParam) != mouseX || HIWORD(lParam) != mouseY)
 			{
-				SetMPtr( LOWORD( lParam ), HIWORD( lParam ), wParam );
+				SetMPtr(LOWORD(lParam), HIWORD(lParam), wParam);
 				OnMouseMoveRedraw();
 			}
 		}
@@ -989,7 +1004,8 @@ long FAR PASCAL WindowProc( HWND hWnd, UINT message,
 
 	case WM_SIZE:
 		if (SIZE_RESTORED == wParam)
-		{//Restore cursor zone after window was minimized
+		{
+			//Restore cursor zone after window was minimized
 			ClipCursorToWindowArea();
 		}
 		break;
@@ -1005,20 +1021,20 @@ long FAR PASCAL WindowProc( HWND hWnd, UINT message,
 		{
 			if (lpDDSPrimary)
 			{
-				CreateDDObjects( hwnd );
+				CreateDDObjects(hwnd);
 				LockSurface();
 				UnlockSurface();
-				LoadFog( CurPalette );
+				LoadFog(CurPalette);
 				char cc[64];
-				sprintf( cc, "%d\\agew_1.pal", CurPalette );
+				sprintf(cc, "%d\\agew_1.pal", CurPalette);
 				PalDone = 0;
-				LoadPalette( cc );
+				LoadPalette(cc);
 			}
 		}
 		break;
 
 	case WM_SETCURSOR:
-		SetCursor( NULL );
+		SetCursor(NULL);
 		return TRUE;
 
 	case WM_KEYDOWN:
@@ -1045,20 +1061,22 @@ long FAR PASCAL WindowProc( HWND hWnd, UINT message,
 		*/
 
 		{
-			int nVirtKey = (int) wParam;
+			int nVirtKey = (int)wParam;
 			int lKeyData = lParam;
 			byte PST[256];
-			GetKeyboardState( PST );
+			GetKeyboardState(PST);
 
 			word ascii_key;
-			int result = ToAscii( nVirtKey, lKeyData, PST, &ascii_key, 0 );
+			int result = ToAscii(nVirtKey, lKeyData, PST, &ascii_key, 0);
 
 			WCHAR u_buf[5] = {};
-			if (1 <= ToUnicode( nVirtKey, lKeyData, PST, u_buf, 4, 0 ))
-			{//Valid UTF character
+			if (1 <= ToUnicode(nVirtKey, lKeyData, PST, u_buf, 4, 0))
+			{
+				//Valid UTF character
 				wchar_t unicode_char = u_buf[0];
 				if (1040 <= unicode_char && 1103 >= unicode_char)
-				{//UTF code is in cyrillic range
+				{
+					//UTF code is in cyrillic range
 					//Adjust ascii code to match sprite index in mainfont.gp file
 					//Sprites 192 to 255 ('А' to 'я')
 					//(taken from russian cossacks version ALL.GSC)
@@ -1075,7 +1093,7 @@ long FAR PASCAL WindowProc( HWND hWnd, UINT message,
 				LastAsciiKey = 0;
 			}
 
-			AddKey( wParam, LastAsciiKey );
+			AddKey(wParam, LastAsciiKey);
 		}
 		break;
 
@@ -1087,12 +1105,12 @@ long FAR PASCAL WindowProc( HWND hWnd, UINT message,
 
 	case WM_DESTROY:
 		finiObjects();
-		PostQuitMessage( 0 );
-		exit( 0 );
+		PostQuitMessage(0);
+		exit(0);
 		break;
 	}
 
-	return DefWindowProc( hWnd, message, wParam, lParam );
+	return DefWindowProc(hWnd, message, wParam, lParam);
 }
 
 /*
@@ -1117,15 +1135,15 @@ bool RetryVideo = 0;
 extern byte PlayGameMode;
 extern bool GameExit;
 extern int LastCTRLPressTime;
-bool CheckFNSend( int idx );
+bool CheckFNSend(int idx);
 void ProcessVotingKeys();
 extern bool RESMODE;
 extern bool OptHidden;
 extern word NPlayers;
 bool CheckFlagsNeed();
-void SetGameDisplayModeAnyway( int SizeX, int SizeY );
+void SetGameDisplayModeAnyway(int SizeX, int SizeY);
 
-//Many diffirent key checks for various game modes
+//Many different key checks for various game modes
 void GameKeyCheck()
 {
 	if (PlayGameMode == 1)
@@ -1199,7 +1217,7 @@ void GameKeyCheck()
 			Recreate = 1;
 			break;
 		case 'M':
-			if (GetKeyState( VK_CONTROL ) & 0x8000)
+			if (GetKeyState(VK_CONTROL) & 0x8000)
 			{
 				SpecCmd = 114;
 			}
@@ -1215,35 +1233,35 @@ void GameKeyCheck()
 			MakeMenu = true;
 			break;
 		case VK_F1:
-			if (!CheckFNSend( 0 ))
+			if (!CheckFNSend(0))
 			{
 				MenuType = 4;
 				MakeMenu = true;
 			}
 			break;
 		case VK_F2:
-			CheckFNSend( 1 );
+			CheckFNSend(1);
 			break;
 		case VK_F3:
-			CheckFNSend( 2 );
+			CheckFNSend(2);
 			break;
 		case VK_F4:
-			CheckFNSend( 3 );
+			CheckFNSend(3);
 			break;
 		case VK_F5:
-			CheckFNSend( 4 );
+			CheckFNSend(4);
 			break;
 		case VK_F6:
-			CheckFNSend( 5 );
+			CheckFNSend(5);
 			break;
 		case VK_F7:
-			CheckFNSend( 6 );
+			CheckFNSend(6);
 			break;
 		case VK_F8:
-			CheckFNSend( 7 );
+			CheckFNSend(7);
 			break;
 		case VK_F9:
-			if (!CheckFNSend( 8 ))
+			if (!CheckFNSend(8))
 			{
 				Creator = 4096 + 255;
 			}
@@ -1255,47 +1273,47 @@ void GameKeyCheck()
 			SpecCmd = 200;
 			break;
 
-		/*
-		case 'D':
-			if (!( GetKeyState( VK_CONTROL ) & 0x8000 ))
-			{
-				if (NPlayers < 2)
+			/*
+			case 'D':
+				if (!( GetKeyState( VK_CONTROL ) & 0x8000 ))
 				{
-					if (( GetKeyState( VK_SHIFT ) & 0x8000 ))
+					if (NPlayers < 2)
 					{
-						switch (HISPEED)
+						if (( GetKeyState( VK_SHIFT ) & 0x8000 ))
 						{
-						case 0:
-							HISPEED = 1;
-							break;
-						case 1:
-							HISPEED = 2;
-							break;
-						case 2:
-							HISPEED = 3;
-							break;
-						default:
-							HISPEED = 0;
-							break;
+							switch (HISPEED)
+							{
+							case 0:
+								HISPEED = 1;
+								break;
+							case 1:
+								HISPEED = 2;
+								break;
+							case 2:
+								HISPEED = 3;
+								break;
+							default:
+								HISPEED = 0;
+								break;
+							}
 						}
 					}
 				}
-			}
-			else
-			{
-				//CmdChangeSpeed();//BUGFIX: real time speed changing
-			}
-			break;
-		*/
+				else
+				{
+					//CmdChangeSpeed();//BUGFIX: real time speed changing
+				}
+				break;
+			*/
 
 		case 'A':
-			if (GetKeyState( VK_CONTROL ) & 0x8000)
+			if (GetKeyState(VK_CONTROL) & 0x8000)
 				SpecCmd = 1;
 			else if (NSL[MyNation])
 				GoAndAttackMode = 1;
 			break;
 		case 'S':
-			if (GetKeyState( VK_CONTROL ) & 0x8000)
+			if (GetKeyState(VK_CONTROL) & 0x8000)
 				SpecCmd = 201;
 			break;
 		case 'W':
@@ -1307,17 +1325,17 @@ void GameKeyCheck()
 				int ExRY = RealLy;
 				if (RealLx != 1024 || RealLy != 768)
 				{
-					SetGameDisplayModeAnyway( 1024, 768 );
+					SetGameDisplayModeAnyway(1024, 768);
 				}
 				ShowStatistics();
 				if (RealLx != ExRX || RealLy != ExRY)
 				{
-					SetGameDisplayModeAnyway( ExRX, ExRY );
+					SetGameDisplayModeAnyway(ExRX, ExRY);
 				}
 			}
 			break;
 		case 'K':
-			if (GetKeyState( VK_CONTROL ) & 0x8000)
+			if (GetKeyState(VK_CONTROL) & 0x8000)
 			{
 				RealPause -= 2;
 			}
@@ -1336,7 +1354,7 @@ void GameKeyCheck()
 			Recreate = 1;
 			break;
 		case 'B':
-			if (GetKeyState( VK_CONTROL ) & 0x8000)
+			if (GetKeyState(VK_CONTROL) & 0x8000)
 			{
 				SpecCmd = 9;
 			}
@@ -1346,7 +1364,7 @@ void GameKeyCheck()
 			}
 			break;
 		case 'Z':
-			if (GetKeyState( VK_CONTROL ) & 0x8000)
+			if (GetKeyState(VK_CONTROL) & 0x8000)
 			{
 				SpecCmd = 11;
 			}
@@ -1357,7 +1375,7 @@ void GameKeyCheck()
 			}
 			break;
 		case 'F':
-			if (GetKeyState( VK_CONTROL ) & 0x8000)
+			if (GetKeyState(VK_CONTROL) & 0x8000)
 			{
 				SpecCmd = 13;
 			}
@@ -1469,7 +1487,7 @@ void GameKeyCheck()
 			PlayerMask = 128;
 			break;
 		case 'I':
-			if (GetKeyState( VK_CONTROL ) & 0x8000)
+			if (GetKeyState(VK_CONTROL) & 0x8000)
 			{
 				InfoMode = !InfoMode;
 			}
@@ -1493,7 +1511,7 @@ void GameKeyCheck()
 			break;
 
 		case 'O':
-			if (GetKeyState( VK_CONTROL ) & 0x8000)
+			if (GetKeyState(VK_CONTROL) & 0x8000)
 			{
 				if (PlayGameMode == 2 || CheckFlagsNeed())
 				{
@@ -1512,7 +1530,7 @@ void GameKeyCheck()
 			}
 			break;
 		case 'P':
-			if (GetKeyState( VK_CONTROL ) & 0x8000)
+			if (GetKeyState(VK_CONTROL) & 0x8000)
 			{
 				SpecCmd = 113;
 			}
@@ -1525,7 +1543,7 @@ void GameKeyCheck()
 				}
 			}
 			break;
-		case 19://Pause
+		case 19: //Pause
 			if (tmtmt > 32 && !LockPause)
 			{
 				SpecCmd = 137;
@@ -1543,11 +1561,11 @@ void GameKeyCheck()
 			{
 				if (GetTickCount() - LastCTRLPressTime < kCtrlStickyTime)
 				{
-					CmdMemSelection( MyNation, wParam - '0' );
+					CmdMemSelection(MyNation, wParam - '0');
 				}
 				else
 				{
-					CmdRememSelection( MyNation, wParam - '0' );
+					CmdRememSelection(MyNation, wParam - '0');
 				}
 			}
 		}
@@ -1561,7 +1579,7 @@ void SelectNextGridMode();
 void ProcessMapOptions();
 void ResearchIslands();
 void EnterRandomParams();
-void GenerateRandomRoad( int idx );
+void GenerateRandomRoad(int idx);
 bool CheckCurve();
 void ClearCurve();
 extern bool ToolsHidden;
@@ -1571,7 +1589,7 @@ void UpdateAllPieces();
 
 extern int PEN_RADIUS;
 extern int PEN_BRIGHTNESS;
-void LoadCurPixTexture( char* Name );
+void LoadCurPixTexture(char* Name);
 
 void EditorKeyCheck()
 {
@@ -1601,47 +1619,47 @@ void EditorKeyCheck()
 			break;
 		case '1':
 			//if(DrawPixMode||DrawGroundMode)STBRR(wParam);else
-			if (GetKeyState( VK_CONTROL ) & 0x8000)CostThickness = 1;
+			if (GetKeyState(VK_CONTROL) & 0x8000)CostThickness = 1;
 			else ReliefBrush = 1;
 			break;
 		case '2':
 			//if(DrawPixMode||DrawGroundMode)STBRR(wParam);else
-			if (GetKeyState( VK_CONTROL ) & 0x8000)CostThickness = 2;
+			if (GetKeyState(VK_CONTROL) & 0x8000)CostThickness = 2;
 			else ReliefBrush = 2;
 			break;
 		case '3':
 			//if(DrawPixMode||DrawGroundMode)STBRR(wParam);else
-			if (GetKeyState( VK_CONTROL ) & 0x8000)CostThickness = 3;
+			if (GetKeyState(VK_CONTROL) & 0x8000)CostThickness = 3;
 			else ReliefBrush = 3;
 			break;
 		case '4':
 			//if(DrawPixMode||DrawGroundMode)STBRR(wParam);else
-			if (GetKeyState( VK_CONTROL ) & 0x8000)CostThickness = 4;
+			if (GetKeyState(VK_CONTROL) & 0x8000)CostThickness = 4;
 			else ReliefBrush = 4;
 			break;
 		case '5':
 			//if(DrawPixMode||DrawGroundMode)STBRR(wParam);else
-			if (GetKeyState( VK_CONTROL ) & 0x8000)CostThickness = 5;
+			if (GetKeyState(VK_CONTROL) & 0x8000)CostThickness = 5;
 			else ReliefBrush = 5;
 			break;
 		case '6':
 			//if(DrawPixMode||DrawGroundMode)STBRR(wParam);else
-			if (GetKeyState( VK_CONTROL ) & 0x8000)CostThickness = 6;
+			if (GetKeyState(VK_CONTROL) & 0x8000)CostThickness = 6;
 			else ReliefBrush = 9;
 			break;
 		case '7':
 			//if(DrawPixMode||DrawGroundMode)STBRR(wParam);else
-			if (GetKeyState( VK_CONTROL ) & 0x8000)CostThickness = 7;
+			if (GetKeyState(VK_CONTROL) & 0x8000)CostThickness = 7;
 			else ReliefBrush = 20;
 			break;
 		case '8':
 			//if(DrawPixMode||DrawGroundMode)STBRR(wParam);else
-			if (GetKeyState( VK_CONTROL ) & 0x8000)CostThickness = 8;
+			if (GetKeyState(VK_CONTROL) & 0x8000)CostThickness = 8;
 			else ReliefBrush = 50;
 			break;
 		case '9':
 			//if(DrawPixMode||DrawGroundMode)STBRR(wParam);else
-			if (GetKeyState( VK_CONTROL ) & 0x8000)CostThickness = 9;
+			if (GetKeyState(VK_CONTROL) & 0x8000)CostThickness = 9;
 			else ReliefBrush = 100;
 			break;
 		case 'H':
@@ -1651,7 +1669,7 @@ void EditorKeyCheck()
 			RenderAllMap();
 			break;
 		case 'V':
-			if (GetKeyState( VK_CONTROL ) & 0x8000)
+			if (GetKeyState(VK_CONTROL) & 0x8000)
 			{
 				ClearModes();
 				NeedToPopUp = 20;
@@ -1685,7 +1703,7 @@ void EditorKeyCheck()
 			};
 			break;
 		case 13:
-			if (!( GetKeyState( VK_CONTROL ) & 0x8000 ))
+			if (!(GetKeyState(VK_CONTROL) & 0x8000))
 			{
 				//MakeMenu=true;
 				//MenuType=3;
@@ -1698,7 +1716,7 @@ void EditorKeyCheck()
 			//RSCRSizeX++;
 			//ShowStatistics();
 			break;
-		case 19://Pause
+		case 19: //Pause
 			if (!LockPause)SpecCmd = 137;
 			//PauseMode=!PauseMode;
 			break;
@@ -1763,15 +1781,16 @@ void EditorKeyCheck()
 			};
 			break;
 		case 'U':
-			if (GetKeyState( VK_CONTROL ) & 0x8000)CINFMOD = !CINFMOD;
-			else if (Inform != 2)Inform = 2; else Inform = 0;
+			if (GetKeyState(VK_CONTROL) & 0x8000)CINFMOD = !CINFMOD;
+			else if (Inform != 2)Inform = 2;
+			else Inform = 0;
 			MiniActive = 0;
 			Recreate = 1;
 			//CINFMOD=0;
 			break;
 		case 'F':
 			//SVSC.Zero();
-			if (GetKeyState( VK_CONTROL ) & 0x8000)
+			if (GetKeyState(VK_CONTROL) & 0x8000)
 			{
 				TestGenMap();
 			}
@@ -1813,7 +1832,7 @@ void EditorKeyCheck()
 			};
 			break;
 		case 'N':
-			if (GetKeyState( VK_CONTROL ) & 0x8000)
+			if (GetKeyState(VK_CONTROL) & 0x8000)
 			{
 				AutoSMSSet();
 			}
@@ -1829,44 +1848,44 @@ void EditorKeyCheck()
 			if (!DelCurrentAZone())SpecCmd = 200;
 			break;
 
-		/*
-		case 'D':
-			if (!( GetKeyState( VK_CONTROL ) & 0x8000 ))
-			{
-				if (( GetKeyState( VK_SHIFT ) & 0x8000 ))//&& PlayGameMode)
+			/*
+			case 'D':
+				if (!( GetKeyState( VK_CONTROL ) & 0x8000 ))
 				{
-					switch (HISPEED)
+					if (( GetKeyState( VK_SHIFT ) & 0x8000 ))//&& PlayGameMode)
 					{
-					case 0:
-						HISPEED = 1;
-						break;
-					case 1:
-						HISPEED = 2;
-						break;
-					case 2:
-						HISPEED = 3;
-						break;
-					default:
-						HISPEED = 0;
-						break;
+						switch (HISPEED)
+						{
+						case 0:
+							HISPEED = 1;
+							break;
+						case 1:
+							HISPEED = 2;
+							break;
+						case 2:
+							HISPEED = 3;
+							break;
+						default:
+							HISPEED = 0;
+							break;
+						};
 					};
-				};
-
-			}
-			else
-			{
-				//CmdChangeSpeed();//BUGFIX: real time speed changing
-			}
-			break;
-		*/
+	
+				}
+				else
+				{
+					//CmdChangeSpeed();//BUGFIX: real time speed changing
+				}
+				break;
+			*/
 
 		case 'A':
-			if (GetKeyState( VK_CONTROL ) & 0x8000)SpecCmd = 1;
+			if (GetKeyState(VK_CONTROL) & 0x8000)SpecCmd = 1;
 			else if (NSL[MyNation])GoAndAttackMode = 1;
 			break;
 		case 'S':
 			//ClearModes();
-			if (GetKeyState( VK_CONTROL ) & 0x8000)
+			if (GetKeyState(VK_CONTROL) & 0x8000)
 			{
 				//EnterRandomParams();
 			}
@@ -1890,7 +1909,7 @@ void EditorKeyCheck()
 			};
 			break;
 		case 'W':
-			if (GetKeyState( VK_CONTROL ) & 0x8000)ProcessSaveInSquares();
+			if (GetKeyState(VK_CONTROL) & 0x8000)ProcessSaveInSquares();
 			else PeaceMode = !PeaceMode;
 			break;
 			/*
@@ -1912,7 +1931,7 @@ void EditorKeyCheck()
 			//break;
 		case 'C':
 			//CINFMOD=!CINFMOD;
-			if (GetKeyState( VK_CONTROL ) & 0x8000)
+			if (GetKeyState(VK_CONTROL) & 0x8000)
 			{
 				SpecCmd = 217;
 			}
@@ -1925,10 +1944,10 @@ void EditorKeyCheck()
 		case 'X':
 			//if(GetKeyState(VK_CONTROL)&0x8000)SpecCmd=5;
 			//else SpecCmd=6;
-			if (GetKeyState( VK_CONTROL ) & 0x8000)
+			if (GetKeyState(VK_CONTROL) & 0x8000)
 			{
 				EraseAreas();
-				rando();//!!
+				rando(); //!!
 				CreateTotalLocking();
 				ResearchIslands();
 			}
@@ -1940,13 +1959,13 @@ void EditorKeyCheck()
 			};
 			break;
 		case 'Q':
-			LockGrid += 2;//++;
+			LockGrid += 2; //++;
 			if (LockGrid > 3)LockGrid = 0;
 			MiniActive = 0;
 			Recreate = 1;
 			break;
 		case 'B':
-			if (GetKeyState( VK_CONTROL ) & 0x8000)SpecCmd = 9;
+			if (GetKeyState(VK_CONTROL) & 0x8000)SpecCmd = 9;
 			else SpecCmd = 10;
 			//ClearMaps();
 			//CreateUnitsLocking();
@@ -1970,61 +1989,63 @@ void EditorKeyCheck()
 			NeedToPopUp = 1;
 			break;
 		case VK_NUMPAD1:
-			SetMyNation( 0 );
+		SetMyNation( 0 );
 			MEditMode = false;
 			HeightEditMode = false;
 			PlayerMask = 1;
 			break;
 		case VK_NUMPAD2:
-			SetMyNation( 1 );
+		SetMyNation( 1 );
 			MEditMode = false;
 			HeightEditMode = false;
 			PlayerMask = 2;
 			break;
 		case VK_NUMPAD3:
-			SetMyNation( 2 );
+		SetMyNation( 2 );
 			MEditMode = false;
 			HeightEditMode = false;
 			PlayerMask = 4;
 			break;
 		case VK_NUMPAD4:
-			SetMyNation( 3 );
+		SetMyNation( 3 );
 			MEditMode = false;
 			HeightEditMode = false;
 			PlayerMask = 8;
 			break;
 		case VK_NUMPAD5:
-			SetMyNation( 4 );
+		SetMyNation( 4 );
 			MEditMode = false;
 			HeightEditMode = false;
 			PlayerMask = 16;
 			break;
 		case VK_NUMPAD6:
-			SetMyNation( 5 );
+		SetMyNation( 5 );
 			MEditMode = false;
 			HeightEditMode = false;
 			PlayerMask = 32;
 			break;
 		case VK_NUMPAD7:
-			SetMyNation( 6 );
+		SetMyNation( 6 );
 			MEditMode = false;
 			HeightEditMode = false;
 			PlayerMask = 64;
 			break;
 		case VK_NUMPAD8:
-			SetMyNation( 7 );
+		SetMyNation( 7 );
 			MEditMode = false;
-			HeightEditMode = false; PlayerMask = 128;
+			HeightEditMode = false;
+			PlayerMask = 128;
 			break;
 		case 'I':
-			if (GetKeyState( VK_CONTROL ) & 0x8000)InfoMode = !InfoMode;
-			else if (Inform != 1)Inform = 1; else Inform = 0;
+			if (GetKeyState(VK_CONTROL) & 0x8000)InfoMode = !InfoMode;
+			else if (Inform != 1)Inform = 1;
+			else Inform = 0;
 			MiniActive = 0;
 			Recreate = 1;
 			//InfoMode=1;
 			break;
 		case 'O':
-			if (GetKeyState( VK_CONTROL ) & 0x8000)
+			if (GetKeyState(VK_CONTROL) & 0x8000)
 			{
 				OptHidden = !OptHidden;
 			}
@@ -2044,7 +2065,7 @@ void EditorKeyCheck()
 			NeedToPopUp = 2;
 			break;
 		case 'R':
-			if (GetKeyState( VK_CONTROL ) & 0x8000)
+			if (GetKeyState(VK_CONTROL) & 0x8000)
 			{
 				//ProcessMapOptions();
 			}
@@ -2067,36 +2088,36 @@ void EditorKeyCheck()
 		case 'T':
 			//HeightEditMode=false;
 			//ChoosePosition=true;
-			if (GetKeyState( VK_CONTROL ) & 0x8000)
+			if (GetKeyState(VK_CONTROL) & 0x8000)
 			{
 				ToolsHidden = !ToolsHidden;
 			};
 			break;
 		case 'G':
 			//if(GetKeyState(VK_SHIFT)&0x8000)CreateMapShot();
-			if (GetKeyState( VK_CONTROL ) & 0x8000)SelectNextGridMode();
+			if (GetKeyState(VK_CONTROL) & 0x8000)SelectNextGridMode();
 			else SaveScreen();
 			//SVSC.Grids=!SVSC.Grids;
 			//SVSC.RefreshScreen();
 			break;
-		case 107://NUM +
+		case 107: //NUM +
 			if (HeightEditMode)HiStyle = 1;
 			break;
-		case 109://NUM -
+		case 109: //NUM -
 			if (HeightEditMode)HiStyle = 2;
 			break;
-		case 106://NUM *
+		case 106: //NUM *
 			if (HeightEditMode)HiStyle = 3;
 			break;
-		case 111://NUM /
+		case 111: //NUM /
 			if (HeightEditMode)HiStyle = 4;
 			break;
-		case 'M'://NUM 0
+		case 'M': //NUM 0
 			//if(HeightEditMode)HiStyle=5;
-			if (GetKeyState( VK_CONTROL ) & 0x8000)
+			if (GetKeyState(VK_CONTROL) & 0x8000)
 			{
 				//AddHill();
-				GenerateRandomRoad( 5 );
+				GenerateRandomRoad(5);
 			}
 			else FullMini = !FullMini;
 			MiniActive = 0;
@@ -2112,9 +2133,9 @@ void EditorKeyCheck()
 			if (HeightEditMode)HiStyle = 9;
 			break;
 		default:
-			if (wParam >= '0'&&wParam <= '9')
+			if (wParam >= '0' && wParam <= '9')
 			{
-				if (GetKeyState( VK_SHIFT ) & 0x8000)
+				if (GetKeyState(VK_SHIFT) & 0x8000)
 				{
 					int v = wParam - '0';
 					SHIFT_VAL = SHIFT_VAL * 10 + v;
@@ -2123,9 +2144,9 @@ void EditorKeyCheck()
 				{
 					if (GetTickCount() - LastCTRLPressTime < kCtrlStickyTime)
 					{
-						CmdMemSelection( MyNation, wParam - '0' );
+						CmdMemSelection(MyNation, wParam - '0');
 					}
-					else CmdRememSelection( MyNation, wParam - '0' );
+					else CmdRememSelection(MyNation, wParam - '0');
 					//if(GetKeyState(VK_CONTROL)&0x8000)
 					//	CmdMemSelection(MyNation,wParam-'0');
 					//else CmdRememSelection(MyNation,wParam-'0');
@@ -2142,9 +2163,9 @@ bool PalDone;
 bool InitScreen()
 {
 	PalDone = false;
-	CreateDDObjects( hwnd );
+	CreateDDObjects(hwnd);
 	PalDone = false;
-	LoadPalette( "agew_1.pal" );
+	LoadPalette("agew_1.pal");
 	if (!DDError)
 	{
 		LockSurface();
@@ -2153,25 +2174,26 @@ bool InitScreen()
 
 		if (!RealScreenPtr)
 		{
-			MessageBox( hwnd, "Unable to initialise Direct Draw. It is possible that hardware acceleration is turned off.", "Loading error[1]", MB_ICONSTOP );
-			exit( 0 );
+			MessageBox(hwnd, "Unable to initialise Direct Draw. It is possible that hardware acceleration is turned off.",
+			           "Loading error[1]", MB_ICONSTOP);
+			exit(0);
 		}
 
 		return true;
 	}
 	else
 	{
-		PlayEffect( 0, 0, 0 );
+		PlayEffect(0, 0, 0);
 	}
 	return false;
 }
 
-BOOL CreateRGBDDObjects( HWND hwnd );
+BOOL CreateRGBDDObjects(HWND hwnd);
 
 bool InitRGBScreen()
 {
 	PalDone = false;
-	CreateRGBDDObjects( hwnd );
+	CreateRGBDDObjects(hwnd);
 	PalDone = false;
 	if (!DDError)
 	{
@@ -2184,11 +2206,11 @@ bool InitRGBScreen()
 	return false;
 }
 
-BOOL CreateRGB640DDObjects( HWND hwnd );
+BOOL CreateRGB640DDObjects(HWND hwnd);
 
 bool InitRGB640Screen()
 {
-	CreateRGB640DDObjects( hwnd );
+	CreateRGB640DDObjects(hwnd);
 	if (!DDError)
 	{
 		LockSurface();
@@ -2213,7 +2235,7 @@ extern bool Lpressed;
 void FilesExit();
 
 //Register winapi window class, init DirectDraw, sounds and cursor
-static BOOL doInit( HINSTANCE hInstance, int nCmdShow )
+static BOOL doInit(HINSTANCE hInstance, int nCmdShow)
 {
 	WNDCLASS wc;
 	char buf[256];
@@ -2224,12 +2246,12 @@ static BOOL doInit( HINSTANCE hInstance, int nCmdShow )
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
 	wc.hInstance = hInstance;
-	wc.hIcon = LoadIcon( hInstance, IDI_APPLICATION );
-	wc.hCursor = LoadCursor( NULL, IDC_ARROW );
+	wc.hIcon = LoadIcon(hInstance, IDI_APPLICATION);
+	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wc.hbrBackground = NULL;
 	wc.lpszMenuName = NULL;
 	wc.lpszClassName = NAME;
-	RegisterClass( &wc );
+	RegisterClass(&wc);
 
 	if (window_mode)
 	{
@@ -2268,27 +2290,27 @@ static BOOL doInit( HINSTANCE hInstance, int nCmdShow )
 		return FALSE;
 	}
 
-	ShowWindow( hwnd, SW_SHOWNORMAL );
+	ShowWindow(hwnd, SW_SHOWNORMAL);
 
-	UpdateWindow( hwnd );
+	UpdateWindow(hwnd);
 
-	CDIRSND.CreateDirSound( hwnd );
+	CDIRSND.CreateDirSound(hwnd);
 
 	CDS = &CDIRSND;
 
-	LoadSounds( "SoundList.txt" );
+	LoadSounds("SoundList.txt");
 
-	ResFile F = RReset( "version.dat" );
+	ResFile F = RReset("version.dat");
 	if (F != INVALID_HANDLE_VALUE)
 	{
 		word B = 0;
-		RBlockRead( F, &B, 2 );
-		RClose( F );
+		RBlockRead(F, &B, 2);
+		RClose(F);
 		if (B > 102)
 		{
-			MessageBox( hwnd, "Unable to use this testing version.", "WARNING!", 0 );
+			MessageBox(hwnd, "Unable to use this testing version.", "WARNING!", 0);
 			FilesExit();
-			PostMessage( hwnd, WM_CLOSE, 0, 0 );
+			PostMessage(hwnd, WM_CLOSE, 0, 0);
 			return 0;
 		}
 	}
@@ -2296,7 +2318,7 @@ static BOOL doInit( HINSTANCE hInstance, int nCmdShow )
 	if (!Loading())
 	{
 		FilesExit();
-		PostMessage( hwnd, WM_CLOSE, 0, 0 );
+		PostMessage(hwnd, WM_CLOSE, 0, 0);
 		return 0;
 	}
 
@@ -2309,9 +2331,11 @@ static BOOL doInit( HINSTANCE hInstance, int nCmdShow )
 
 	//Fullscreen? Prepare for small not stretched menu
 	if (!window_mode)
-	{//Set initial window resolution to native screen resolution
+	{
+		//Set initial window resolution to native screen resolution
 		if (1920 < screen_width)
-		{//Limit max resolution for menu screen to fullhd
+		{
+			//Limit max resolution for menu screen to fullhd
 			//Also necessary for correct offsets in stats screen
 			screen_width = 1920;
 			screen_height = 1080;
@@ -2321,7 +2345,7 @@ static BOOL doInit( HINSTANCE hInstance, int nCmdShow )
 	}
 
 	//Create the screen object with RealLx x RealLy resolution
-	CreateDDObjects( hwnd );
+	CreateDDObjects(hwnd);
 
 	CHKALL();
 
@@ -2335,24 +2359,25 @@ static BOOL doInit( HINSTANCE hInstance, int nCmdShow )
 
 		if (!RealScreenPtr)
 		{
-			MessageBox( hwnd, "Unable to initialise Direct Draw. It is possible that hardware acceleration is turned off.", "Loading error[2]", MB_ICONSTOP );
-			exit( 0 );
+			MessageBox(hwnd, "Unable to initialise Direct Draw. It is possible that hardware acceleration is turned off.",
+			           "Loading error[2]", MB_ICONSTOP);
+			exit(0);
 		}
 
-		if (SetTimer( hwnd, TIMER_ID, 20, nullptr ))
+		if (SetTimer(hwnd, TIMER_ID, 20, nullptr))
 		{
 			return TRUE;
 		}
 	}
 
-	wsprintf( buf, "Direct Draw Init Failed\n" );
-	MessageBox( hwnd, buf, "ERROR", MB_OK );
+	wsprintf(buf, "Direct Draw Init Failed\n");
+	MessageBox(hwnd, buf, "ERROR", MB_OK);
 	finiObjects();
-	DestroyWindow( hwnd );
+	DestroyWindow(hwnd);
 	return FALSE;
 }
 
-void AddDestn( byte x, byte y );
+void AddDestn(byte x, byte y);
 void ProcessNewMonsters();
 void InitXShift();
 void HandleMines();
@@ -2361,13 +2386,14 @@ void HealWalls();
 void ProcessDeathList();
 void ProcessEconomy();
 void HandleMission();
+
 void CheckTops()
 {
-	int NT = NAreas*NAreas;
+	int NT = NAreas * NAreas;
 };
 
-void ResearchCurrentIsland( byte Nat );
-void ResearchBestPortToFish( byte Nat );
+void ResearchCurrentIsland(byte Nat);
+void ResearchBestPortToFish(byte Nat);
 extern int NInGold[8];
 extern int NInIron[8];
 extern int NInCoal[8];
@@ -2376,14 +2402,14 @@ extern int WasInIron[8];
 extern int WasInCoal[8];
 extern bool Tutorial;
 void ProcessCostPoints();
-void CheckArmies( City* );
+void CheckArmies(City*);
 void CheckGP();
 
-void CmdSetSpeed( byte );
+void CmdSetSpeed(byte);
 bool NOPAUSE = 1;
 void EnumPopulation();
 extern bool TutOver;
-void HandleShar( Nation* NT );
+void HandleShar(Nation* NT);
 void AddRandomBlobs();
 void ProcessMapAutosave();
 
@@ -2426,11 +2452,11 @@ void PreDrawGameProcess()
 	//Check if fast/slow mode was changed
 	if (exFMode != SpeedSh)
 	{
-		CmdSetSpeed( exFMode );
+		CmdSetSpeed(exFMode);
 	}
 
 	//Calculate population values for all players
-	if (( tmtmt % 256 ) == 32)
+	if ((tmtmt % 256) == 32)
 	{
 		EnumPopulation();
 	}
@@ -2462,13 +2488,13 @@ void PreDrawGameProcess()
 
 	for (int i = 0; i < 8; i++)
 	{
-		memset( NATIONS[i].SoundMask, 0, 2048 );
+		memset(NATIONS[i].SoundMask, 0, 2048);
 	}
 
 	//NDestn = 0
 	InitDestn();
 
-	//Many diffirent key checks for various game modes
+	//Many different key checks for various game modes
 	GameKeyCheck();
 
 	//Take a guess...
@@ -2500,7 +2526,7 @@ void PreDrawGameProcess()
 		//Each player is processed every 256 * 8 internal tick
 		int nation_byte = tmtmt_div_256 % 8;
 		//Some island AI logic
-		ResearchCurrentIsland( nation_byte );
+		ResearchCurrentIsland(nation_byte);
 	}
 
 	int tmtmt_div_128 = tmtmt / 128;
@@ -2511,20 +2537,20 @@ void PreDrawGameProcess()
 		int nation_byte = tmtmt_div_128 % 8;
 
 		//Take a guess...
-		ResearchBestPortToFish( nation_byte );
+		ResearchBestPortToFish(nation_byte);
 	}
 
 	if (SHOWSLIDE)
 	{
 		//Count peasants and city centers?
-		WinnerControl( false );
+		WinnerControl(false);
 	}
 
-	if (tima != time( nullptr ))
+	if (tima != time(nullptr))
 	{
 		Flips = tmtim;
 		tmtim = 0;
-		tima = time( nullptr );
+		tima = time(nullptr);
 	}
 
 	if (0 == tmtmt % 64)
@@ -2557,7 +2583,7 @@ void PreDrawGameProcess()
 					for (int i = 0; i < MAXOBJECT; i++)
 					{
 						OneObject* OB = Group[i];
-						if (OB && ( !OB->Sdoxlo ) && ( OB->NNUM == g ))
+						if (OB && (!OB->Sdoxlo) && (OB->NNUM == g))
 						{
 							//erasing
 							OB->delay = 6000;
@@ -2637,13 +2663,13 @@ void PreDrawGameProcess()
 			TutOver = 0;
 		}
 
-		int xt = ( tmtmt % 256 );
+		int xt = (tmtmt % 256);
 		GNFO.Process();
 
 		for (int i = 0; i < 8; i++)
 		{
 			Nation* NT = NATIONS + i;
-			NT->Harch += NT->NGidot*ResPerUnit;
+			NT->Harch += NT->NGidot * ResPerUnit;
 			int mult = 2000 >> SpeedSh;
 			int DHarch = NT->Harch / mult;
 			if (DHarch)
@@ -2652,8 +2678,8 @@ void PreDrawGameProcess()
 				{
 					AddXRESRC( i, EatenRes, -DHarch );
 					NATIONS[i].ResOnLife[EatenRes] += DHarch;
-					NT->AddResource( EatenRes, -DHarch );
-					NT->Harch -= mult*DHarch;
+					NT->AddResource(EatenRes, -DHarch);
+					NT->Harch -= mult * DHarch;
 					if (!NT->Harch)
 					{
 						NT->Harch = 1;
@@ -2664,7 +2690,6 @@ void PreDrawGameProcess()
 					SetXRESRC( i, EatenRes, 0 );
 					NT->Harch = 0;
 				}
-
 			}
 			if (!NT->Harch)
 			{
@@ -2685,7 +2710,7 @@ void PreDrawGameProcess()
 					NATIONS[i].ResOnLife[j] += XRESRC( i, j );
 					SetXRESRC( i, j, 0 );
 				}
-				NT->AddResource( j, -dd.quot );
+				NT->AddResource(j, -dd.quot);
 				NT->ResRem[j] = R;
 				if (j == GoldID)
 				{
@@ -2713,7 +2738,7 @@ void PreDrawGameProcess()
 	for (int i = 0; i < 8; i++)
 	{
 		//Place observation balloon
-		HandleShar( NATIONS + i );
+		HandleShar(NATIONS + i);
 	}
 
 	//Something about area linking?
@@ -2722,7 +2747,7 @@ void PreDrawGameProcess()
 
 bool ProcessMessages();
 extern word NPlayers;
-void CmdSaveNetworkGame( byte NI, int ID, char* Name );
+void CmdSaveNetworkGame(byte NI, int ID, char* Name);
 int SaveTime;
 extern char SaveFileName[128];
 void ProcessNature();
@@ -2744,10 +2769,10 @@ extern int StepX;
 extern int StepY;
 int TAverage = 50;
 
-void WaitToTime( int Time )
+void WaitToTime(int Time)
 {
-	int dt0 = int( Time ) - int( GetRealTime() );
-	bool DoDraw = dt0 > ( TAverage >> 2 );
+	int dt0 = int(Time) - int(GetRealTime());
+	bool DoDraw = dt0 > (TAverage >> 2);
 	do
 	{
 		if (DoDraw)
@@ -2759,12 +2784,13 @@ void WaitToTime( int Time )
 				ProcessScreen();
 				GSYSDRAW();
 				int dt = GetRealTime() - tt;
-				TAverage = ( TAverage + TAverage + TAverage + dt ) >> 2;
+				TAverage = (TAverage + TAverage + TAverage + dt) >> 2;
 				SUBTIME += GetRealTime() - T0;
 			}
 		}
 		ProcessMessages();
-	} while (int( Time ) - int( GetRealTime() ) > 0);
+	}
+	while (int(Time) - int(GetRealTime()) > 0);
 	int ttx = GetRealTime();
 	//SUBTIME=0;
 }
@@ -2778,15 +2804,15 @@ extern byte CaptState;
 extern byte SaveState;
 void WritePitchTicks();
 void ReadPichTicks();
-void ShowCentralText0( char* sss );
-void CmdChangePeaceTimeStage( int Stage );
+void ShowCentralText0(char* sss);
+void CmdChangePeaceTimeStage(int Stage);
 int PrevCheckTime = 0;
 extern int PeaceTimeStage;
 extern int PeaceTimeLeft;
 
 void PostDrawGameProcess()
 {
-	RGAME.TryToFlushNetworkStream( 0 );
+	RGAME.TryToFlushNetworkStream(0);
 	if (PlayGameMode == 0 && NPlayers < 2)
 	{
 		PitchTicks = 0;
@@ -2796,7 +2822,7 @@ void PostDrawGameProcess()
 	{
 		if (MaxPingTime)
 		{
-			WaitToTime( NeedCurrentTime );
+			WaitToTime(NeedCurrentTime);
 		}
 		else
 		{
@@ -2840,7 +2866,7 @@ void PostDrawGameProcess()
 		RealGameLength = GetRealTime() - RealStTime;
 		HandleMultiplayer();
 
-		SYN.Copy( &SYN1 );
+		SYN.Copy(&SYN1);
 		PreNoPause = 0;
 		ExecuteBuffer();
 
@@ -2854,7 +2880,6 @@ void PostDrawGameProcess()
 
 		if (PlayGameMode)
 		{
-
 			ReadPichTicks();
 			if (PitchTicks)
 			{
@@ -2867,7 +2892,7 @@ void PostDrawGameProcess()
 			{
 				if (CurrentStepTime)
 				{
-					PitchTicks = 4 + ( ( MaxPingTime ) / CurrentStepTime );
+					PitchTicks = 4 + ((MaxPingTime) / CurrentStepTime);
 				}
 				else
 				{
@@ -2919,7 +2944,7 @@ void PostDrawGameProcess()
 		break;
 	}
 
-	if (difTime > MaxDT && !( PlayGameMode || SaveState == 6 ))
+	if (difTime > MaxDT && !(PlayGameMode || SaveState == 6))
 	{
 		if (NPlayers > 1)
 		{
@@ -2938,8 +2963,8 @@ void PostDrawGameProcess()
 							}
 						}
 						char cc1[128];
-						sprintf( cc1, "NetAutoSave %d players", NP );
-						CmdSaveNetworkGame( MyNation, 0, cc1 );
+						sprintf(cc1, "NetAutoSave %d players", NP);
+						CmdSaveNetworkGame(MyNation, 0, cc1);
 					}
 					i = 100;
 				}
@@ -2952,9 +2977,9 @@ void PostDrawGameProcess()
 			{
 				if (NATIONS[MyNation].VictState != 1 && !SCENINF.LooseGame)
 				{
-					ShowCentralText0( GetTextByID( "Autosaving" ) );
+					ShowCentralText0(GetTextByID("Autosaving"));
 					FlipPages();
-					SaveGame( "AUTO.sav", "auto.sav", 0 );
+					SaveGame("AUTO.sav", "auto.sav", 0);
 				}
 			}
 		}
@@ -2971,7 +2996,7 @@ void PostDrawGameProcess()
 		PrevCheckTime = GetRealTime();
 		if (PeaceTimeLeft / 60 < PeaceTimeStage)
 		{
-			CmdChangePeaceTimeStage( PeaceTimeLeft / 60 );
+			CmdChangePeaceTimeStage(PeaceTimeLeft / 60);
 		}
 	}
 
@@ -2998,7 +3023,8 @@ void PostDrawGameProcess()
 			GameKeyCheck();
 		}
 		time_since_last_call = GetRealTime() - prev_postdraw_time;
-	} while (PauseMode || time_since_last_call < kPostDrawInterval);
+	}
+	while (PauseMode || time_since_last_call < kPostDrawInterval);
 
 	prev_postdraw_time = GetRealTime();
 }
@@ -3008,6 +3034,7 @@ void AllGame();
 
 extern byte MI_Mode;
 extern int RES[8][8];
+
 void PrepareToEdit()
 {
 	ClearMStack();
@@ -3050,7 +3077,7 @@ extern int NeedAddTime;
 extern byte XVIIIState;
 extern char RECFILE[128];
 
-void PerformNewUpgrade( Nation* NT, int UIndex, OneObject* OB );
+void PerformNewUpgrade(Nation* NT, int UIndex, OneObject* OB);
 
 bool IsGameActive();
 
@@ -3058,21 +3085,21 @@ void PrepareToGame()
 {
 	if (!PlayGameMode)
 	{
-		if (NPlayers > 1 && ( IsGameActive() || use_gsc_network_protocol ) && !RecordMode)
+		if (NPlayers > 1 && (IsGameActive() || use_gsc_network_protocol) && !RecordMode)
 		{
 			RecordMode = true;
-			sprintf( RECFILE, "Autorecord\\%s", CurrentMap );
+			sprintf(RECFILE, "Autorecord\\%s", CurrentMap);
 		}
 	}
 
-	RecordMode = true;//BUGFIX: always turn on recording
+	RecordMode = true; //BUGFIX: always turn on recording
 	if (RecordMode && !PlayGameMode)
 	{
-		RGAME.StartRecord( CurrentMap );
+		RGAME.StartRecord(CurrentMap);
 	}
 
 	MI_Mode = 1;
-	memset( TIMECHANGE, 0, sizeof TIMECHANGE );
+	memset(TIMECHANGE, 0, sizeof TIMECHANGE);
 	AddTime = 0;
 	NeedAddTime = 0;
 
@@ -3128,7 +3155,7 @@ void EraseRND()
 	word* Ridx = nullptr;
 
 	WIN32_FIND_DATA FD;
-	HANDLE HF = FindFirstFile( "RN? *.m3d", &FD );
+	HANDLE HF = FindFirstFile("RN? *.m3d", &FD);
 	if (HF != INVALID_HANDLE_VALUE)
 	{
 		bool r = true;
@@ -3137,48 +3164,49 @@ void EraseRND()
 			if (NRND >= MaxRND)
 			{
 				MaxRND += 300;
-				RNDF = (char**) realloc( RNDF, 4 * MaxRND );
-				RndData = (DWORD*) realloc( RndData, 2 * MaxRND );
-				Ridx = (word*) realloc( Ridx, 2 * MaxRND );
+				RNDF = (char**)realloc(RNDF, 4 * MaxRND);
+				RndData = (DWORD*)realloc(RndData, 2 * MaxRND);
+				Ridx = (word*)realloc(Ridx, 2 * MaxRND);
 			}
 			Ridx[NRND] = NRND;
-			RNDF[NRND] = new char[strlen( FD.cFileName ) + 1];
-			strcpy( RNDF[NRND], FD.cFileName );
+			RNDF[NRND] = new char[strlen(FD.cFileName) + 1];
+			strcpy(RNDF[NRND], FD.cFileName);
 			RndData[NRND] = FD.ftCreationTime.dwHighDateTime;
 			NRND++;
-			r = FindNextFile( HF, &FD ) != 0;
-		} while (r);
+			r = FindNextFile(HF, &FD) != 0;
+		}
+		while (r);
 		if (NRND > 3)
 		{
 			SortClass SORT;
-			SORT.CheckSize( NRND );
-			memcpy( SORT.Parms, RndData, 4 * NRND );
-			memcpy( SORT.Uids, Ridx, 2 * NRND );
+			SORT.CheckSize(NRND);
+			memcpy(SORT.Parms, RndData, 4 * NRND);
+			memcpy(SORT.Uids, Ridx, 2 * NRND);
 			SORT.NUids = NRND;
 			SORT.Sort();
-			memcpy( Ridx, SORT.Uids, 2 * NRND );
-			SORT.Copy( Ridx );
+			memcpy(Ridx, SORT.Uids, 2 * NRND);
+			SORT.Copy(Ridx);
 			for (int i = 0; i < NRND - 3; i++)
 			{
-				DeleteFile( RNDF[Ridx[i]] );
+				DeleteFile(RNDF[Ridx[i]]);
 			}
 		}
 		if (NRND)
 		{
 			for (int i = 0; i < NRND; i++)
 			{
-				free( RNDF[i] );
+				free(RNDF[i]);
 			}
-			free( RNDF );
-			free( Ridx );
-			free( RndData );
+			free(RNDF);
+			free(Ridx);
+			free(RndData);
 		}
 	}
 }
 
 bool FilesInit();
 void FilesExit();
-void PlayCDTrack( int Id );
+void PlayCDTrack(int Id);
 void PlayRandomTrack();
 extern int PlayMode;
 unsigned long GetRealTime();
@@ -3188,7 +3216,7 @@ void CreateReg()
 {
 	char path[300];
 	char path1[350];
-	GetCurrentDirectory( 300, path );
+	GetCurrentDirectory(300, path);
 	int ps1 = 0;
 	int ps = 0;
 	char c;
@@ -3207,13 +3235,17 @@ void CreateReg()
 			ps1++;
 		};
 		ps++;
-	} while (c);
-	GFILE* f = Gopen( "Cossacks.reg", "w" );
-	Gprintf( f, "REGEDIT4\n[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\DirectPlay]\n[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\DirectPlay\\Applications]\n[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\DirectPlay\\Applications\\Cossacks]\n\"CommandLine\"=\"\"\n\"CurrentDirectory\"=\"%s\"\n\"File\"=\"dmcr.exe\"\n\"Guid\"=\"{5BFDB060-06A4-11d0-9C4F-00A0C705475f}\"\n\"Path\"=\"%s\"\n", path1, path1 );
-	Gclose( f );
+	}
+	while (c);
+	GFILE* f = Gopen("Cossacks.reg", "w");
+	Gprintf(
+		f,
+		"REGEDIT4\n[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\DirectPlay]\n[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\DirectPlay\\Applications]\n[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\DirectPlay\\Applications\\Cossacks]\n\"CommandLine\"=\"\"\n\"CurrentDirectory\"=\"%s\"\n\"File\"=\"dmcr.exe\"\n\"Guid\"=\"{5BFDB060-06A4-11d0-9C4F-00A0C705475f}\"\n\"Path\"=\"%s\"\n",
+		path1, path1);
+	Gclose(f);
 }
 
-typedef bool tpShowDialog( int NModes, int* Sizex, int* Sizey, int* Current );
+typedef bool tpShowDialog(int NModes, int* Sizex, int* Sizey, int* Current);
 tpShowDialog* lpShowDialog;
 extern int ModeLX[32];
 extern int ModeLY[32];
@@ -3221,6 +3253,7 @@ extern int NModes;
 bool EnumModesOnly();
 
 int ROLL = 1;
+
 void NRFUNC()
 {
 	ROLL = 0;
@@ -3235,7 +3268,7 @@ extern char USERMISSPATH[128];
 void TestHash();
 void CheckIntegrity();
 extern bool TOTALEXIT;
-int GetRankByScore( int Score );
+int GetRankByScore(int Score);
 
 void StartExplorer();
 void FinExplorer();
@@ -3243,27 +3276,27 @@ void FinExplorer();
 void __declspec( dllexport ) SFINIT2_InitLAND();
 
 int PASCAL WinMain(
-	HINSTANCE hInstance, HINSTANCE hPrevInstance,
-	LPSTR lpCmdLine, int nCmdShow
-)
+		HINSTANCE hInstance, HINSTANCE hPrevInstance,
+		LPSTR lpCmdLine, int nCmdShow
+	)
 {
-	char* ss = strstr( lpCmdLine, "/MAPEDITOR" );
+	char* ss = strstr(lpCmdLine, "/MAPEDITOR");
 	if (ss)
 	{
 		RUNMAPEDITOR = 1;
-		strcpy( USERMISSPATH, ss + 11 );
+		strcpy(USERMISSPATH, ss + 11);
 	}
 	else
 	{
-		ss = strstr( lpCmdLine, "/MISSION" );
+		ss = strstr(lpCmdLine, "/MISSION");
 		if (ss)
 		{
 			RUNUSERMISSION = 1;
-			strcpy( USERMISSPATH, ss + 9 );
+			strcpy(USERMISSPATH, ss + 9);
 		}
 	}
 
-	if (strstr( lpCmdLine, "/window" ))
+	if (strstr(lpCmdLine, "/window"))
 	{
 		window_mode = true;
 	}
@@ -3272,7 +3305,7 @@ int PASCAL WinMain(
 		window_mode = false;
 	}
 
-	if ( strstr( lpCmdLine, "/borderless" ) )
+	if (strstr(lpCmdLine, "/borderless"))
 	{
 		window_mode = true;
 		window_style = WS_POPUP;
@@ -3288,7 +3321,7 @@ int PASCAL WinMain(
 	if (!FilesInit())
 	{
 		FilesExit();
-		PostMessage( hwnd, WM_CLOSE, 0, 0 );
+		PostMessage(hwnd, WM_CLOSE, 0, 0);
 	}
 
 	//Delete random generated *.m3d map files
@@ -3327,7 +3360,7 @@ int PASCAL WinMain(
 	InitObjs3();
 
 	//Load settings
-	GFILE* fff = Gopen( "mode.dat", "rt" );
+	GFILE* fff = Gopen("mode.dat", "rt");
 	ScrollSpeed = 5;
 	if (fff)
 	{
@@ -3335,11 +3368,11 @@ int PASCAL WinMain(
 		int ex_window_x, ex_window_y, ex_x, ex_y;
 		int dummy;
 		//7th value was FPSTime
-		Gscanf( fff, "%d%d%d%d%d%d%d%d%d%d%d%d",
-			&ex_window_x, &ex_window_y, &ex_x, &ex_y,
-			&WarSound, &OrderSound, &OrderSound, &MidiSound,
-			&dummy, &ScrollSpeed, &exFMode, &PlayMode );
-		Gclose( fff );
+		Gscanf(fff, "%d%d%d%d%d%d%d%d%d%d%d%d",
+		       &ex_window_x, &ex_window_y, &ex_x, &ex_y,
+		       &WarSound, &OrderSound, &OrderSound, &MidiSound,
+		       &dummy, &ScrollSpeed, &exFMode, &PlayMode);
+		Gclose(fff);
 
 		//Set last 'global resolution' according to current mode
 		if (window_mode)
@@ -3357,11 +3390,11 @@ int PASCAL WinMain(
 			ex_other_RealLy = ex_window_y;
 		}
 	}
-	GFILE *rec_settings_file = Gopen( "rec.dat", "rt" );
+	GFILE* rec_settings_file = Gopen("rec.dat", "rt");
 	if (rec_settings_file)
 	{
-		Gscanf( rec_settings_file, "%d%s", &RecordMode, &RECFILE );
-		Gclose( rec_settings_file );
+		Gscanf(rec_settings_file, "%d%s", &RecordMode, &RECFILE);
+		Gclose(rec_settings_file);
 	}
 
 	//Look if loaded values match possible screen resolutions
@@ -3375,19 +3408,20 @@ int PASCAL WinMain(
 	}
 
 	if (!ExMode)
-	{//Loaded resolution not possible, reset do default
+	{
+		//Loaded resolution not possible, reset do default
 		exRealLx = 1024;
 		exRealLy = 768;
 	}
 
 	//Save native display resolution for future use
-	screen_width = GetSystemMetrics( SM_CXSCREEN );
-	screen_height = GetSystemMetrics( SM_CYSCREEN );
+	screen_width = GetSystemMetrics(SM_CXSCREEN);
+	screen_height = GetSystemMetrics(SM_CYSCREEN);
 
 	//Calculate native resolution aspect ratio
 	double scale = 0.01;
-	screen_ratio = (double) screen_width / screen_height;
-	screen_ratio = (int) ( screen_ratio / scale ) * scale;
+	screen_ratio = (double)screen_width / screen_height;
+	screen_ratio = (int)(screen_ratio / scale) * scale;
 
 	WindX = 0;
 	WindY = 0;
@@ -3416,15 +3450,15 @@ int PASCAL WinMain(
 
 	LockGrid = false;
 
-	FILE* Fx = fopen( "cew.dll", "r" );
+	FILE* Fx = fopen("cew.dll", "r");
 	if (!Fx)
 	{
-		MessageBox( nullptr, "CEW.DLL not found. Unable to run Cossacks.", "Error...", MB_ICONERROR );
+		MessageBox(nullptr, "CEW.DLL not found. Unable to run Cossacks.", "Error...", MB_ICONERROR);
 		return 0;
 	}
 	else
 	{
-		fclose( Fx );
+		fclose(Fx);
 	}
 
 	//Init buffers for national units?
@@ -3458,25 +3492,25 @@ int PASCAL WinMain(
 	InitWater();
 
 	//Load fonts(?)
-	LoadRLC( "xrcross.rlc", &RCross );
+	LoadRLC("xrcross.rlc", &RCross);
 
-	memset( Events, 0, sizeof Events );
+	memset(Events, 0, sizeof Events);
 
 	//Probably just to define PREVT
 	GetRealTime();
 
 	//Register winapi window class, init DirectDraw, sounds and cursor
-	if (!doInit( hInstance, nCmdShow ))
+	if (!doInit(hInstance, nCmdShow))
 	{
 		return FALSE;
 	}
 
 	//Load specific palette and fog resources (alphas etc)
-	LoadFog( 2 );
-	LoadPalette( "2\\agew_1.pal" );
+	LoadFog(2);
+	LoadPalette("2\\agew_1.pal");
 
 	//Init DirectPlay and DPInfo structure
-	SetupMultiplayer( hInstance );
+	SetupMultiplayer(hInstance);
 
 	//Init variables
 	InitMultiDialogs();
@@ -3500,15 +3534,15 @@ int PASCAL WinMain(
 	//Program loop to handle WM_QUIT; everything else handles AllGame()
 	while (true)
 	{
-		while (PeekMessage( &msg, NULL, 0, 0, PM_REMOVE ))
+		while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
 			if (msg.message == WM_QUIT)
 			{
-				PostQuitMessage( msg.wParam );
+				PostQuitMessage(msg.wParam);
 				return 1;
 			}
-			TranslateMessage( &msg );
-			DispatchMessage( &msg );
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
 		}
 
 		//Check if window has focus
@@ -3523,7 +3557,7 @@ int PASCAL WinMain(
 			ClearScreen();
 			UnLoading();
 			CloseExplosions();
-			ShutdownMultiplayer( 1 );
+			ShutdownMultiplayer(1);
 
 			//Distinguish between last window adn fullscreen resolutions
 			int ex_window_x, ex_window_y, ex_x, ex_y;
@@ -3545,26 +3579,26 @@ int PASCAL WinMain(
 			}
 
 			//Save settings before closing
-			GFILE *fff = Gopen( "mode.dat", "wt" );
+			GFILE* fff = Gopen("mode.dat", "wt");
 			if (fff)
 			{
 				//7th value was FPSTime
-				Gprintf( fff, "%d %d %d %d %d %d %d %d %d %d %d %d",
-					ex_window_x, ex_window_y, ex_x, ex_y,
-					WarSound, OrderSound, OrderSound,
-					MidiSound, 0, ScrollSpeed, exFMode, PlayMode );
-				Gclose( fff );
+				Gprintf(fff, "%d %d %d %d %d %d %d %d %d %d %d %d",
+				        ex_window_x, ex_window_y, ex_x, ex_y,
+				        WarSound, OrderSound, OrderSound,
+				        MidiSound, 0, ScrollSpeed, exFMode, PlayMode);
+				Gclose(fff);
 			}
-			GFILE *rec_settings_file = Gopen( "rec.dat", "wt" );
+			GFILE* rec_settings_file = Gopen("rec.dat", "wt");
 			if (rec_settings_file)
 			{
-				Gprintf( rec_settings_file, "%d %s", RecordMode, RECFILE );
-				Gclose( rec_settings_file );
+				Gprintf(rec_settings_file, "%d %s", RecordMode, RECFILE);
+				Gclose(rec_settings_file);
 			}
 
 			FilesExit();
 			StopPlayCD();
-			PostMessage( hwnd, WM_CLOSE, 0, 0 );
+			PostMessage(hwnd, WM_CLOSE, 0, 0);
 			FinExplorer();
 		}
 	}

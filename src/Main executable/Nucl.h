@@ -1,4 +1,5 @@
-class HugeExplosion{
+class HugeExplosion
+{
 public:
 	bool Enabled;
 	int x;
@@ -11,8 +12,9 @@ public:
 	int vr2;
 	int NR1;
 	int NR2;
-	void CreateExpl(int x,int y,int r1,int r2,int time);
+	void CreateExpl(int x, int y, int r1, int r2, int time);
 	void HandleExpl();
 };
-void AddHugExp(int ex,int ey,int er1,int er2,int time);
+
+void AddHugExp(int ex, int ey, int er1, int er2, int time);
 void HandleHExpls();

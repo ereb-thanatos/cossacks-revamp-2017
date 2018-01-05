@@ -48,25 +48,25 @@
 
 void StartExplorer();
 void FinExplorer();
-void RunExplorer( int Index, char* ref, int x, int y, int x1, int y1 );
-void ProcessExplorer( int Index );
+void RunExplorer(int Index, char* ref, int x, int y, int x1, int y1);
+void ProcessExplorer(int Index);
 extern int ItemChoose;
 
-typedef char* fnGetAccessKey( int );
-typedef void fnSetAccessKey( int, char* );
+typedef char* fnGetAccessKey(int);
+typedef void fnSetAccessKey(int, char*);
 extern fnGetAccessKey* GetAccessKey;
 extern fnSetAccessKey* SetAccessKey;
 
-bool MCHOOSE( SimpleDialog* SD )
+bool MCHOOSE(SimpleDialog* SD)
 {
 	ItemChoose = SD->UserParam;
 	return true;
 }
 
 char ACCESS[16] = "";
-void SlowLoadPalette( LPCSTR lpFileName );
-void ExplorerOpenRef( int Index, char* ref );
-void ShowCentralMessage( char* Message, int GPIDX );
+void SlowLoadPalette(LPCSTR lpFileName);
+void ExplorerOpenRef(int Index, char* ref);
+void ShowCentralMessage(char* Message, int GPIDX);
 void DarkScreen();
 
 bool ProcessMessages();
@@ -76,60 +76,60 @@ extern int menu_y_off;
 
 bool ProcessNewInternetLogin()
 {
-	DialogsSystem DSS( menu_x_off, menu_y_off );
+	DialogsSystem DSS(menu_x_off, menu_y_off);
 
-	SQPicture Back( "Interface\\Background_Wizard.bmp" );
+	SQPicture Back("Interface\\Background_Wizard.bmp");
 
-	LocalGP WBT( "Interface\\LogWizard" );
-	LocalGP BTNS( "Interface\\Login" );
+	LocalGP WBT("Interface\\LogWizard");
+	LocalGP BTNS("Interface\\Login");
 
-	DSS.addPicture( nullptr, 0, 0, &Back, &Back, &Back );
+	DSS.addPicture(nullptr, 0, 0, &Back, &Back, &Back);
 
 	char REQ[1024];
 	char REQ1[1024];
 	char DATA[512] = "";
 
-	ResFile F = RReset( "Internet\\Cash\\login.cmd" );
+	ResFile F = RReset("Internet\\Cash\\login.cmd");
 	if (F != INVALID_HANDLE_VALUE)
 	{
-		int sz = RFileSize( F );
+		int sz = RFileSize(F);
 		if (sz > 511)
 		{
 			sz = 511;
 		}
-		RBlockRead( F, REQ1, sz );
+		RBlockRead(F, REQ1, sz);
 		REQ1[sz] = 0;
-		RClose( F );
+		RClose(F);
 	}
 	else
 	{
 		return false;
 	}
 
-	F = RReset( "Internet\\Cash\\LGDTA.LOG" );
+	F = RReset("Internet\\Cash\\LGDTA.LOG");
 
 	if (F != INVALID_HANDLE_VALUE)
 	{
-		int sz = RFileSize( F );
+		int sz = RFileSize(F);
 		if (sz > 511)
 		{
 			sz = 511;
 		}
-		RBlockRead( F, DATA, sz );
+		RBlockRead(F, DATA, sz);
 		DATA[sz] = 0;
-		RClose( F );
+		RClose(F);
 	}
 
-	sprintf( REQ, REQ1, DATA );
+	sprintf(REQ, REQ1, DATA);
 
-	RunExplorer( 2, REQ, menu_x_off, menu_y_off, 1024, 768 );
+	RunExplorer(2, REQ, menu_x_off, menu_y_off, 1024, 768);
 
 	ItemChoose = -1;
 	if (SetAccessKey)
 	{
 		for (int i = 0; i < 8; i++)
 		{
-			SetAccessKey( i, "" );
+			SetAccessKey(i, "");
 		}
 	}
 
@@ -144,23 +144,24 @@ bool ProcessNewInternetLogin()
 
 		DSS.ProcessDialogs();
 
-		ProcessExplorer( 2 );
+		ProcessExplorer(2);
 
 		DSS.RefreshView();
 
 		if (GetAccessKey)
 		{
-			AKEY = GetAccessKey( 2 );
+			AKEY = GetAccessKey(2);
 		}
 
 		if (!pal)
 		{
-			SlowLoadPalette( "2\\agew_1.pal" );
+			SlowLoadPalette("2\\agew_1.pal");
 			pal = 1;
 		}
-	} while (ItemChoose == -1 && AKEY[0] == 0);
+	}
+	while (ItemChoose == -1 && AKEY[0] == 0);
 
-	if (!strcmp( AKEY, "#CANCEL" ))
+	if (!strcmp(AKEY, "#CANCEL"))
 	{
 		AKEY[0] = 0;
 	}
@@ -169,15 +170,15 @@ bool ProcessNewInternetLogin()
 	{
 		for (int i = 0; i < 8; i++)
 		{
-			SetAccessKey( i, AKEY );
+			SetAccessKey(i, AKEY);
 		}
 	}
 
-	strcpy( ACCESS, AKEY );
+	strcpy(ACCESS, AKEY);
 
 	DSS.ProcessDialogs();
 
-	ProcessExplorer( 2 );
+	ProcessExplorer(2);
 
 	DSS.RefreshView();
 

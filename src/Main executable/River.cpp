@@ -29,8 +29,8 @@ byte* RivVol = nullptr;
 
 void InitRiv()
 {
-	memset(RivDir, 0, RivNX*RivNX);
-	memset(RivVol, 0, RivNX*RivNX);
+	memset(RivDir, 0, RivNX * RivNX);
+	memset(RivVol, 0, RivNX * RivNX);
 }
 
 extern int RealLx;
@@ -46,14 +46,14 @@ bool RiverEditMode = 0;
 
 extern bool EditMapMode;
 
-void ProcessRivEditor() 
+void ProcessRivEditor()
 {
 	if (!EditMapMode)
 	{
 		return;
 	}
 
-	if (RiverEditMode) 
+	if (RiverEditMode)
 	{
 		int x0 = -((mapx % 4) << 5) - 128;
 		int y0 = -((mapy % 4) << 4) - 64;
@@ -72,17 +72,17 @@ void ProcessRivEditor()
 			Hline(0, y0 + (iy << 6), RealLx, 0xFD);
 		}
 
-		for (int ix = 0; ix < Nx; ix++) 
+		for (int ix = 0; ix < Nx; ix++)
 		{
-			for (int iy = 0; iy < Ny; iy++) 
+			for (int iy = 0; iy < Ny; iy++)
 			{
 				int ofs = ix + vx0 + ((iy + vy0) << RivSH);
-				if (RivVol[ofs]) 
+				if (RivVol[ofs])
 				{
 					byte dir = RivDir[ofs];
 					int vol = RivVol[ofs];
-					int dx = (int(TCos[dir])*vol) >> 8;
-					int dy = (int(TSin[dir])*vol) >> 9;
+					int dx = (int(TCos[dir]) * vol) >> 8;
+					int dy = (int(TSin[dir]) * vol) >> 9;
 					int xx = ((ix + vx0) << 7) - (mapx << 5) + 64;
 					int yy = ((iy + vy0) << 6) - (mapy << 4) + 32;
 					CBar(xx - 3, yy - 3, 6, 6, 0xFE);
@@ -91,13 +91,13 @@ void ProcessRivEditor()
 			}
 		}
 
-		if (Lpressed || Rpressed) 
+		if (Lpressed || Rpressed)
 		{
 			int px = mouseX + (mapx << 5);
 			int py = (mouseY << 1) + (mapy << 5);
 			int nx = (px >> 7);
 			int ny = (py >> 7);
-			if (nx >= 0 && ny >= 0) 
+			if (nx >= 0 && ny >= 0)
 			{
 				px -= (nx << 7) + 64;
 				py -= (ny << 7) + 64;
@@ -110,7 +110,7 @@ void ProcessRivEditor()
 				}
 				else
 				{
-					vol = int(sqrt(px*px + py*py));
+					vol = int(sqrt(px * px + py * py));
 				}
 
 				int ofs = nx + (ny << RivSH);
@@ -121,14 +121,14 @@ void ProcessRivEditor()
 	}
 }
 
-int GetRiverDir(int x, int y) 
+int GetRiverDir(int x, int y)
 {
 	x >>= 7;
 	y >>= 7;
-	if (x >= 0 && y >= 0) 
+	if (x >= 0 && y >= 0)
 	{
 		int ofs = x + (y << RivSH);
-		if (RivVol[ofs]) 
+		if (RivVol[ofs])
 		{
 			return RivDir[ofs];
 		}

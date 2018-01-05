@@ -1,4 +1,5 @@
-class WIcon{
+class WIcon
+{
 public:
 	char* Message;
 	word FileID;

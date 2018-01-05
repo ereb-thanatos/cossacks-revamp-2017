@@ -27,7 +27,7 @@ devsupport@gamespy.com
 #if defined(applec) || defined(THINK_C) || defined(__MWERKS__) && !defined(__KATANA__)  && !defined(__mips64)
 	#include "::nonport.h"
 #else
-	#include "../nonport.h"
+#include "../nonport.h"
 #endif
 
 /************
@@ -45,7 +45,8 @@ devsupport@gamespy.com
 #define ASSERT_NICK()       assert(nick != NULL); assert(nick[0] != '\0'); assert(strlen(nick) < MAX_NICK);
 #define ASSERT_USER(user)   assert(user != NULL); assert(user[0] != '\0'); assert(strlen(user) < MAX_USER);
 #define ASSERT_MESSAGE()    assert(message != NULL); assert(message[0] != '\0');
-#define ASSERT_TYPE(type)   assert((type == CHAT_MESSAGE) || (type == CHAT_ACTION) || (type == CHAT_NOTICE) || (type == CHAT_UTM));
+#define ASSERT_TYPE(type
+)   assert((type == CHAT_MESSAGE) || (type == CHAT_ACTION) || (type == CHAT_NOTICE) || (type == CHAT_UTM));
 #define ASSERT_PASSWORD()   assert(password != NULL); assert(password[0] != '\0');
 #define ASSERT_BAN()        assert(ban != NULL); assert(ban [0] != '\0');
 
@@ -56,13 +57,13 @@ devsupport@gamespy.com
 typedef struct ciEnumUsersData
 {
 	chatEnumUsersCallback callback;
-	void * param;
+	void* param;
 } ciEnumUsersData;
 
 /**************
 ** FUNCTIONS **
 **************/
-static CHATBool ciProcessServerMessage(CHAT chat, ciServerMessage * message)
+static CHATBool ciProcessServerMessage(CHAT chat, ciServerMessage* message)
 {
 	int i;
 
@@ -70,15 +71,15 @@ static CHATBool ciProcessServerMessage(CHAT chat, ciServerMessage * message)
 
 	// Figure out what type of message this is.
 	///////////////////////////////////////////
-	for(i = 0 ; i < numServerMessageTypes ; i++)
+	for (i = 0; i < numServerMessageTypes; i++)
 	{
 		// Does the type match?
 		///////////////////////
-		if(strcasecmp(message->command, serverMessageTypes[i].command) == 0)
+		if (strcasecmp(message->command, serverMessageTypes[i].command) == 0)
 		{
 			// Is there a handler?
 			//////////////////////
-			if(serverMessageTypes[i].handler != NULL)
+			if (serverMessageTypes[i].handler != NULL)
 			{
 				// Call the handler.
 				////////////////////
@@ -91,7 +92,7 @@ static CHATBool ciProcessServerMessage(CHAT chat, ciServerMessage * message)
 
 	// Didn't find a match.
 	///////////////////////
-	return CHATFalse;  //ERRCON
+	return CHATFalse; //ERRCON
 }
 
 static CHATBool ciCheckForID(CHAT chat, int ID)
@@ -99,13 +100,13 @@ static CHATBool ciCheckForID(CHAT chat, int ID)
 	return (ciCheckFiltersForID(chat, ID) || ciCheckCallbacksForID(chat, ID));
 }
 
-void ciHandleDisconnect(CHAT chat, const char * reason)
+void ciHandleDisconnect(CHAT chat, const char* reason)
 {
 	CONNECTION;
 
 	// Check if we've already handled this.
 	///////////////////////////////////////
-	if(connection->disconnected)
+	if (connection->disconnected)
 		return;
 
 	// Not connected anymore.
@@ -116,22 +117,23 @@ void ciHandleDisconnect(CHAT chat, const char * reason)
 
 	// Call the disconnected callback.
 	//////////////////////////////////
-	if(connection->globalCallbacks.disconnected != NULL)
+	if (connection->globalCallbacks.disconnected != NULL)
 	{
 		ciCallbackDisconnectedParams params;
 		params.reason = (char *)reason;
-		ciAddCallback(chat, CALLBACK_DISCONNECTED, connection->globalCallbacks.disconnected, &params, connection->globalCallbacks.param, 0, NULL);
+		ciAddCallback(chat, CALLBACK_DISCONNECTED, connection->globalCallbacks.disconnected, &params, connection->
+			globalCallbacks.param, 0, NULL);
 	}
 }
 
 static void ciThink(CHAT chat, int ID)
 {
-	ciServerMessage * message;
+	ciServerMessage* message;
 	CONNECTION;
 
 	// Is the socket connected?
 	///////////////////////////
-	if(connection->chatSocket.connectState == ciConnected)
+	if (connection->chatSocket.connectState == ciConnected)
 	{
 		// Do processing.
 		/////////////////
@@ -139,7 +141,7 @@ static void ciThink(CHAT chat, int ID)
 
 		// Have we lost connection?
 		///////////////////////////
-		if(connection->chatSocket.connectState == ciDisconnected)
+		if (connection->chatSocket.connectState == ciDisconnected)
 		{
 			ciHandleDisconnect(chat, "Disconnected");
 		}
@@ -147,15 +149,16 @@ static void ciThink(CHAT chat, int ID)
 		{
 			// Check received messages.
 			///////////////////////////
-			while((message = ciSocketRecv(&connection->chatSocket)) != NULL)
+			while ((message = ciSocketRecv(&connection->chatSocket)) != NULL)
 			{
 				// Call the raw callback.
 				/////////////////////////
-				if(connection->globalCallbacks.raw != NULL)
+				if (connection->globalCallbacks.raw != NULL)
 				{
 					ciCallbackRawParams params;
 					params.raw = message->message;
-					ciAddCallback(chat, CALLBACK_RAW, connection->globalCallbacks.raw, &params, connection->globalCallbacks.param, 0, NULL);
+					ciAddCallback(chat, CALLBACK_RAW, connection->globalCallbacks.raw, &params, connection->globalCallbacks.param, 0,
+						NULL);
 				}
 
 				// Process the message.
@@ -164,7 +167,7 @@ static void ciThink(CHAT chat, int ID)
 			}
 		}
 	}
-		
+
 	// Let the filters think.
 	/////////////////////////
 	ciFilterThink(chat);
@@ -179,8 +182,8 @@ static void ciThink(CHAT chat, int ID)
 ************/
 void ciSendNickAndUser(CHAT chat)
 {
-	char * sendingNick;
-	char * str;
+	char* sendingNick;
+	char* str;
 	CHATBool invalidNick;
 
 	CONNECTION;
@@ -188,11 +191,11 @@ void ciSendNickAndUser(CHAT chat)
 	// Check for an invalid nick.
 	/////////////////////////////
 	invalidNick = CHATFalse;
-	if(strchr("0123456789", connection->nick[0]))
+	if (strchr("0123456789", connection->nick[0]))
 		invalidNick = CHATTrue;
-	for(str = connection->nick ; str[0] ; str++)
+	for (str = connection->nick; str[0]; str++)
 	{
-		if(!strchr(VALID_NICK_CHARS, str[0]))
+		if (!strchr(VALID_NICK_CHARS, str[0]))
 			invalidNick = CHATTrue;
 	}
 
@@ -201,7 +204,7 @@ void ciSendNickAndUser(CHAT chat)
 	// Then the invalid nick callback will be generated.
 	// Hacky, but it works.
 	/////////////////////////////////////////////////////////////////////////////////////////////
-	if(!invalidNick)
+	if (!invalidNick)
 		sendingNick = connection->nick;
 	else
 		sendingNick = "1";
@@ -213,25 +216,25 @@ void ciSendNickAndUser(CHAT chat)
 	// Send the user.
 	/////////////////
 	ciSocketSendf(&connection->chatSocket, "USER %s %s %s :%s",
-		connection->user,
-		"127.0.0.1",
-		connection->server,
-		connection->name);
+	              connection->user,
+	              "127.0.0.1",
+	              connection->server,
+	              connection->name);
 }
 
-CHAT chatConnectDoit(const char * serverAddress,
-				 int port,
-                 const char * nick,
-				 const char * user,
-				 const char * name,
-				 chatGlobalCallbacks * callbacks,
-				 chatNickErrorCallback nickErrorCallback,
-				 chatFillInUserCallback fillInUserCallback,
-                 chatConnectCallback connectCallback,
-                 void * param,
-                 CHATBool blocking)
+CHAT chatConnectDoit(const char* serverAddress,
+                     int port,
+                     const char* nick,
+                     const char* user,
+                     const char* name,
+                     chatGlobalCallbacks* callbacks,
+                     chatNickErrorCallback nickErrorCallback,
+                     chatFillInUserCallback fillInUserCallback,
+                     chatConnectCallback connectCallback,
+                     void* param,
+                     CHATBool blocking)
 {
-	ciConnection * connection;
+	ciConnection* connection;
 
 	assert(serverAddress != NULL);
 	ASSERT_NICK();
@@ -245,28 +248,28 @@ CHAT chatConnectDoit(const char * serverAddress,
 	// Create a connection object.
 	//////////////////////////////
 	connection = (ciConnection *)gsimalloc(sizeof(ciConnection));
-	if(connection == NULL)
-		return NULL;  //ERRCON
+	if (connection == NULL)
+		return NULL; //ERRCON
 
 	// Initialize the connection.
 	/////////////////////////////
 	memset(connection, 0, sizeof(ciConnection));
 	strcpy(connection->nick, nick);
-	if(user)
+	if (user)
 		strcpy(connection->user, user);
 	strcpy(connection->name, name);
 	strcpy(connection->server, serverAddress);
 	connection->port = port;
 	connection->globalCallbacks = *callbacks;
-/*	if(gethostname(connection->host, MAX_HOST) == SOCKET_ERROR)
-		strcpy(connection->host, "<unknown>"); //ERRCON*/
+	/*	if(gethostname(connection->host, MAX_HOST) == SOCKET_ERROR)
+			strcpy(connection->host, "<unknown>"); //ERRCON*/
 	connection->nextID = 1;
 	connection->connecting = CHATTrue;
 	connection->quiet = CHATFalse;
 
 	// Initialize the channel table.
 	////////////////////////////////
-	if(!ciInitChannels(connection))
+	if (!ciInitChannels(connection))
 	{
 		gsifree(connection);
 		SocketShutDown();
@@ -275,7 +278,7 @@ CHAT chatConnectDoit(const char * serverAddress,
 
 	// Initialize the callbacks list.
 	/////////////////////////////////
-	if(!ciInitCallbacks(connection))
+	if (!ciInitCallbacks(connection))
 	{
 		ciCleanupChannels((CHAT)connection);
 		gsifree(connection);
@@ -285,7 +288,7 @@ CHAT chatConnectDoit(const char * serverAddress,
 
 	// Initialize the socket.
 	/////////////////////////
-	if(!ciSocketInit(&connection->chatSocket))
+	if (!ciSocketInit(&connection->chatSocket))
 	{
 		ciCleanupCallbacks((CHAT)connection);
 		ciCleanupChannels((CHAT)connection);
@@ -296,7 +299,7 @@ CHAT chatConnectDoit(const char * serverAddress,
 
 	// Connect the socket.
 	//////////////////////
-	if(!ciSocketConnect(&connection->chatSocket, serverAddress, port))
+	if (!ciSocketConnect(&connection->chatSocket, serverAddress, port))
 	{
 		ciSocketDisconnect(&connection->chatSocket);
 		ciCleanupCallbacks((CHAT)connection);
@@ -318,7 +321,7 @@ CHAT chatConnectDoit(const char * serverAddress,
 	connection->connectCallback = connectCallback;
 	connection->connectParam = param;
 
-	if(connection->fillInUserCallback)
+	if (connection->fillInUserCallback)
 	{
 		// Get the IP.
 		//////////////
@@ -331,7 +334,7 @@ CHAT chatConnectDoit(const char * serverAddress,
 
 	// Do blocking.
 	///////////////
-	if(blocking)
+	if (blocking)
 	{
 		// While we're connecting.
 		//////////////////////////
@@ -339,11 +342,12 @@ CHAT chatConnectDoit(const char * serverAddress,
 		{
 			ciThink((CHAT)connection, 0);
 			msleep(10);
-		} while(connection->connecting);
+		}
+		while (connection->connecting);
 
 		// Check if the connect failed.
 		///////////////////////////////
-		if(!connection->connected)
+		if (!connection->connected)
 		{
 			// Disconnect the connection.
 			/////////////////////////////
@@ -355,69 +359,69 @@ CHAT chatConnectDoit(const char * serverAddress,
 	return (CHAT)connection;
 }
 
-CHAT chatConnect(const char * serverAddress,
-				 int port,
-                 const char * nick,
-				 const char * user,
-				 const char * name,
-				 chatGlobalCallbacks * callbacks,
-				 chatNickErrorCallback nickErrorCallback,
+CHAT chatConnect(const char* serverAddress,
+                 int port,
+                 const char* nick,
+                 const char* user,
+                 const char* name,
+                 chatGlobalCallbacks* callbacks,
+                 chatNickErrorCallback nickErrorCallback,
                  chatConnectCallback connectCallback,
-                 void * param,
+                 void* param,
                  CHATBool blocking)
 {
 	return chatConnectDoit(serverAddress,
-		port,
-		nick,
-		user,
-		name,
-		callbacks,
-		nickErrorCallback,
-		NULL,
-		connectCallback,
-		param,
-		blocking);
+	                       port,
+	                       nick,
+	                       user,
+	                       name,
+	                       callbacks,
+	                       nickErrorCallback,
+	                       NULL,
+	                       connectCallback,
+	                       param,
+	                       blocking);
 }
 
-CHAT chatConnectSpecial(const char * serverAddress,
-				 int port,
-                 const char * nick,
-				 const char * name,
-				 chatGlobalCallbacks * callbacks,
-				 chatNickErrorCallback nickErrorCallback,
-				 chatFillInUserCallback fillInUserCallback,
-                 chatConnectCallback connectCallback,
-                 void * param,
-                 CHATBool blocking)
+CHAT chatConnectSpecial(const char* serverAddress,
+                        int port,
+                        const char* nick,
+                        const char* name,
+                        chatGlobalCallbacks* callbacks,
+                        chatNickErrorCallback nickErrorCallback,
+                        chatFillInUserCallback fillInUserCallback,
+                        chatConnectCallback connectCallback,
+                        void* param,
+                        CHATBool blocking)
 {
 	return chatConnectDoit(serverAddress,
-		port,
-		nick,
-		NULL,
-		name,
-		callbacks,
-		nickErrorCallback,
-		fillInUserCallback,
-		connectCallback,
-		param,
-		blocking);
+	                       port,
+	                       nick,
+	                       NULL,
+	                       name,
+	                       callbacks,
+	                       nickErrorCallback,
+	                       fillInUserCallback,
+	                       connectCallback,
+	                       param,
+	                       blocking);
 }
 
 void chatRetryWithNick(CHAT chat,
-					   const char * nick)
+                       const char* nick)
 {
 	CONNECTION;
 
 	// Are we already connected?
 	////////////////////////////
-	if(connection->connected)
+	if (connection->connected)
 		return;
 
 	// Check for a bad nick.
 	////////////////////////
-	if(!nick || !nick[0] || (strlen(nick) >= MAX_NICK))
+	if (!nick || !nick[0] || (strlen(nick) >= MAX_NICK))
 	{
-		if(connection->connectCallback != NULL)
+		if (connection->connectCallback != NULL)
 			connection->connectCallback(chat, CHATFalse, connection->connectParam);
 
 		return;
@@ -442,12 +446,12 @@ void chatDisconnect(CHAT chat)
 
 	// Call the disconnected callback if we haven't already.
 	////////////////////////////////////////////////////////
-	if(!connection->disconnected && connection->globalCallbacks.disconnected)
+	if (!connection->disconnected && connection->globalCallbacks.disconnected)
 		connection->globalCallbacks.disconnected(chat, "", connection->globalCallbacks.param);
 
 	// Are we connected.
 	////////////////////
-	if(connection->connected)
+	if (connection->connected)
 	{
 		ciSocketSend(&connection->chatSocket, "QUIT :Later!");
 		ciSocketThink(&connection->chatSocket);
@@ -480,7 +484,7 @@ void chatThink(CHAT chat)
 }
 
 void chatSendRaw(CHAT chat,
-				 const char * command)
+                 const char* command)
 {
 	CONNECTION;
 	CONNECTED;
@@ -489,10 +493,10 @@ void chatSendRaw(CHAT chat,
 }
 
 void chatChangeNick(CHAT chat,
-					const char * newNick,
-					chatChangeNickCallback callback,
-					void * param,
-					CHATBool blocking)
+                    const char* newNick,
+                    chatChangeNickCallback callback,
+                    void* param,
+                    CHATBool blocking)
 {
 	int ID;
 	CHATBool success = CHATTrue;
@@ -508,24 +512,24 @@ void chatChangeNick(CHAT chat,
 
 	// chatRetryWithNick should be called while connecting.
 	///////////////////////////////////////////////////////
-	if(!connection->connected)
+	if (!connection->connected)
 		return;
 
 	// No nick.
 	///////////
-	if(!newNick || !newNick[0] || (strlen(newNick) >= MAX_NICK))
+	if (!newNick || !newNick[0] || (strlen(newNick) >= MAX_NICK))
 		success = CHATFalse;
 
 	// Check for same nick.
 	///////////////////////
-	if(success && (strcasecmp(newNick, connection->nick) == 0))
+	if (success && (strcasecmp(newNick, connection->nick) == 0))
 		success = CHATFalse;
 
 	// Call the callback?
 	/////////////////////
-	if(!success)
+	if (!success)
 	{
-		if(callback)
+		if (callback)
 		{
 			ciCallbackChangeNickParams params;
 			params.success = success;
@@ -549,42 +553,42 @@ void chatChangeNick(CHAT chat,
 	CI_DO_BLOCKING;
 }
 
-char * chatGetNick(CHAT chat)
+char* chatGetNick(CHAT chat)
 {
 	CONNECTION;
 
-	if(!connection->connected) 
+	if (!connection->connected)
 		return "";
 
 	return connection->nick;
 }
 
-void chatFixNick(char * newNick,
-				 const char * oldNick)
+void chatFixNick(char* newNick,
+                 const char* oldNick)
 {
 	int c;
-	static const char * legalIRCChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789[]\\`_^{|}-";
+	static const char* legalIRCChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789[]\\`_^{|}-";
 
 	assert(oldNick);
 	assert(newNick);
 
-	if(isdigit(*oldNick) || (*oldNick == '-'))
+	if (isdigit(*oldNick) || (*oldNick == '-'))
 		*newNick++ = '_';
 
-	while(c = *oldNick++)
+	while (c = *oldNick++)
 	{
-		if(!strchr(legalIRCChars, c))
+		if (!strchr(legalIRCChars, c))
 			c = '_';
 
-		*newNick++ = (char) c;
+		*newNick++ = (char)c;
 	}
 	*newNick = '\0';
 }
 
 static void ciSetQuietModeEnumJoinedChannels(CHAT chat,
-											 int index,
-											 const char * channel,
-											 void * param)
+                                             int index,
+                                             const char* channel,
+                                             void* param)
 {
 	// Setup a filter.
 	//////////////////
@@ -592,19 +596,19 @@ static void ciSetQuietModeEnumJoinedChannels(CHAT chat,
 }
 
 void chatSetQuietMode(CHAT chat,
-					  CHATBool quiet)
+                      CHATBool quiet)
 {
 	CONNECTION;
 	CONNECTED;
 
 	// Check if its the current mode.
 	/////////////////////////////////
-	if(connection->quiet == quiet)
+	if (connection->quiet == quiet)
 		return;
 
 	// Send the message.
 	////////////////////
-	if(quiet)
+	if (quiet)
 		ciSocketSendf(&connection->chatSocket, "MODE %s +q", connection->nick);
 	else
 		ciSocketSendf(&connection->chatSocket, "MODE %s -q", connection->nick);
@@ -615,7 +619,7 @@ void chatSetQuietMode(CHAT chat,
 
 	// Are we disabling it?
 	///////////////////////
-	if(!quiet)
+	if (!quiet)
 	{
 		// Clear all the player lists.
 		//////////////////////////////
@@ -631,11 +635,11 @@ void chatSetQuietMode(CHAT chat,
 ** CHANNELS **
 *************/
 void chatEnumChannels(CHAT chat,
-					  const char * filter,
-					  chatEnumChannelsCallbackEach callbackEach,
-					  chatEnumChannelsCallbackAll callbackAll,
-					  void * param,
-					  CHATBool blocking)
+                      const char* filter,
+                      chatEnumChannelsCallbackEach callbackEach,
+                      chatEnumChannelsCallbackAll callbackAll,
+                      void* param,
+                      CHATBool blocking)
 {
 	int ID;
 	CONNECTION;
@@ -643,7 +647,7 @@ void chatEnumChannels(CHAT chat,
 
 	assert((callbackAll != NULL) || (callbackEach != NULL));
 
-	if(!filter)
+	if (!filter)
 		filter = "";
 
 	ciSocketSendf(&connection->chatSocket, "LIST %s", filter);
@@ -654,12 +658,12 @@ void chatEnumChannels(CHAT chat,
 }
 
 void chatEnterChannel(CHAT chat,
-					  const char * channel,
-					  const char * password,
-					  chatChannelCallbacks * callbacks,
-					  chatEnterChannelCallback callback,
-					  void * param,
-					  CHATBool blocking)
+                      const char* channel,
+                      const char* password,
+                      chatChannelCallbacks* callbacks,
+                      chatEnterChannelCallback callback,
+                      void* param,
+                      CHATBool blocking)
 {
 	int ID;
 	CONNECTION;
@@ -668,7 +672,7 @@ void chatEnterChannel(CHAT chat,
 	ASSERT_CHANNEL();
 	assert(callbacks != NULL);
 
-	if(password == NULL)
+	if (password == NULL)
 		password = "";
 
 	ciSocketSendf(&connection->chatSocket, "JOIN %s %s", channel, password);
@@ -683,15 +687,15 @@ void chatEnterChannel(CHAT chat,
 }
 
 void chatLeaveChannel(CHAT chat,
-					  const char * channel,
-					  const char * reason)
+                      const char* channel,
+                      const char* reason)
 {
 	CONNECTION;
 	CONNECTED;
 
 	ASSERT_CHANNEL();
 
-	if(!reason)
+	if (!reason)
 		reason = "";
 
 	ciSocketSendf(&connection->chatSocket, "PART %s :%s", channel, reason);
@@ -702,11 +706,11 @@ void chatLeaveChannel(CHAT chat,
 }
 
 void chatSendChannelMessage(CHAT chat,
-							const char * channel,
-							const char * message,
-							int type)
+                            const char* channel,
+                            const char* message,
+                            int type)
 {
-	chatChannelCallbacks * callbacks;
+	chatChannelCallbacks* callbacks;
 	CONNECTION;
 	CONNECTED;
 
@@ -715,15 +719,15 @@ void chatSendChannelMessage(CHAT chat,
 
 	if (!message || !message[0])
 		return;
-	if(type == CHAT_MESSAGE)
+	if (type == CHAT_MESSAGE)
 		ciSocketSendf(&connection->chatSocket, "PRIVMSG %s :%s", channel, message);
-	else if(type == CHAT_ACTION)
+	else if (type == CHAT_ACTION)
 		ciSocketSendf(&connection->chatSocket, "PRIVMSG %s :\001ACTION %s\001", channel, message);
-	else if(type == CHAT_NOTICE)
+	else if (type == CHAT_NOTICE)
 		ciSocketSendf(&connection->chatSocket, "NOTICE %s :%s", channel, message);
-	else if(type == CHAT_UTM)
+	else if (type == CHAT_UTM)
 		ciSocketSendf(&connection->chatSocket, "UTM %s :%s", channel, message);
-	else if(type == CHAT_ATM)
+	else if (type == CHAT_ATM)
 		ciSocketSendf(&connection->chatSocket, "ATM %s :%s", channel, message);
 	else
 		return;
@@ -731,7 +735,7 @@ void chatSendChannelMessage(CHAT chat,
 	// We don't get these back, so call the callbacks.
 	//////////////////////////////////////////////////
 	callbacks = ciGetChannelCallbacks(chat, channel);
-	if(callbacks != NULL)
+	if (callbacks != NULL)
 	{
 		ciCallbackChannelMessageParams params;
 		params.channel = (char *)channel;
@@ -743,28 +747,28 @@ void chatSendChannelMessage(CHAT chat,
 }
 
 void chatSetChannelTopic(CHAT chat,
-						 const char * channel,
-						 const char * topic)
+                         const char* channel,
+                         const char* topic)
 {
 	CONNECTION;
 	CONNECTED;
 
 	ASSERT_CHANNEL();
 
-	if(topic == NULL)
+	if (topic == NULL)
 		topic = "";
 
 	ciSocketSendf(&connection->chatSocket, "TOPIC %s :%s", channel, topic);
 }
 
 void chatGetChannelTopic(CHAT chat,
-						 const char * channel,
-						 chatGetChannelTopicCallback callback,
-						 void * param,
-						 CHATBool blocking)
+                         const char* channel,
+                         chatGetChannelTopicCallback callback,
+                         void* param,
+                         CHATBool blocking)
 {
 	int ID;
-	const char * topic;
+	const char* topic;
 	CONNECTION;
 	CONNECTED;
 
@@ -774,7 +778,7 @@ void chatGetChannelTopic(CHAT chat,
 	// Check if we already have the topic.
 	//////////////////////////////////////
 	topic = ciGetChannelTopic(chat, channel);
-	if(topic)
+	if (topic)
 	{
 		ciCallbackGetChannelTopicParams params;
 
@@ -797,8 +801,8 @@ void chatGetChannelTopic(CHAT chat,
 
 
 void chatSetChannelMode(CHAT chat,
-						const char * channel,
-						CHATChannelMode * mode)
+                        const char* channel,
+                        CHATChannelMode* mode)
 {
 	char buffer[64];
 
@@ -811,48 +815,48 @@ void chatSetChannelMode(CHAT chat,
 	// Build the mode string.
 	/////////////////////////
 	strcpy(buffer, "XiXpXsXmXnXtXl");
-	if(mode->InviteOnly)
+	if (mode->InviteOnly)
 		buffer[0] = '+';
 	else
 		buffer[0] = '-';
-	if(mode->Private)
+	if (mode->Private)
 		buffer[2] = '+';
 	else
 		buffer[2] = '-';
-	if(mode->Secret)
+	if (mode->Secret)
 		buffer[4] = '+';
 	else
 		buffer[4] = '-';
-	if(mode->Moderated)
+	if (mode->Moderated)
 		buffer[6] = '+';
 	else
 		buffer[6] = '-';
-	if(mode->NoExternalMessages)
+	if (mode->NoExternalMessages)
 		buffer[8] = '+';
 	else
 		buffer[8] = '-';
-	if(mode->OnlyOpsChangeTopic)
+	if (mode->OnlyOpsChangeTopic)
 		buffer[10] = '+';
 	else
 		buffer[10] = '-';
-	if(mode->Limit > 0)
+	if (mode->Limit > 0)
 		buffer[12] = '+';
 	else
 		buffer[12] = '-';
 
 	// Add limit if needed.
 	///////////////////////
-	if(mode->Limit > 0)
+	if (mode->Limit > 0)
 		sprintf(&buffer[strlen(buffer)], " %d", mode->Limit);
 
 	ciSocketSendf(&connection->chatSocket, "MODE %s %s", channel, buffer);
 }
 
 void chatGetChannelMode(CHAT chat,
-						const char * channel,
-						chatGetChannelModeCallback callback,
-						void * param,
-						CHATBool blocking)
+                        const char* channel,
+                        chatGetChannelModeCallback callback,
+                        void* param,
+                        CHATBool blocking)
 {
 	int ID;
 	CONNECTION;
@@ -863,13 +867,13 @@ void chatGetChannelMode(CHAT chat,
 
 	// Are we in this channel?
 	//////////////////////////
-	if(ciInChannel(chat, channel))
+	if (ciInChannel(chat, channel))
 	{
 		CHATChannelMode mode;
 
 		// Get the mode locally.
 		////////////////////////
-		if(ciGetChannelMode(chat, channel, &mode))
+		if (ciGetChannelMode(chat, channel, &mode))
 		{
 			ciCallbackGetChannelModeParams params;
 
@@ -898,9 +902,9 @@ void chatGetChannelMode(CHAT chat,
 }
 
 void chatSetChannelPassword(CHAT chat,
-							const char * channel,
-							CHATBool enable,
-							const char * password)
+                            const char* channel,
+                            CHATBool enable,
+                            const char* password)
 {
 	CONNECTION;
 	CONNECTED;
@@ -908,20 +912,20 @@ void chatSetChannelPassword(CHAT chat,
 	ASSERT_CHANNEL();
 	ASSERT_PASSWORD();
 
-	if(enable)
+	if (enable)
 		ciSocketSendf(&connection->chatSocket, "MODE %s +k %s", channel, password);
 	else
 		ciSocketSendf(&connection->chatSocket, "MODE %s -k %s", channel, password);
 }
 
 void chatGetChannelPassword(CHAT chat,
-							const char * channel,
-							chatGetChannelPasswordCallback callback,
-							void * param,
-							CHATBool blocking)
+                            const char* channel,
+                            chatGetChannelPasswordCallback callback,
+                            void* param,
+                            CHATBool blocking)
 {
 	ciCallbackGetChannelPasswordParams params;
-	const char * password;
+	const char* password;
 	int ID;
 	CONNECTION;
 	CONNECTED;
@@ -931,7 +935,7 @@ void chatGetChannelPassword(CHAT chat,
 
 	// Check that we're in the channel.
 	///////////////////////////////////
-	if(!ciInChannel(chat, channel))
+	if (!ciInChannel(chat, channel))
 		return; //ERRCON
 
 	// Get the password.
@@ -955,10 +959,10 @@ void chatGetChannelPassword(CHAT chat,
 }
 
 void chatEnumChannelBans(CHAT chat,
-						 const char * channel,
-						 chatEnumChannelBansCallback callback,
-						 void * param,
-						 CHATBool blocking)
+                         const char* channel,
+                         chatEnumChannelBansCallback callback,
+                         void* param,
+                         CHATBool blocking)
 {
 	int ID;
 	CONNECTION;
@@ -975,8 +979,8 @@ void chatEnumChannelBans(CHAT chat,
 }
 
 void chatAddChannelBan(CHAT chat,
-					   const char * channel,
-					   const char * ban)
+                       const char* channel,
+                       const char* ban)
 {
 	CONNECTION;
 	CONNECTED;
@@ -988,8 +992,8 @@ void chatAddChannelBan(CHAT chat,
 }
 
 void chatRemoveChannelBan(CHAT chat,
-						  const char * channel,
-						  const char * ban)
+                          const char* channel,
+                          const char* ban)
 {
 	CONNECTION;
 	CONNECTED;
@@ -1001,8 +1005,8 @@ void chatRemoveChannelBan(CHAT chat,
 }
 
 void chatSetChannelGroup(CHAT chat,
-						 const char * channel,
-						 const char * group)
+                         const char* channel,
+                         const char* group)
 {
 	CONNECTION;
 	CONNECTED;
@@ -1011,25 +1015,25 @@ void chatSetChannelGroup(CHAT chat,
 
 	// No way to clear the group.
 	/////////////////////////////
-	if(!group || !group[0])
+	if (!group || !group[0])
 		return;
 
 	ciSocketSendf(&connection->chatSocket, "SETGROUP %s %s", channel, group);
 }
 
 int chatGetChannelNumUsers(CHAT chat,
-						   const char * channel)
+                           const char* channel)
 {
 	CONNECTION;
-	if(!connection->connected)
+	if (!connection->connected)
 		return -1;
 
 	ASSERT_CHANNEL();
 
-	if(!channel || !channel[0])
+	if (!channel || !channel[0])
 		return -1;
 
-	if(!ciInChannel(chat, channel))
+	if (!ciInChannel(chat, channel))
 		return -1;
 
 	return ciGetChannelNumUsers(chat, channel);
@@ -1038,9 +1042,9 @@ int chatGetChannelNumUsers(CHAT chat,
 /**********
 ** USERS **
 **********/
-void ciEnumUsersCallback(CHAT chat, const char * channel, int numUsers, const char ** users, int * modes, void * param)
+void ciEnumUsersCallback(CHAT chat, const char* channel, int numUsers, const char** users, int* modes, void* param)
 {
-	ciEnumUsersData * data;
+	ciEnumUsersData* data;
 	CONNECTION;
 
 	// Check the args.
@@ -1075,10 +1079,10 @@ void ciEnumUsersCallback(CHAT chat, const char * channel, int numUsers, const ch
 }
 
 void chatEnumUsers(CHAT chat,
-				   const char * channel,
-				   chatEnumUsersCallback callback,
-				   void * param,
-				   CHATBool blocking)
+                   const char* channel,
+                   chatEnumUsersCallback callback,
+                   void* param,
+                   CHATBool blocking)
 {
 	int ID;
 	ciEnumUsersData data;
@@ -1088,16 +1092,16 @@ void chatEnumUsers(CHAT chat,
 	//ASSERT_CHANNEL();
 	assert(callback != NULL);
 
-	if(channel == NULL)
+	if (channel == NULL)
 		channel = "";
 
 	// Is there a channel specified?
 	////////////////////////////////
-	if(channel[0] != '\0')
+	if (channel[0] != '\0')
 	{
 		// Check if we have this one locally.
 		/////////////////////////////////////
-		if(ciInChannel(chat, channel))
+		if (ciInChannel(chat, channel))
 		{
 			// Get the users in the channel.
 			////////////////////////////////
@@ -1113,11 +1117,11 @@ void chatEnumUsers(CHAT chat,
 
 	// Channel needs to be empty, not NULL, for the filter.
 	///////////////////////////////////////////////////////
-	if(!channel[0])
+	if (!channel[0])
 		channel = NULL;
 
 	ID = ciAddNAMESFilter(chat, channel, callback, param);
-	
+
 	CI_DO_BLOCKING;
 }
 
@@ -1125,16 +1129,16 @@ void chatEnumUsers(CHAT chat,
 // Enumerates the channels that we are joined to
 //////////////////////////////////////////////////////
 void chatEnumJoinedChannels(CHAT chat,
-					  chatEnumJoinedChannelsCallback callback,
-					  void * param)
+                            chatEnumJoinedChannelsCallback callback,
+                            void* param)
 {
 	ciEnumJoinedChannels(chat, callback, param);
 }
 
 void chatSendUserMessage(CHAT chat,
-						 const char * user,
-						 const char * message,
-						 int type)
+                         const char* user,
+                         const char* message,
+                         int type)
 {
 	CONNECTION;
 	CONNECTED;
@@ -1143,25 +1147,25 @@ void chatSendUserMessage(CHAT chat,
 	ASSERT_TYPE(type);
 
 	if (!message || message[0] == 0)
-		return;	
-	
-	if(type == CHAT_MESSAGE)
+		return;
+
+	if (type == CHAT_MESSAGE)
 		ciSocketSendf(&connection->chatSocket, "PRIVMSG %s :%s", user, message);
-	else if(type == CHAT_ACTION)
+	else if (type == CHAT_ACTION)
 		ciSocketSendf(&connection->chatSocket, "PRIVMSG %s :\001ACTION %s\001", user, message);
-	else if(type == CHAT_NOTICE)
+	else if (type == CHAT_NOTICE)
 		ciSocketSendf(&connection->chatSocket, "NOTICE %s :%s", user, message);
-	else if(type == CHAT_UTM)
+	else if (type == CHAT_UTM)
 		ciSocketSendf(&connection->chatSocket, "UTM %s :%s", user, message);
-	else if(type == CHAT_ATM)
+	else if (type == CHAT_ATM)
 		ciSocketSendf(&connection->chatSocket, "ATM %s :%s", user, message);
 }
 
 void chatGetUserInfo(CHAT chat,
-					 const char * user,
-					 chatGetUserInfoCallback callback,
-					 void * param,
-					 CHATBool blocking)
+                     const char* user,
+                     chatGetUserInfoCallback callback,
+                     void* param,
+                     CHATBool blocking)
 {
 	int ID;
 	CONNECTION;
@@ -1178,14 +1182,14 @@ void chatGetUserInfo(CHAT chat,
 }
 
 void chatGetBasicUserInfo(CHAT chat,
-						  const char * nick,
-						  chatGetBasicUserInfoCallback callback,
-						  void * param,
-						  CHATBool blocking)
+                          const char* nick,
+                          chatGetBasicUserInfoCallback callback,
+                          void* param,
+                          CHATBool blocking)
 {
 	int ID;
-	const char * user;
-	const char * address;
+	const char* user;
+	const char* address;
 	CONNECTION;
 	CONNECTED;
 
@@ -1194,7 +1198,7 @@ void chatGetBasicUserInfo(CHAT chat,
 
 	// Check if we already have it.
 	///////////////////////////////
-	if(ciGetUserBasicInfo(chat, nick, &user, &address))
+	if (ciGetUserBasicInfo(chat, nick, &user, &address))
 	{
 		ciCallbackGetBasicUserInfoParams params;
 
@@ -1218,12 +1222,12 @@ void chatGetBasicUserInfo(CHAT chat,
 }
 
 CHATBool chatGetBasicUserInfoNoWait(CHAT chat,
-									const char * nick,
-									const char ** user,
-									const char ** address)
+                                    const char* nick,
+                                    const char** user,
+                                    const char** address)
 {
 	CONNECTION;
-	if(!connection->connected)
+	if (!connection->connected)
 		return CHATFalse;
 
 	ASSERT_USER(nick);
@@ -1232,10 +1236,10 @@ CHATBool chatGetBasicUserInfoNoWait(CHAT chat,
 }
 
 void chatGetChannelBasicUserInfo(CHAT chat,
-								 const char * channel,
-								 chatGetChannelBasicUserInfoCallback callback,
-								 void * param,
-								 CHATBool blocking)
+                                 const char* channel,
+                                 chatGetChannelBasicUserInfoCallback callback,
+                                 void* param,
+                                 CHATBool blocking)
 {
 	int ID;
 	CONNECTION;
@@ -1252,8 +1256,8 @@ void chatGetChannelBasicUserInfo(CHAT chat,
 }
 
 void chatInviteUser(CHAT chat,
-					const char * channel,
-					const char * user)
+                    const char* channel,
+                    const char* user)
 {
 	CONNECTION;
 	CONNECTED;
@@ -1265,9 +1269,9 @@ void chatInviteUser(CHAT chat,
 }
 
 void chatKickUser(CHAT chat,
-				  const char * channel,
-				  const char * user,
-				  const char * reason)
+                  const char* channel,
+                  const char* user,
+                  const char* reason)
 {
 	CONNECTION;
 	CONNECTED;
@@ -1275,15 +1279,15 @@ void chatKickUser(CHAT chat,
 	ASSERT_CHANNEL();
 	ASSERT_USER(user);
 
-	if(reason == NULL)
+	if (reason == NULL)
 		reason = "";
 
 	ciSocketSendf(&connection->chatSocket, "KICK %s %s :%s", channel, user, reason);
 }
 
 void chatBanUser(CHAT chat,
-				 const char * channel,
-				 const char * user)
+                 const char* channel,
+                 const char* user)
 {
 	CONNECTION;
 	CONNECTED;
@@ -1297,9 +1301,9 @@ void chatBanUser(CHAT chat,
 }
 
 void chatSetUserMode(CHAT chat,
-					 const char * channel,
-					 const char * user,
-					 int mode)
+                     const char* channel,
+                     const char* user,
+                     int mode)
 {
 	int sign;
 
@@ -1310,19 +1314,19 @@ void chatSetUserMode(CHAT chat,
 	ASSERT_USER(user);
 	ASSERT_TYPE(mode);
 
-	sign = (mode & CHAT_OP)?'+':'-';
+	sign = (mode & CHAT_OP) ? '+' : '-';
 	ciSocketSendf(&connection->chatSocket, "MODE %s %co %s", channel, sign, user);
 
-	sign = (mode & CHAT_VOICE)?'+':'-';
+	sign = (mode & CHAT_VOICE) ? '+' : '-';
 	ciSocketSendf(&connection->chatSocket, "MODE %s %cv %s", channel, sign, user);
 }
 
 void chatGetUserMode(CHAT chat,
-					 const char * channel,
-					 const char * user,
-					 chatGetUserModeCallback callback,
-					 void * param,
-					 CHATBool blocking)
+                     const char* channel,
+                     const char* user,
+                     chatGetUserModeCallback callback,
+                     void* param,
+                     CHATBool blocking)
 {
 	int ID;
 	int mode;
@@ -1336,7 +1340,7 @@ void chatGetUserMode(CHAT chat,
 	// Get the mode.
 	////////////////
 	mode = ciGetUserMode(chat, channel, user);
-	if(mode != -1)
+	if (mode != -1)
 	{
 		ciCallbackGetUserModeParams params;
 		params.success = CHATTrue;
@@ -1353,17 +1357,17 @@ void chatGetUserMode(CHAT chat,
 	ciSocketSendf(&connection->chatSocket, "WHO %s", user);
 
 	ID = ciAddUMODEFilter(chat, user, channel, callback, param);
-	
+
 	CI_DO_BLOCKING;
 }
 
 CHATBool chatGetUserModeNoWait(CHAT chat,
-							   const char * channel,
-							   const char * user,
-							   int * mode)
+                               const char* channel,
+                               const char* user,
+                               int* mode)
 {
 	CONNECTION;
-	if(!connection->connected)
+	if (!connection->connected)
 		return CHATFalse;
 
 	ASSERT_CHANNEL();
@@ -1381,28 +1385,28 @@ CHATBool chatGetUserModeNoWait(CHAT chat,
 ** KEYS **
 *********/
 void chatSetGlobalKeys(CHAT chat,
-					   int num,
-					   const char ** keys,
-					   const char ** values)
+                       int num,
+                       const char** keys,
+                       const char** values)
 {
 	char buffer[512];
-	const char * key;
-	const char * value;
+	const char* key;
+	const char* value;
 	int i;
 	CONNECTION;
 	CONNECTED;
 
-	if(!keys || !values)
+	if (!keys || !values)
 		return;
 
 	strcpy(buffer, "SETKEY :");
-	for(i = 0 ; i < num ; i++)
+	for (i = 0; i < num; i++)
 	{
 		key = keys[i];
-		if(!key || !key[0])
+		if (!key || !key[0])
 			return;
 		value = values[i];
-		if(!value)
+		if (!value)
 			value = "";
 		sprintf(buffer + strlen(buffer), "\\%s\\%s", key, value);
 	}
@@ -1410,7 +1414,7 @@ void chatSetGlobalKeys(CHAT chat,
 	ciSocketSend(&connection->chatSocket, buffer);
 }
 
-static char * ciRandomCookie()
+static char* ciRandomCookie()
 {
 	static char cookie[4];
 	static int nextCookie = 0;
@@ -1422,10 +1426,10 @@ static char * ciRandomCookie()
 }
 
 static void ciSendGetKey(CHAT chat,
-						 const char * target,
-						 const char * cookie,
-						 int num,
-						 const char ** keys)
+                         const char* target,
+                         const char* cookie,
+                         int num,
+                         const char** keys)
 {
 	char buffer[512];
 	int len;
@@ -1447,25 +1451,25 @@ static void ciSendGetKey(CHAT chat,
 
 	// Add the keys.
 	////////////////
-	for(i = 0 ; i < num ; i++)
+	for (i = 0; i < num; i++)
 	{
 		// Check for a blank.
 		/////////////////////
-		if(!keys[i] || !keys[i][0])
+		if (!keys[i] || !keys[i][0])
 			continue;
 
 		// Check lengths.
 		/////////////////
 		keyLen = strlen(keys[i]);
-		if((len + keyLen + 1) >= sizeof(buffer))
+		if ((len + keyLen + 1) >= sizeof(buffer))
 			return;
 
 		// Add the key.
 		///////////////
 		buffer[len++] = '\\';
 		memcpy(buffer + len, keys[i], keyLen);
-		for(j = len ; j < (len + keyLen) ; j++)
-			if(buffer[j] == '\\')
+		for (j = len; j < (len + keyLen); j++)
+			if (buffer[j] == '\\')
 				buffer[j] = '/';
 		len += keyLen;
 		buffer[len] = '\0';
@@ -1477,14 +1481,14 @@ static void ciSendGetKey(CHAT chat,
 }
 
 void chatGetGlobalKeys(CHAT chat,
-					   const char * target,
-					   int num,
-					   const char ** keys,
-					   chatGetGlobalKeysCallback callback,
-					   void * param,
-					   CHATBool blocking)
+                       const char* target,
+                       int num,
+                       const char** keys,
+                       chatGetGlobalKeysCallback callback,
+                       void* param,
+                       CHATBool blocking)
 {
-	char * cookie;
+	char* cookie;
 	int ID;
 	CONNECTION;
 	CONNECTED;
@@ -1492,7 +1496,7 @@ void chatGetGlobalKeys(CHAT chat,
 	assert(num >= 0);
 	assert(keys);
 
-	if(!target || !target[0])
+	if (!target || !target[0])
 		target = connection->nick;
 
 	// Get a cookie.
@@ -1504,31 +1508,31 @@ void chatGetGlobalKeys(CHAT chat,
 	ciSendGetKey(chat, target, cookie, num, keys);
 
 	ID = ciAddGETKEYFilter(chat, cookie, num, keys, target[0] == '#', callback, param);
-	
+
 	CI_DO_BLOCKING;
 }
 
 void chatSetChannelKeys(CHAT chat,
-						const char * channel,
-						const char * user,
-						int num,
-						const char ** keys,
-						const char ** values)
+                        const char* channel,
+                        const char* user,
+                        int num,
+                        const char** keys,
+                        const char** values)
 {
 	char buffer[512];
-	const char * value;
+	const char* value;
 	int i;
 	CONNECTION;
 	CONNECTED;
 
-	if(!user || !user[0])
+	if (!user || !user[0])
 		sprintf(buffer, "SETCHANKEY %s :", channel);
 	else
 		sprintf(buffer, "SETCKEY %s %s :", channel, user);
-	for(i = 0 ; i < num ; i++)
+	for (i = 0; i < num; i++)
 	{
 		value = values[i];
-		if(!value)
+		if (!value)
 			value = "";
 		sprintf(buffer + strlen(buffer), "\\%s\\%s", keys[i], value);
 	}
@@ -1537,11 +1541,11 @@ void chatSetChannelKeys(CHAT chat,
 }
 
 static CHATBool ciSendGetChannelKey(CHAT chat,
-									const char * channel,
-									const char * nick,
-									const char * cookie,
-									int num,
-									const char ** keys)
+                                    const char* channel,
+                                    const char* nick,
+                                    const char* cookie,
+                                    int num,
+                                    const char** keys)
 {
 	char buffer[512];
 	int len;
@@ -1558,7 +1562,7 @@ static CHATBool ciSendGetChannelKey(CHAT chat,
 
 	// Start off the buffer.
 	////////////////////////
-	if(!nick || !nick[0])
+	if (!nick || !nick[0])
 		sprintf(buffer, "GETCHANKEY %s %s 0 :", channel, cookie);
 	else
 		sprintf(buffer, "GETCKEY %s %s %s 0 :", channel, nick, cookie);
@@ -1566,16 +1570,16 @@ static CHATBool ciSendGetChannelKey(CHAT chat,
 
 	// Add the keys.
 	////////////////
-	for(i = 0 ; i < num ; i++)
+	for (i = 0; i < num; i++)
 	{
 		// Check for a blank.
 		/////////////////////
-		if(!keys[i] || !keys[i][0])
+		if (!keys[i] || !keys[i][0])
 			continue;
 
 		// Check for b_*.
 		/////////////////
-		if(strcmp(keys[i], "b_*") == 0)
+		if (strcmp(keys[i], "b_*") == 0)
 		{
 			getBrocastKeys = CHATTrue;
 			continue;
@@ -1584,15 +1588,15 @@ static CHATBool ciSendGetChannelKey(CHAT chat,
 		// Check lengths.
 		/////////////////
 		keyLen = strlen(keys[i]);
-		if((len + keyLen + 1) >= sizeof(buffer))
+		if ((len + keyLen + 1) >= sizeof(buffer))
 			continue;
 
 		// Add the key.
 		///////////////
 		buffer[len++] = '\\';
 		memcpy(buffer + len, keys[i], keyLen);
-		for(j = len ; j < (len + keyLen) ; j++)
-			if(buffer[j] == '\\')
+		for (j = len; j < (len + keyLen); j++)
+			if (buffer[j] == '\\')
 				buffer[j] = '/';
 		len += keyLen;
 		buffer[len] = '\0';
@@ -1600,9 +1604,9 @@ static CHATBool ciSendGetChannelKey(CHAT chat,
 
 	// Check for broadcast keys.
 	////////////////////////////
-	if(getBrocastKeys)
+	if (getBrocastKeys)
 	{
-		if((len + 4) < sizeof(buffer))
+		if ((len + 4) < sizeof(buffer))
 		{
 			strcpy(buffer + len, "\\b_*");
 			len += 4;
@@ -1617,15 +1621,15 @@ static CHATBool ciSendGetChannelKey(CHAT chat,
 }
 
 void chatGetChannelKeys(CHAT chat,
-						const char * channel,
-						const char * user,
-						int num,
-						const char ** keys,
-						chatGetChannelKeysCallback callback,
-						void * param,
-						CHATBool blocking)
+                        const char* channel,
+                        const char* user,
+                        int num,
+                        const char** keys,
+                        chatGetChannelKeysCallback callback,
+                        void* param,
+                        CHATBool blocking)
 {
-	char * cookie;
+	char* cookie;
 	int ID;
 	CHATBool getBroadcastKeys;
 	CONNECTION;
@@ -1642,10 +1646,10 @@ void chatGetChannelKeys(CHAT chat,
 	////////////////////
 	getBroadcastKeys = ciSendGetChannelKey(chat, channel, user, cookie, num, keys);
 
-	if(!user || !user[0])
+	if (!user || !user[0])
 		ID = ciAddGETCHANKEYFilter(chat, cookie, num, keys, getBroadcastKeys, callback, param);
 	else
 		ID = ciAddGETCKEYFilter(chat, cookie, num, keys, strcmp(user, "*") == 0, getBroadcastKeys, callback, param);
-	
+
 	CI_DO_BLOCKING;
 }

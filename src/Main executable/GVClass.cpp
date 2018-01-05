@@ -17,10 +17,13 @@
 #include "DrawForm.h"
 void PreDrawGameProcess();
 void PostDrawGameProcess();
-SimpleDialog* DialogsSystem::addViewPort(int x, int y, int Lx, int Ly) {
+
+SimpleDialog* DialogsSystem::addViewPort(int x, int y, int Lx, int Ly)
+{
 	int i;
 	for (i = 0; i < 512 && DSS[i] != NULL; i++);
-	if (i < 512) {
+	if (i < 512)
+	{
 		SimpleDialog* SD = new SimpleDialog;
 		DSS[i] = SD;
 		SD->x = x + BaseX;
@@ -35,7 +38,9 @@ SimpleDialog* DialogsSystem::addViewPort(int x, int y, int Lx, int Ly) {
 };
 extern int RealLx;
 extern int RealLy;
-bool MakeClipping(SimpleDialog* SD) {
+
+bool MakeClipping(SimpleDialog* SD)
+{
 	if (!SD->Enabled)return false;
 	WindX = 0;
 	WindY = 0;
@@ -46,10 +51,13 @@ bool MakeClipping(SimpleDialog* SD) {
 	IntersectWindows(SD->x, SD->y, SD->x1, SD->y1);
 	return false;
 };
-SimpleDialog* DialogsSystem::addClipper(int x0, int y0, int x1, int y1) {
+
+SimpleDialog* DialogsSystem::addClipper(int x0, int y0, int x1, int y1)
+{
 	int i;
 	for (i = 0; i < 512 && DSS[i] != NULL; i++);
-	if (i < 512) {
+	if (i < 512)
+	{
 		SimpleDialog* SD = new SimpleDialog;
 		DSS[i] = SD;
 		SD->x = x0;
@@ -63,5 +71,4 @@ SimpleDialog* DialogsSystem::addClipper(int x0, int y0, int x1, int y1) {
 		return SD;
 	};
 	return NULL;
-
 };

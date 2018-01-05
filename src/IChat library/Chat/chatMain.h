@@ -31,9 +31,9 @@ devsupport@gamespy.com
 	#include "::darray.h"
 	#include "::nonport.h"
 #else
-	#include "../hashtable.h"
-	#include "../darray.h"
-	#include "../nonport.h"
+#include "../hashtable.h"
+#include "../darray.h"
+#include "../nonport.h"
 #endif
 
 /************
@@ -66,7 +66,7 @@ typedef struct ciConnection
 	chatNickErrorCallback nickErrorCallback;
 	chatFillInUserCallback fillInUserCallback;
 	chatConnectCallback connectCallback;
-	void * connectParam;
+	void* connectParam;
 
 	ciSocket chatSocket;
 
@@ -83,8 +83,8 @@ typedef struct ciConnection
 	HashTable channelTable;
 	DArray enteringChannelList;
 
-	ciServerMessageFilter * filterList;
-	ciServerMessageFilter * lastFilter;
+	ciServerMessageFilter* filterList;
+	ciServerMessageFilter* lastFilter;
 
 	int nextID;
 
@@ -94,6 +94,6 @@ typedef struct ciConnection
 } ciConnection;
 
 void ciSendNickAndUser(CHAT chat);
-void ciHandleDisconnect(CHAT chat, const char * reason);
+void ciHandleDisconnect(CHAT chat, const char* reason);
 
 #endif

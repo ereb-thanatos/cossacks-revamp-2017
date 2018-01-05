@@ -6,8 +6,7 @@
 
 BOOL CCommCore::ReSendFrame(u_short uFrameNum)
 {
-
-	sockaddr_in			sinPeer;
+	sockaddr_in sinPeer;
 
 	memset(&sinPeer, 0x00, sizeof(sockaddr_in));
 
@@ -38,11 +37,11 @@ BOOL CCommCore::ReSendFrame(u_short uFrameNum)
 #endif //CC_DEBUG
 
 	if (sendto(m_DataSocket,
-		(char *)m_FrameList[uFrameNum].m_lpFrame,
-		m_FrameList[uFrameNum].m_uSize,
-		0x00,
-		(sockaddr *)&sinPeer,
-		sizeof(sockaddr_in)) == SOCKET_ERROR)
+	           (char *)m_FrameList[uFrameNum].m_lpFrame,
+	           m_FrameList[uFrameNum].m_uSize,
+	           0x00,
+	           (sockaddr *)&sinPeer,
+	           sizeof(sockaddr_in)) == SOCKET_ERROR)
 		return FALSE;
 
 	return TRUE;
@@ -50,17 +49,17 @@ BOOL CCommCore::ReSendFrame(u_short uFrameNum)
 
 // ---------------------------------------------------------------------------------------------
 
-BOOL CCommCore::SendRawPacket(PEER_ADDR			PeerAddr,
-	PEER_PORT			PeerPort,
-	u_short				uType,
-	LPBYTE				lpbBuffer,
-	u_short				uSize,
-	BOOL				bSecureMessage,
-	BOOL				bWaitForCompletion)
+BOOL CCommCore::SendRawPacket(PEER_ADDR PeerAddr,
+                              PEER_PORT PeerPort,
+                              u_short uType,
+                              LPBYTE lpbBuffer,
+                              u_short uSize,
+                              BOOL bSecureMessage,
+                              BOOL bWaitForCompletion)
 {
-	sockaddr_in			sinPeer;
-	LPCC_PK_RAW_FRAME	lpRawFrame;
-	u_short				uRawFrameSize;
+	sockaddr_in sinPeer;
+	LPCC_PK_RAW_FRAME lpRawFrame;
+	u_short uRawFrameSize;
 
 	uRawFrameSize = sizeof(CC_PK_RAW_FRAME) + uSize;
 	lpRawFrame = (LPCC_PK_RAW_FRAME)malloc(uRawFrameSize);
@@ -105,25 +104,26 @@ BOOL CCommCore::SendRawPacket(PEER_ADDR			PeerAddr,
 #endif //CC_DEBUG
 
 	if (sendto(m_DataSocket,
-		(char *)lpRawFrame,
-		uRawFrameSize,
-		0x00,
-		(sockaddr *)&sinPeer,
-		sizeof(sockaddr_in)) == SOCKET_ERROR)
+	           (char *)lpRawFrame,
+	           uRawFrameSize,
+	           0x00,
+	           (sockaddr *)&sinPeer,
+	           sizeof(sockaddr_in)) == SOCKET_ERROR)
 	{
 		free(lpRawFrame);
 		return FALSE;
 	};
 
-	if (!bSecureMessage) {
+	if (!bSecureMessage)
+	{
 		free(lpRawFrame);
 		return TRUE;
 	};
 
 	BOOL bRes = QueueAddPacket(PeerAddr,
-		PeerPort,
-		lpRawFrame,
-		uRawFrameSize);
+	                           PeerPort,
+	                           lpRawFrame,
+	                           uRawFrameSize);
 
 	if (!bRes)
 		return FALSE;
@@ -135,7 +135,8 @@ BOOL CCommCore::SendRawPacket(PEER_ADDR			PeerAddr,
 
 	m_bBlockingCall = TRUE;
 
-	while (QueuePacketExists(m_lStamp)) {
+	while (QueuePacketExists(m_lStamp))
+	{
 		ReceiveData(NULL);
 		QueueProcess();
 		if (lpIdleProc)
@@ -144,5 +145,5 @@ BOOL CCommCore::SendRawPacket(PEER_ADDR			PeerAddr,
 
 	m_bBlockingCall = FALSE;
 
-	return ((GetTickCount() - dwSendTime) < (RETRY_COUNT*RETRY_TIME));
+	return ((GetTickCount() - dwSendTime) < (RETRY_COUNT * RETRY_TIME));
 }

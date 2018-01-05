@@ -1,19 +1,23 @@
 #ifndef BMPTOOL
 #include "bmptool.h"
 #endif
-struct TempWindow{
-	int WindX; 
+struct TempWindow
+{
+	int WindX;
 	int WindY;
 	int WindLx;
 	int WindLy;
 	int WindX1;
-	int WindY1; 
+	int WindY1;
 	int ScrWidth;
 };
+
 void PushWindow(TempWindow* W);
 void PopWindow(TempWindow* W);
-void IntersectWindows(int x0,int y0,int x1,int y1);
-struct OneScale{
+void IntersectWindows(int x0, int y0, int x1, int y1);
+
+struct OneScale
+{
 	byte* Data;
 	byte* ColoredData;
 	char FONT[16];
@@ -24,20 +28,24 @@ struct OneScale{
 	bool Loaded;
 	bool Colored;
 };
-struct OneMapPicture{
-	int  x,y;
-	int  dx,dy;
-	int  GPID   [16];
-	int  SCALE  [16];
-	int  NScales;
-	int  Sprite;
+
+struct OneMapPicture
+{
+	int x, y;
+	int dx, dy;
+	int GPID [16];
+	int SCALE [16];
+	int NScales;
+	int Sprite;
 	bool Drawn;
-	int  LastX;
-	int  LastY;
-	int  LastGPID;
+	int LastX;
+	int LastY;
+	int LastGPID;
 	char URL[256];
 };
-class OneMap{
+
+class OneMap
+{
 public:
 	char Title[32];
 	OneScale* SCALE;
@@ -55,7 +63,7 @@ public:
 	int CountryLy;
 	DWORD LastUpdateDate;
 	DWORD UpdateData;
-	int WX,WY,WLX,WLY;
+	int WX, WY, WLX, WLY;
 
 	int VCenterX;
 	int VCenterY;
@@ -70,24 +78,31 @@ public:
 	int MaxMapPix;
 	OneMapPicture* MapPix;
 
-	void SetCenterCoor(int x,int y);
-	void RelativeMove(int dx,int dy);
+	void SetCenterCoor(int x, int y);
+	void RelativeMove(int dx, int dy);
 	void ChangeScale(int Direction);
 
 	void NormalizeCoordinates();
 
-	void SetTitle(char* title){strcpy(Title,title);};
+	void SetTitle(char* title) { strcpy(Title, title); };
 	void LoadMapData(sicExplorer* SXP);
 	void UpdateMapData(byte* Data);
-	void SetOutput(int x,int y,int lx,int ly){WX=x;WY=y;WLX=lx;WLY=ly;};
+
+	void SetOutput(int x, int y, int lx, int ly)
+	{
+		WX = x;
+		WY = y;
+		WLX = lx;
+		WLY = ly;
+	};
 	void ShowMapPart();
 	void ApplyColorsToScaleLayer(int Idx);
 	void ClearAll();
-	void AddMapPicture(char* Name,int x,int y,int dx,int dy,int Sprite);
+	void AddMapPicture(char* Name, int x, int y, int dx, int dy, int Sprite);
 	void ClearMapPictures();
 	OneMap();
 	~OneMap();
 };
+
 extern OneMap BIGMAP;
 extern bool HaveExComm;
-

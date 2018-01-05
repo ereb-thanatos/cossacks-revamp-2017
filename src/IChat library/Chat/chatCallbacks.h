@@ -66,87 +66,87 @@ enum
 **********/
 typedef struct ciCallbackRawParams
 {
-	char * raw;
+	char* raw;
 } ciCallbackRawParams;
 
 typedef struct ciCallbackDisconnectedParams
 {
-	char * reason;
+	char* reason;
 } ciCallbackDisconnectedParams;
 
 typedef struct ciCallbackPrivateMessageParams
 {
-	char * user;
-	char * message;
+	char* user;
+	char* message;
 	int type;
 } ciCallbackPrivateMessageParams;
 
 typedef struct ciCallbackInvitedParams
 {
-	char * channel;
-	char * user;
+	char* channel;
+	char* user;
 } ciCallbackInvitedParams;
 
 typedef struct ciCallbackChannelMessageParams
 {
-	char * channel;
-	char * user;
-	char * message;
+	char* channel;
+	char* user;
+	char* message;
 	int type;
 } ciCallbackChannelMessageParams;
 
 typedef struct ciCallbackKickedParams
 {
-	char * channel;
-	char * user;
-	char * reason;
+	char* channel;
+	char* user;
+	char* reason;
 } ciCallbackKickedParams;
 
 typedef struct ciCallbackUserJoinedParams
 {
-	char * channel;
-	char * user;
+	char* channel;
+	char* user;
 	int mode;
 } ciCallbackUserJoinedParams;
 
 typedef struct ciCallbackUserPartedParams
 {
-	char * channel;
-	char * user;
+	char* channel;
+	char* user;
 	int why;
-	char * reason;
-	char * kicker;
+	char* reason;
+	char* kicker;
 } ciCallbackUserPartedParams;
 
 typedef struct ciCallbackUserChangedNickParams
 {
-	char * channel;
-	char * oldNick;
-	char * newNick;
+	char* channel;
+	char* oldNick;
+	char* newNick;
 } ciCallbackUserChangedNickParams;
 
 typedef struct ciCallbackTopicChangedParams
 {
-	char * channel;
-	char * topic;
+	char* channel;
+	char* topic;
 } ciCallbackTopicChangedParams;
 
 typedef struct ciCallbackChannelModeChangedParams
 {
-	char * channel;
-	CHATChannelMode * mode;
+	char* channel;
+	CHATChannelMode* mode;
 } ciCallbackChannelModeChangedParams;
 
 typedef struct ciCallbackUserModeChangedParams
 {
-	char * channel;
-	char * user;
+	char* channel;
+	char* user;
 	int mode;
 } ciCallbackUserModeChangedParams;
 
 typedef struct ciCallbackUserListUpdatedParams
 {
-	char * channel;
+	char* channel;
 } ciCallbackUserListUpdatedParams;
 
 typedef struct ciCallbackConnectParams
@@ -158,158 +158,160 @@ typedef struct ciCallbackEnumChannelsEachParams
 {
 	CHATBool success;
 	int index;
-	char * channel;
-	char * topic;
+	char* channel;
+	char* topic;
 	int numUsers;
-	void * param;
+	void* param;
 } ciCallbackEnumChannelsEachParams;
 
 typedef struct ciCallbackEnumChannelsAllParams
 {
 	CHATBool success;
 	int numChannels;
-	char ** channels;
-	char ** topics;
-	int * numUsers;
+	char** channels;
+	char** topics;
+	int* numUsers;
 } ciCallbackEnumChannelsAllParams;
 
 typedef struct ciCallbackEnterChannelParams
 {
 	CHATBool success;
 	CHATEnterResult result;
-	char * channel;
+	char* channel;
 } ciCallbackEnterChannelParams;
 
 typedef struct ciCallbackGetChannelTopicParams
 {
 	CHATBool success;
-	char * channel;
-	char * topic;
+	char* channel;
+	char* topic;
 } ciCallbackGetChannelTopicParams;
 
 typedef struct ciCallbackGetChannelModeParams
 {
 	CHATBool success;
-	char * channel;
-	CHATChannelMode * mode;
+	char* channel;
+	CHATChannelMode* mode;
 } ciCallbackGetChannelModeParams;
 
 typedef struct ciCallbackGetChannelPasswordParams
 {
 	CHATBool success;
-	char * channel;
+	char* channel;
 	CHATBool enabled;
-	char * password;
+	char* password;
 } ciCallbackGetChannelPasswordParams;
 
 typedef struct ciCallbackEnumUsersParams
 {
 	CHATBool success;
-	char * channel;
+	char* channel;
 	int numUsers;
-	char ** users;
-	int * modes;
+	char** users;
+	int* modes;
 } ciCallbackEnumUsersParams;
 
 typedef struct ciCallbackGetUserInfoParams
 {
 	CHATBool success;
-	char * nick;
-	char * user;
-	char * name;
-	char * address;
+	char* nick;
+	char* user;
+	char* name;
+	char* address;
 	int numChannels;
-	char ** channels;
+	char** channels;
 } ciCallbackGetUserInfoParams;
 
 typedef struct ciCallbackGetBasicUserInfoParams
 {
 	CHATBool success;
-	char * nick;
-	char * user;
-	char * address;
+	char* nick;
+	char* user;
+	char* address;
 } ciCallbackGetBasicUserInfoParams;
 
 typedef struct ciCallbackGetChannelBasicUserInfoParams
 {
 	CHATBool success;
-	char * channel;
-	char * nick;
-	char * user;
-	char * address;
+	char* channel;
+	char* nick;
+	char* user;
+	char* address;
 } ciCallbackGetChannelBasicUserInfoParams;
 
 typedef struct ciCallbackGetUserModeParams
 {
 	CHATBool success;
-	char * channel;
-	char * user;
+	char* channel;
+	char* user;
 	int mode;
 } ciCallbackGetUserModeParams;
 
 typedef struct ciCallbackEnumChannelBansParams
 {
 	CHATBool success;
-	char * channel;
+	char* channel;
 	int numBans;
-	char ** bans;
+	char** bans;
 } ciCallbackEnumChannelBansParams;
 
 typedef struct ciCallbackNickErrorParams
 {
 	int type;
-	char * nick;
+	char* nick;
 } ciCallbackNickErrorParams;
 
 typedef struct ciCallbackChangeNickParams
 {
 	CHATBool success;
-	char * oldNick;
-	char * newNick;
+	char* oldNick;
+	char* newNick;
 } ciCallbackChangeNickParams;
 
 typedef struct ciCallbackNewUserListParams
 {
-	char * channel;
+	char* channel;
 	int numUsers;
-	char ** users;
-	int * modes;
+	char** users;
+	int* modes;
 } ciCallbackNewUserListParams;
 
 typedef struct ciCallbackBroadcastKeyChangedParams
 {
-	char * channel;
-	char * user;
-	char * key;
-	char * value;
+	char* channel;
+	char* user;
+	char* key;
+	char* value;
 } ciCallbackBroadcastKeyChangedParams;
 
 typedef struct ciCallbackGetGlobalKeysParams
 {
 	CHATBool success;
-	char * user;
+	char* user;
 	int num;
-	char ** keys;
-	char ** values;
+	char** keys;
+	char** values;
 } ciCallbackGetGlobalKeysParams;
 
 typedef struct ciCallbackGetChannelKeysParams
 {
 	CHATBool success;
-	char * channel;
-	char * user;
+	char* channel;
+	char* user;
 	int num;
-	char ** keys;
-	char ** values;
+	char** keys;
+	char** values;
 } ciCallbackGetChannelKeysParams;
 
 /**************
 ** FUNCTIONS **
 **************/
-CHATBool ciInitCallbacks(ciConnection * connection);
+CHATBool ciInitCallbacks(ciConnection* connection);
 void ciCleanupCallbacks(CHAT chat);
-#define ciAddCallback(chat, type, callback, callbackParams, param, ID, channel) ciAddCallback_(chat, type, callback, callbackParams, param, ID, channel, sizeof(*callbackParams))
-CHATBool ciAddCallback_(CHAT chat, int type, void * callback, void * callbackParams, void * param, int ID, const char * channel, size_t callbackParamsSize);
+#define ciAddCallback(chat, type, callback, callbackParams, param, ID, channel
+) ciAddCallback_(chat, type, callback, callbackParams, param, ID, channel, sizeof(*callbackParams))
+CHATBool ciAddCallback_(CHAT chat, int type, void* callback, void* callbackParams, void* param, int ID,
+                        const char* channel, size_t callbackParamsSize);
 void ciCallCallbacks(CHAT chat, int ID);
 CHATBool ciCheckCallbacksForID(CHAT chat, int ID);
 

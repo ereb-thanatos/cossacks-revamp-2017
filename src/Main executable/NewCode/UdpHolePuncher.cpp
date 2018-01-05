@@ -4,8 +4,8 @@
 extern CCommCore IPCORE;
 
 //Assigns host address and fills udp packet contents
-void UdpHolePuncher::Init( const char *server_addr, const unsigned short port,
-	const unsigned interval, const long player_id, const char *access_key)
+void UdpHolePuncher::Init(const char* server_addr, const unsigned short port,
+                          const unsigned interval, const long player_id, const char* access_key)
 {
 	ready_for_punching_ = false;
 
@@ -16,15 +16,16 @@ void UdpHolePuncher::Init( const char *server_addr, const unsigned short port,
 
 	interval_ = interval;
 
-	int res = InetPton( AF_INET, server_addr, &server_addr_.sin_addr );
+	int res = InetPton(AF_INET, server_addr, &server_addr_.sin_addr);
 	if (1 != res)
-	{//Invaild ip address string
+	{
+		//Invaild ip address string
 		return;
 	}
 	else
 	{
 		server_addr_.sin_family = AF_INET;
-		server_addr_.sin_port = htons( port );
+		server_addr_.sin_port = htons(port);
 	}
 
 	/*
@@ -36,15 +37,15 @@ void UdpHolePuncher::Init( const char *server_addr, const unsigned short port,
 	*/
 
 	packet_size_ = 0x19;
-	const char packet_tag[4] = { 'C','S','H','P' };
+	const char packet_tag[4] = {'C', 'S', 'H', 'P'};
 	const char packet_version = 0x01;
-	unsigned long player_id_nbo = htonl( player_id );
+	unsigned long player_id_nbo = htonl(player_id);
 
-	packet_ = std::vector<char>( packet_size_, 0 );
-	std::memcpy( &packet_[0x00], packet_tag, 0x04 );
-	std::memcpy( &packet_[0x04], &packet_version, 0x01 );
-	std::memcpy( &packet_[0x05], &player_id_nbo, 0x04 );
-	std::strcpy( &packet_[0x09], access_key );
+	packet_ = std::vector<char>(packet_size_, 0);
+	std::memcpy(&packet_[0x00], packet_tag, 0x04);
+	std::memcpy(&packet_[0x04], &packet_version, 0x01);
+	std::memcpy(&packet_[0x05], &player_id_nbo, 0x04);
+	std::strcpy(&packet_[0x09], access_key);
 
 	ready_for_punching_ = true;
 }
@@ -61,7 +62,7 @@ void UdpHolePuncher::KeepAlive()
 	unsigned long current_time = GetTickCount();
 	if (interval_ < current_time - last_send_time_)
 	{
-		IPCORE.SendUdpHolePunch( (sockaddr *) &server_addr_, packet_.data(), packet_size_ );
+		IPCORE.SendUdpHolePunch((sockaddr *)&server_addr_, packet_.data(), packet_size_);
 		last_send_time_ = current_time;
 	}
 }

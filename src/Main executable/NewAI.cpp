@@ -1,4 +1,3 @@
-
 #include "ddini.h"
 #include "ResFile.h"
 #include "FastDraw.h"
@@ -30,6 +29,7 @@
 #include "StrategyResearch.h"
 #include "Safety.h"
 #include "EinfoClass.h"
+
 class BuildingAI
 {
 public:
@@ -39,18 +39,20 @@ public:
 	short sy;
 	int MoreInfo;
 };
+
 class BuildingProject
 {
 public:
 	short apprX;
 	short apprY;
-	byte Stage;//0-search place,1-removing units,2-search for builders
+	byte Stage; //0-search place,1-removing units,2-search for builders
 	int Time;
 	int PrecX;
 	int PrecY;
 	int PushOutRadius;
 	int Razbros;
 };
+
 class Kingdom
 {
 public:
@@ -64,6 +66,7 @@ public:
 	bool BuildProjectPresent;
 	BuildingProject BPR;
 };
+
 //01-wood(trees>2)
 //02-stone(stones>5)
 //04-full empty
@@ -81,9 +84,10 @@ byte* CantBuild;
 int* MineList;
 word NMines;
 word MaxMine;
+
 void CreateInfoMap()
 {
-	memset( CantBuild, 0, VAL_SPRNX*VAL_SPRNX );
+	memset(CantBuild, 0, VAL_SPRNX * VAL_SPRNX);
 	int mmax = msx >> 2;
 	int mmay = msy >> 2;
 	for (int y = 0; y <= mmay; y++)
@@ -91,21 +95,21 @@ void CreateInfoMap()
 		for (int x = 0; x <= mmax; x++)
 		{
 			byte ms = 0;
-			if (!CheckBar( x << 3, y << 3, 8, 8 ))ms |= 8;
+			if (!CheckBar(x << 3, y << 3, 8, 8))ms |= 8;
 			int x0 = x << 7;
 			int y0 = y << 7;
-			int H1 = GetHeight( x0, y0 );
-			int H2 = GetHeight( x0 + 128, y0 );
-			int H3 = GetHeight( x0, y0 + 128 );
-			int H4 = GetHeight( x0, y0 + 128 );
-			int HH = ( H1 + H2 + H3 + H4 ) >> 2;
-			if (abs( H1 - HH ) < 20 && abs( H2 - HH ) < 20 && abs( H3 - HH ) < 20 && abs( H4 - HH ) < 20)ms |= 16;
+			int H1 = GetHeight(x0, y0);
+			int H2 = GetHeight(x0 + 128, y0);
+			int H3 = GetHeight(x0, y0 + 128);
+			int H4 = GetHeight(x0, y0 + 128);
+			int HH = (H1 + H2 + H3 + H4) >> 2;
+			if (abs(H1 - HH) < 20 && abs(H2 - HH) < 20 && abs(H3 - HH) < 20 && abs(H4 - HH) < 20)ms |= 16;
 			//resource checking;
-			int ofst = x + y*VAL_SPRNX;
+			int ofst = x + y * VAL_SPRNX;
 			int N = NSpri[ofst];
 			int NTrees = 0;
 			int NStones = 0;
-			if (( ms & 8 ) && ( ms & 16 ) && !N)ms |= 4;
+			if ((ms & 8) && (ms & 16) && !N)ms |= 4;
 			int* spr = SpRefs[ofst];
 			for (int i = 0; i < N; i++)
 			{
@@ -122,7 +126,7 @@ void CreateInfoMap()
 			InfoMap[ofst] = ms;
 		};
 	};
-	if (MineList)free( MineList );
+	if (MineList)free(MineList);
 	NMines = 0;
 	MineList = new int[256];
 	MaxMine = 256;
@@ -138,7 +142,7 @@ void CreateInfoMap()
 				if (NMines >= MaxMine)
 				{
 					MaxMine += 256;
-					MineList = (int*) realloc( MineList, MaxMine << 2 );
+					MineList = (int*)realloc(MineList, MaxMine << 2);
 				};
 				MineList[NMines] = i;
 				NMines++;
@@ -148,10 +152,11 @@ void CreateInfoMap()
 };
 //x,y-pixel coordinates
 void CHKS();
-void RenewInfoMap( int x, int y )
+
+void RenewInfoMap(int x, int y)
 {
-	x = ( x >> 7 ) - 1;
-	y = ( y >> 7 ) - 1;
+	x = (x >> 7) - 1;
+	y = (y >> 7) - 1;
 	for (int dx = 0; dx < 3; dx++)
 	{
 		for (int dy = 0; dy < 3; dy++)
@@ -160,14 +165,14 @@ void RenewInfoMap( int x, int y )
 			int sy = y + dy;
 			if (sx >= 0 && sy >= 0)
 			{
-				int ofst = sx + sy*VAL_SPRNX;
+				int ofst = sx + sy * VAL_SPRNX;
 				byte ms = InfoMap[ofst];
 				ms &= 16;
-				if (!CheckBar( sx << 3, sy << 3, 8, 8 ))ms |= 8;
+				if (!CheckBar(sx << 3, sy << 3, 8, 8))ms |= 8;
 				int N = NSpri[ofst];
 				int NTrees = 0;
 				int NStones = 0;
-				if (( ms & 8 ) && ( ms & 16 ) && !N)ms |= 4;
+				if ((ms & 8) && (ms & 16) && !N)ms |= 4;
 				int* spr = SpRefs[ofst];
 				for (int i = 0; i < N; i++)
 				{
@@ -185,9 +190,10 @@ void RenewInfoMap( int x, int y )
 		};
 	};
 };
+
 void FreeInfoMap()
 {
-	free( MineList );
+	free(MineList);
 };
 //special search procedures
 //1.Melnica&field
@@ -195,60 +201,66 @@ void FreeInfoMap()
 int SsMaxX;
 int SsMaxY;
 #define FieldSX 2
-bool CheckMelnica( int x, int y )
+
+bool CheckMelnica(int x, int y)
 {
 	if (x <= FieldSX || y <= FieldSX || x >= SsMaxX - FieldSX || y >= SsMaxY - FieldSX)return false;
-	int ofst = x + y*VAL_SPRNX;
+	int ofst = x + y * VAL_SPRNX;
 	if (CantBuild[ofst] & CB_Melnica)return false;
-	ofst -= FieldSX + VAL_SPRNX*FieldSX;
+	ofst -= FieldSX + VAL_SPRNX * FieldSX;
 	for (int dy = -FieldSX; dy <= FieldSX; dy++)
 	{
 		for (int dx = -FieldSX; dx <= FieldSX; dx++)
 		{
-			if (!( InfoMap[ofst] & 4 ))return false;
+			if (!(InfoMap[ofst] & 4))return false;
 			ofst++;
 		};
 		ofst += VAL_SPRNX - FieldSX - FieldSX - 1;
 	};
 	return true;
 };
-bool CheckStoneSklad( int x, int y )
+
+bool CheckStoneSklad(int x, int y)
 {
 	if (x <= 1 || y <= 1 || x >= SsMaxX - 1 || y >= SsMaxY - 1)return false;
-	int ofst = x + y*VAL_SPRNX;
+	int ofst = x + y * VAL_SPRNX;
 	if (CantBuild[ofst] & CB_Sklad)return false;
-	if (!( InfoMap[ofst] & 4 ))return false;
-	if (( InfoMap[ofst - VAL_SPRNX] & 2 ) || ( InfoMap[ofst + VAL_SPRNX] & 2 ) ||
-		( InfoMap[ofst + 1] & 2 ) || ( InfoMap[ofst - 1] & 2 ) ||
-		( InfoMap[ofst - VAL_SPRNX - 1] & 2 ) || ( InfoMap[ofst - VAL_SPRNX + 1] & 2 ) ||
-		( InfoMap[ofst + VAL_SPRNX - 1] & 2 ) || ( InfoMap[ofst - VAL_SPRNX + 1] & 2 ))return true;
+	if (!(InfoMap[ofst] & 4))return false;
+	if ((InfoMap[ofst - VAL_SPRNX] & 2) || (InfoMap[ofst + VAL_SPRNX] & 2) ||
+		(InfoMap[ofst + 1] & 2) || (InfoMap[ofst - 1] & 2) ||
+		(InfoMap[ofst - VAL_SPRNX - 1] & 2) || (InfoMap[ofst - VAL_SPRNX + 1] & 2) ||
+		(InfoMap[ofst + VAL_SPRNX - 1] & 2) || (InfoMap[ofst - VAL_SPRNX + 1] & 2))
+		return true;
 	return false;
 };
-bool CheckWoodSklad( int x, int y )
+
+bool CheckWoodSklad(int x, int y)
 {
 	if (x <= 1 || y <= 1 || x >= SsMaxX - 1 || y >= SsMaxY - 1)return false;
-	int ofst = x + y*VAL_SPRNX;
+	int ofst = x + y * VAL_SPRNX;
 	if (CantBuild[ofst] & CB_Sklad)return false;
-	if (!( InfoMap[ofst] & 4 ))return false;
-	if (( InfoMap[ofst - VAL_SPRNX] & 1 ) || ( InfoMap[ofst + VAL_SPRNX] & 1 ) ||
-		( InfoMap[ofst + 1] & 1 ) || ( InfoMap[ofst - 1] & 1 ) ||
-		( InfoMap[ofst - VAL_SPRNX - 1] & 1 ) || ( InfoMap[ofst - VAL_SPRNX + 1] & 1 ) ||
-		( InfoMap[ofst + VAL_SPRNX - 1] & 1 ) || ( InfoMap[ofst - VAL_SPRNX + 1] & 1 ))return true;
+	if (!(InfoMap[ofst] & 4))return false;
+	if ((InfoMap[ofst - VAL_SPRNX] & 1) || (InfoMap[ofst + VAL_SPRNX] & 1) ||
+		(InfoMap[ofst + 1] & 1) || (InfoMap[ofst - 1] & 1) ||
+		(InfoMap[ofst - VAL_SPRNX - 1] & 1) || (InfoMap[ofst - VAL_SPRNX + 1] & 1) ||
+		(InfoMap[ofst + VAL_SPRNX - 1] & 1) || (InfoMap[ofst - VAL_SPRNX + 1] & 1))
+		return true;
 	return false;
 };
-bool CheckStoneWoodSklad( int x, int y )
+
+bool CheckStoneWoodSklad(int x, int y)
 {
 	if (x <= 2 || y <= 2 || x >= SsMaxX - 2 || y >= SsMaxY - 2)return false;
-	int ofst = ( x - 2 ) + ( y - 2 )*VAL_SPRNX;
-	int of1 = ofst + 2 + ( 2 << SprShf );
+	int ofst = (x - 2) + (y - 2) * VAL_SPRNX;
+	int of1 = ofst + 2 + (2 << SprShf);
 	if (CantBuild[of1] & CB_Sklad)return false;
-	if (!( InfoMap[of1] & 4 ))return false;
+	if (!(InfoMap[of1] & 4))return false;
 	bool tpresent = false;
 	for (int ix = 0; ix < 5; ix++)
 	{
 		for (int iy = 0; iy < 5; iy++)
 		{
-			if (InfoMap[ofst + ix + ( iy << SprShf )] & 2)tpresent = true;
+			if (InfoMap[ofst + ix + (iy << SprShf)] & 2)tpresent = true;
 		};
 	};
 	if (!tpresent)return false;
@@ -256,7 +268,7 @@ bool CheckStoneWoodSklad( int x, int y )
 	{
 		for (int iy = 0; iy < 5; iy++)
 		{
-			if (InfoMap[ofst + ix + ( iy << SprShf )] & 1)return true;
+			if (InfoMap[ofst + ix + (iy << SprShf)] & 1)return true;
 		};
 	};
 	/*
@@ -272,74 +284,81 @@ bool CheckStoneWoodSklad( int x, int y )
 	return false;
 }
 
-bool CheckFarm( int x, int y )
+bool CheckFarm(int x, int y)
 {
 	if (x <= 1 || y <= 1 || x >= SsMaxX - 1 || y >= SsMaxY - 1)
 	{
 		return false;
 	}
-	int ofst = x + y*VAL_SPRNX;
+	int ofst = x + y * VAL_SPRNX;
 	if (CantBuild[ofst] & CB_Farm)
 	{
 		return false;
 	}
-	bool retval = ( InfoMap[ofst] & 4 ) != 0;
+	bool retval = (InfoMap[ofst] & 4) != 0;
 	return retval;
 }
 
-bool CheckBuilding( int x, int y )
+bool CheckBuilding(int x, int y)
 {
 	if (x <= 1 || y <= 1 || x >= SsMaxX - 1 || y >= SsMaxY - 1)return false;
-	int ofst = x + y*VAL_SPRNX;
+	int ofst = x + y * VAL_SPRNX;
 	if (CantBuild[ofst] & CB_Building)return false;
-	return ( InfoMap[ofst] & 4 ) && ( InfoMap[ofst + 1] & 4 ) && ( InfoMap[ofst + VAL_SPRNX] & 4 ) && ( InfoMap[ofst + VAL_SPRNX + 1] & 4 );
+	return (InfoMap[ofst] & 4) && (InfoMap[ofst + 1] & 4) && (InfoMap[ofst + VAL_SPRNX] & 4) && (InfoMap[ofst + VAL_SPRNX +
+		1] & 4);
 }
 
 byte NPORTS;
 short PORTSX[32];
 short PORTSY[32];
-bool CheckTower( int x, int y )
+
+bool CheckTower(int x, int y)
 {
 	for (int i = 0; i < NPORTS; i++)
 	{
-		if (Norma( int( PORTSX[i] ) - x, int( PORTSY[i] ) - y ) < 9)return false;
+		if (Norma(int(PORTSX[i]) - x, int(PORTSY[i]) - y) < 9)return false;
 	};
 	if (x <= 1 || y <= 1 || x >= SsMaxX - 1 || y >= SsMaxY - 1)return false;
-	int ofst = x + y*VAL_SPRNX;
+	int ofst = x + y * VAL_SPRNX;
 	if (CantBuild[ofst] & CB_Building)return false;
-	return ( InfoMap[ofst] & 4 ) && ( InfoMap[ofst + 1] & 4 ) && ( InfoMap[ofst + VAL_SPRNX] & 4 ) && ( InfoMap[ofst + VAL_SPRNX + 1] & 4 );
+	return (InfoMap[ofst] & 4) && (InfoMap[ofst + 1] & 4) && (InfoMap[ofst + VAL_SPRNX] & 4) && (InfoMap[ofst + VAL_SPRNX +
+		1] & 4);
 };
-bool CheckPort( int x, int y )
+
+bool CheckPort(int x, int y)
 {
 	if (x <= 5 || y <= 5 || x >= SsMaxX - 5 || y >= SsMaxY - 5)return false;
 	for (int i = 0; i < NPORTS; i++)
 	{
-		if (Norma( int( PORTSX[i] ) - x, int( PORTSY[i] ) - y ) < 9)return false;
+		if (Norma(int(PORTSX[i]) - x, int(PORTSY[i]) - y) < 9)return false;
 	};
-	int ofst = x + y*VAL_SPRNX;
+	int ofst = x + y * VAL_SPRNX;
 	if (CantBuild[ofst] & CB_Port)return false;
 	x <<= 2;
 	y <<= 2;
-	int ofsw = x + 2 + ( y + 2 )*( MaxWX );
+	int ofsw = x + 2 + (y + 2) * (MaxWX);
 	int DY = MAPSX * 10;
 	int DX = 20;
-	return !( WaterDeep[ofsw - DY] < 128 && WaterDeep[ofsw + DY] < 128 && WaterDeep[ofsw - DX] < 128 && WaterDeep[ofsw + DX] < 128 &&
-		WaterDeep[ofsw - DY + DX] < 128 && WaterDeep[ofsw - DY - DX] < 128 && WaterDeep[ofsw + DY - DX] < 128 && WaterDeep[ofsw + DY + DX] < 128 );
+	return !(WaterDeep[ofsw - DY] < 128 && WaterDeep[ofsw + DY] < 128 && WaterDeep[ofsw - DX] < 128 && WaterDeep[ofsw + DX]
+		< 128 &&
+		WaterDeep[ofsw - DY + DX] < 128 && WaterDeep[ofsw - DY - DX] < 128 && WaterDeep[ofsw + DY - DX] < 128 && WaterDeep[
+			ofsw + DY + DX] < 128);
 };
 extern int CURRENTAINATION;
-int GetTopology( int x, int y );
-bool SearchPlace( int* xx1, int* yy1, SearchFunction* SFN, int r )
+int GetTopology(int x, int y);
+
+bool SearchPlace(int* xx1, int* yy1, SearchFunction* SFN, int r)
 {
 	SsMaxX = msx >> 2;
 	SsMaxY = msy >> 2;
 	int x = *xx1;
 	int y = *yy1;
-	if (SFN( x, y ))
+	if (SFN(x, y))
 	{
 		//assert(y<17648);
 		return true;
 	};
-	int MyTop = GetTopology( x << 7, y << 7 );
+	int MyTop = GetTopology(x << 7, y << 7);
 	if (MyTop >= 0xFFFE)return false;
 	int REALMYTOP = MyTop;
 	MyTop *= NAreas;
@@ -353,11 +372,11 @@ bool SearchPlace( int* xx1, int* yy1, SearchFunction* SFN, int r )
 		{
 			int xx = x + xi[j];
 			int yy = y + yi[j];
-			if (xx > 0 && yy > 0 && xx < SsMaxX&&yy < SsMaxY)
+			if (xx > 0 && yy > 0 && xx < SsMaxX && yy < SsMaxY)
 			{
-				if (!GNFO.EINF[CURRENTAINATION]->GetSafeVal( xx, yy ))
+				if (!GNFO.EINF[CURRENTAINATION]->GetSafeVal(xx, yy))
 				{
-					int top = TopRef[xx + xx + ( yy << ( TopSH + 1 ) )];
+					int top = TopRef[xx + xx + (yy << (TopSH + 1))];
 					if (top < 0xFFFE)
 					{
 						int TDST = LinksDist[MyTop + top];
@@ -365,7 +384,7 @@ bool SearchPlace( int* xx1, int* yy1, SearchFunction* SFN, int r )
 						if (TDST - PrevTopDst < 24)
 						{
 							if (TDST > PrevTopDst)PrevTopDst = TDST;
-							if (SFN( xx, yy ))
+							if (SFN(xx, yy))
 							{
 								*xx1 = xx;
 								*yy1 = yy;
@@ -379,19 +398,20 @@ bool SearchPlace( int* xx1, int* yy1, SearchFunction* SFN, int r )
 	};
 	return false;
 };
-bool SearchTowerPlace( int* xx1, int* yy1, SearchFunction* SFN, int r, int xc, int yc, int xe, int ye )
+
+bool SearchTowerPlace(int* xx1, int* yy1, SearchFunction* SFN, int r, int xc, int yc, int xe, int ye)
 {
-	if (NPORTS > 1)return SearchPlace( xx1, yy1, SFN, r );
+	if (NPORTS > 1)return SearchPlace(xx1, yy1, SFN, r);
 	SsMaxX = msx >> 2;
 	SsMaxY = msy >> 2;
 	int x = *xx1;
 	int y = *yy1;
-	if (SFN( x, y ))
+	if (SFN(x, y))
 	{
 		//assert(y<17648);
 		return true;
 	};
-	int MyTop = GetTopology( x << 7, y << 7 );
+	int MyTop = GetTopology(x << 7, y << 7);
 	if (MyTop >= 0xFFFE)return false;
 	MyTop *= NAreas;
 	int PrevTopDst = 0;
@@ -404,18 +424,18 @@ bool SearchTowerPlace( int* xx1, int* yy1, SearchFunction* SFN, int r, int xc, i
 		{
 			int xx = x + xi[j];
 			int yy = y + yi[j];
-			if (( xx - xc )*( xe - xc ) + ( yy - yc )*( ye - yc ) > 0 && xx > 0 && yy > 0 && xx < SsMaxX&&yy < SsMaxY)
+			if ((xx - xc) * (xe - xc) + (yy - yc) * (ye - yc) > 0 && xx > 0 && yy > 0 && xx < SsMaxX && yy < SsMaxY)
 			{
-				if (!GNFO.EINF[CURRENTAINATION]->GetSafeVal( xx, yy ))
+				if (!GNFO.EINF[CURRENTAINATION]->GetSafeVal(xx, yy))
 				{
-					int top = TopRef[xx + xx + ( yy << ( TopSH + 1 ) )];
+					int top = TopRef[xx + xx + (yy << (TopSH + 1))];
 					if (top < 0xFFFE)
 					{
 						int TDST = LinksDist[MyTop + top];
 						if (TDST - PrevTopDst < 14)
 						{
 							if (TDST > PrevTopDst)PrevTopDst = TDST;
-							if (SFN( xx, yy ))
+							if (SFN(xx, yy))
 							{
 								*xx1 = xx;
 								*yy1 = yy;
@@ -429,7 +449,8 @@ bool SearchTowerPlace( int* xx1, int* yy1, SearchFunction* SFN, int r, int xc, i
 	};
 	return false;
 };
-bool FindCenter( int* xx, int *yy, byte NI )
+
+bool FindCenter(int* xx, int* yy, byte NI)
 {
 	int N = 0;
 	int x = 0;
@@ -437,7 +458,7 @@ bool FindCenter( int* xx, int *yy, byte NI )
 	for (int i = 0; i < MAXOBJECT; i++)
 	{
 		OneObject* OB = Group[i];
-		if (OB&&OB->NNUM == NI&&OB->newMons->Peasant)
+		if (OB && OB->NNUM == NI && OB->newMons->Peasant)
 		{
 			x += OB->RealX >> 4;
 			y += OB->RealY >> 4;
@@ -446,16 +467,17 @@ bool FindCenter( int* xx, int *yy, byte NI )
 	};
 	if (N)
 	{
-		x = ( div( x, N ).quot ) >> 7;
-		y = ( div( y, N ).quot ) >> 7;
+		x = (div( x, N ).quot) >> 7;
+		y = (div( y, N ).quot) >> 7;
 		*xx = x;
 		*yy = y;
 		return true;
 	}
 	else return false;
 };
-void SetUnusable( int x, int y, byte Mask )
+
+void SetUnusable(int x, int y, byte Mask)
 {
 	if (x < 0 || y < 0 || x >= SsMaxX || y >= SsMaxY)return;
-	CantBuild[x + y*VAL_SPRNX] |= Mask;
+	CantBuild[x + y * VAL_SPRNX] |= Mask;
 };

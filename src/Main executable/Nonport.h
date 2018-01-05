@@ -21,34 +21,34 @@ Fax(714)549-0757
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
-	#include <windows.h>
-	#include <winsock.h>
+#include <windows.h>
+#include <winsock.h>
 #else
 #ifdef _MACOS
 	#include <events.h>
 	#include "mwinsock.h"
 #else
 #ifdef __KATANA__
-	#ifdef KGTRN_PLANET_WEB
-		#ifdef __GNUC__
+#ifdef KGTRN_PLANET_WEB
+#ifdef __GNUC__
 			#include <errno.h>
-		#endif
+#endif
 		#include <pwebinc.h>
 		#include <dbdebug.h>
-	#endif
-	#ifdef KGTRN_ACCESS
+#endif
+#ifdef KGTRN_ACCESS
 		#include <types.h>
 		#include <socket.h>
 		#include <sock_errno.h>
 		#include <aveppp.h>
 		#include <vsyncpro.h>
 		#include <dns.h>
-	#endif
-	#ifdef KGTRN_NEXGEN
+#endif
+#ifdef KGTRN_NEXGEN
 		#include <nexgen.h>
 		#include <adns.h>
 		#include <netdb.h>
-	#endif
+#endif
 
 	
 	#include <stdio.h>
@@ -81,20 +81,21 @@ Fax(714)549-0757
 #endif
 #endif
 #endif
-#endif 
-
-#ifdef __cplusplus
-extern "C" {
 #endif
 
-typedef int goa_int32;
-typedef unsigned int goa_uint32;
-	
-unsigned long current_time();
-void msleep(unsigned long msec);
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
-void SocketStartUp();
-void SocketShutDown();
+	typedef int goa_int32;
+	typedef unsigned int goa_uint32;
+
+	unsigned long current_time();
+	void msleep(unsigned long msec);
+
+	void SocketStartUp();
+	void SocketShutDown();
 
 #ifndef SOCKET_ERROR 
 	#define SOCKET_ERROR (-1)
@@ -115,16 +116,16 @@ void SocketShutDown();
 #endif
 
 #if defined(_WIN32) && !defined(UNDER_CE)
-	#define strcasecmp _stricmp
-	#define strncasecmp _strnicmp
+#define strcasecmp _stricmp
+#define strncasecmp _strnicmp
 #else
 	#include <string.h>
 	#include <stdlib.h>
 	#include <ctype.h>
 	
-	#ifndef strdup
+#ifndef strdup
 		#define strdup _strdup
-	#endif
+#endif
 	char *_strdup(const char *src);
 	char *_strlwr(char *string);
 	char *_strupr(char *string);
@@ -144,46 +145,46 @@ void SocketShutDown();
 
 #if !defined(_MACOS) && !defined(_WIN32)
 
-	#ifdef KGTRN_NEXGEN
+#ifdef KGTRN_NEXGEN
 		#define GOAGetLastError(s) ngGlobalErrno
-	#endif
-	
-	#ifdef KGTRN_ACCESS
+#endif
+
+#ifdef KGTRN_ACCESS
 		#define GOAGetLastError(s) sock_errno
-	#endif
-	
-	#if defined (KGTRN_PLANET_WEB)
-		#if defined(__GNUC__) && defined(__KATANA__)
+#endif
+
+#if defined (KGTRN_PLANET_WEB)
+#if defined(__GNUC__) && defined(__KATANA__)
 			#define GOAGetLastError(s) (*__errno())	
 			extern int *__errno _PARAMS ((void));
-		#else
+#else
 			#define GOAGetLastError(s) errno
-		#endif
-	#endif
-	
-	#if defined(__mips64)
-		#define GOAGetLastError(s) sn_errno(s)
-	#endif
-	
-	#ifdef UNDER_UNIX
-		#define GOAGetLastError(s) errno
-	#endif
+#endif
+#endif
 
-	#ifdef KGTRN_ACCESS
+#if defined(__mips64)
+		#define GOAGetLastError(s) sn_errno(s)
+#endif
+
+#ifdef UNDER_UNIX
+		#define GOAGetLastError(s) errno
+#endif
+
+#ifdef KGTRN_ACCESS
 		#define closesocket sock_close
-	#endif
-	
-	#ifdef KGTRN_PLANET_WEB
+#endif
+
+#ifdef KGTRN_PLANET_WEB
 		#define closesocket net_close
-	#endif
-	
-	#ifdef UNDER_UNIX
+#endif
+
+#ifdef UNDER_UNIX
 		#define closesocket close //on unix
-	#endif
+#endif
 	
 	#define SOCKET int	
 	#define ioctlsocket ioctl
-	#ifdef KGTRN_NEXGEN
+#ifdef KGTRN_NEXGEN
 		#define WSAEWOULDBLOCK NG_EWOULDBLOCK
 		#define WSAEINPROGRESS NG_EINPROGRESS
 		#define WSAEALREADY NG_EALREADY
@@ -221,7 +222,7 @@ void SocketShutDown();
 		#define WSAEDQUOT NG_EDQUOT
 		#define WSAESTALE NG_ESTALE
 		#define WSAEREMOTE NG_EREMOTE
-	#else
+#else
 		#define WSAEWOULDBLOCK EWOULDBLOCK             
 		#define WSAEINPROGRESS EINPROGRESS             
 		#define WSAEALREADY EALREADY                
@@ -259,9 +260,9 @@ void SocketShutDown();
 		#define WSAEDQUOT EDQUOT                  
 		#define WSAESTALE ESTALE                  
 		#define WSAEREMOTE EREMOTE 
-	#endif               
+#endif
 #else
-	#define GOAGetLastError(s) WSAGetLastError()
+#define GOAGetLastError(s) WSAGetLastError()
 #endif
 
 #ifndef _WIN32
@@ -278,7 +279,7 @@ void SocketShutDown();
 #endif
 
 #ifdef _WIN32
-	#define PATHCHAR '\\'
+#define PATHCHAR '\\'
 #else
 #ifdef MACOS
 	#define PATHCHAR ':'
@@ -288,16 +289,16 @@ void SocketShutDown();
 #endif
 #endif
 
-int SetSockBlocking(SOCKET sock, int isblocking);
+	int SetSockBlocking(SOCKET sock, int isblocking);
 
 #if defined(UNDER_CE) || defined(KGTRN_PLANET_WEB) || defined(KGTRN_NEXGEN)
-//CE does not have the stdlib time() call
-	#if defined(KGTRN_PLANET_WEB) || defined(KGTRN_NEXGEN)
+	//CE does not have the stdlib time() call
+#if defined(KGTRN_PLANET_WEB) || defined(KGTRN_NEXGEN)
 		typedef long	time_t;
-	#endif
+#endif
 	time_t time(time_t *timer);
 #else
-	#include <time.h>
+#include <time.h>
 #endif
 
 #if defined(__KATANA__) && defined(KGTRN_ACCESS)
@@ -333,4 +334,4 @@ void GOAClearSocketError(SOCKET s);
 #endif
 
 
-#endif 
+#endif

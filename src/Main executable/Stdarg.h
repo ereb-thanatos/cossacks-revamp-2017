@@ -40,7 +40,8 @@
 #endif  /* _MSC_VER */
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif  /* __cplusplus */
 
 #ifndef _INTERNAL_IFSTRIP_
@@ -55,7 +56,7 @@ typedef struct {
         int offset;     /* byte offset of next parameter */
 } va_list;
 #else  /* _M_ALPHA */
-typedef char *  va_list;
+	typedef char* va_list;
 #endif  /* _M_ALPHA */
 #define _VA_LIST_DEFINED
 #endif  /* _VA_LIST_DEFINED */
@@ -91,7 +92,7 @@ typedef char *  va_list;
 #elif defined (_M_ALPHA)
 
 
-/* Use these types and definitions if generating code for ALPHA */
+	/* Use these types and definitions if generating code for ALPHA */
 
 /*
  * The Alpha compiler supports two builtin functions that are used to
@@ -123,7 +124,7 @@ extern void * __builtin_va_start(va_list, ...);
 
 #elif defined (_M_PPC)
 
-/* Microsoft C8 front end (used in Motorola Merged compiler) */
+	/* Microsoft C8 front end (used in Motorola Merged compiler) */
 /* bytes that a type occupies in the argument list */
 #define _INTSIZEOF(n)   ( (sizeof(n) + sizeof(int) - 1) & ~(sizeof(int) - 1) )
 /* return 'ap' adjusted for type 't' in arglist */

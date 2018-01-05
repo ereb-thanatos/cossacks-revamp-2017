@@ -23,7 +23,7 @@ devsupport@gamespy.com
 #if defined(applec) || defined(THINK_C) || defined(__MWERKS__) && !defined(__KATANA__) && !defined(__mips64)
 	#include "::nonport.h"
 #else
-	#include "../nonport.h"
+#include "../nonport.h"
 #endif
 
 /**********
@@ -41,22 +41,22 @@ typedef enum ciConnectState
 **********/
 typedef struct ciBuffer
 {
-	char * buffer;
+	char* buffer;
 	int length;
 	int size;
 } ciBuffer;
 
 typedef struct ciServerMessage
 {
-	char * message;
-	char * server;
-	char * nick;
-	char * user;
-	char * host;
-	char * command;
-	char * middle;
-	char * param;
-	char ** params;
+	char* message;
+	char* server;
+	char* nick;
+	char* user;
+	char* host;
+	char* command;
+	char* middle;
+	char* param;
+	char** params;
 	int numParams;
 } ciServerMessage;
 
@@ -75,23 +75,23 @@ typedef struct ciSocket
 /**************
 ** FUNCTIONS **
 **************/
-CHATBool ciSocketInit(ciSocket * sock);
+CHATBool ciSocketInit(ciSocket* sock);
 
-CHATBool ciSocketConnect(ciSocket * sock,
-					 const char * serverAddress,
-					 int port);
+CHATBool ciSocketConnect(ciSocket* sock,
+                         const char* serverAddress,
+                         int port);
 
-void ciSocketDisconnect(ciSocket * sock);
+void ciSocketDisconnect(ciSocket* sock);
 
-void ciSocketThink(ciSocket * sock);
+void ciSocketThink(ciSocket* sock);
 
-CHATBool ciSocketSend(ciSocket * sock,
-				  const char * buffer);
+CHATBool ciSocketSend(ciSocket* sock,
+                      const char* buffer);
 
-CHATBool ciSocketSendf(ciSocket * sock,
-				   const char * format,
-				   ...);
+CHATBool ciSocketSendf(ciSocket* sock,
+                       const char* format,
+                       ...);
 
-ciServerMessage * ciSocketRecv(ciSocket * sock);
+ciServerMessage* ciSocketRecv(ciSocket* sock);
 
 #endif

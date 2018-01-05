@@ -70,7 +70,7 @@ int GetDADDT(int DT)
 //returns GetTickCount()
 unsigned long GetRealTime()
 {
-	return GetTickCount();//REFACTORED: simplify GetRealTime()?
+	return GetTickCount(); //REFACTORED: simplify GetRealTime()?
 	/*
 	//In single player AddTime always = 0
 	//Overall this function returns pretty exact the GetTickCount values

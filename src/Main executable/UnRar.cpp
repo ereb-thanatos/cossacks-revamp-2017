@@ -6,21 +6,22 @@
 
 enum { EXTRACT, TEST, PRINT };
 
-void ExtractArchive(char *ArcName, int Mode);
-void ListArchive(char *ArcName);
-void ShowComment(char *CmtBuf);
+void ExtractArchive(char* ArcName, int Mode);
+void ListArchive(char* ArcName);
+void ShowComment(char* CmtBuf);
 void OutHelp(void);
-void OutOpenArchiveError(int Error, char *ArcName);
+void OutOpenArchiveError(int Error, char* ArcName);
 void OutProcessFileError(int Error);
-int ChangeVolProc(char *ArcName, int Mode);
-int ProcessDataProc(unsigned char *Addr, int Size);
+int ChangeVolProc(char* ArcName, int Mode);
+int ProcessDataProc(unsigned char* Addr, int Size);
 
 //Handle to unrar.dll
 HMODULE hLib;
+
 void* LoadF(char* Name)
 {
 	void* fn = GetProcAddress(hLib, Name);
-	if (!fn) 
+	if (!fn)
 	{
 		char ccc[256];
 		sprintf(ccc, "UNRAR.DLL does not contain function: %s", Name);
@@ -30,15 +31,16 @@ void* LoadF(char* Name)
 }
 
 #define LOADF(x) lp##x=(tp##x*)LoadF(#x)
-void LoadRARLib() 
+
+void LoadRARLib()
 {
 	hLib = LoadLibrary("unrar.dll");
-	if (!hLib) 
+	if (!hLib)
 	{
 		MessageBox(NULL, "Could not load unrar.dll", "ERROR!", 0);
 		return;
 	}
-	else 
+	else
 	{
 		LOADF(RAROpenArchive);
 		LOADF(RARCloseArchive);
@@ -58,7 +60,7 @@ void CloseRARLib()
 	}
 }
 
-void ExtractArchive(char *ArcName, int Mode, char* Dest)
+void ExtractArchive(char* ArcName, int Mode, char* Dest)
 {
 	if (!hLib)LoadRARLib();
 	HANDLE hArcData;
@@ -92,7 +94,7 @@ void ExtractArchive(char *ArcName, int Mode, char* Dest)
 	while ((RHCode = RARReadHeader(hArcData, &HeaderData)) == 0)
 	{
 		PFCode = RARProcessFile(hArcData, (Mode == EXTRACT) ? RAR_EXTRACT : RAR_TEST,
-			NULL, Dest);
+		                        NULL, Dest);
 		if (PFCode != 0)
 		{
 			OutProcessFileError(PFCode);
@@ -107,7 +109,7 @@ void ExtractArchive(char *ArcName, int Mode, char* Dest)
 }
 
 
-void ListArchive(char *ArcName)
+void ListArchive(char* ArcName)
 {
 	HANDLE hArcData;
 	int RHCode, PFCode;
@@ -156,7 +158,7 @@ void ListArchive(char *ArcName)
 }
 
 
-void ShowComment(char *CmtBuf)
+void ShowComment(char* CmtBuf)
 {
 	printf("\nComment:\n%s\n", CmtBuf);
 }
@@ -173,7 +175,7 @@ void OutHelp(void)
 }
 
 
-void OutOpenArchiveError(int Error, char *ArcName)
+void OutOpenArchiveError(int Error, char* ArcName)
 {
 	switch (Error)
 	{
@@ -224,26 +226,27 @@ void OutProcessFileError(int Error)
 }
 
 
-int ChangeVolProc(char *ArcName, int Mode)
+int ChangeVolProc(char* ArcName, int Mode)
 {
 	int Ch;
 	if (Mode == RAR_VOL_ASK)
 	{
 		printf("\nInsert disk with %s and press 'Enter' or enter 'Q' to exit ", ArcName);
 		Ch = getchar();
-		return(toupper(Ch) != 'Q');
+		return (toupper(Ch) != 'Q');
 	}
-	return(1);
+	return (1);
 }
 
 
-int ProcessDataProc(unsigned char *Addr, int Size)
+int ProcessDataProc(unsigned char* Addr, int Size)
 {
 	fflush(stdout);
 	fwrite(Addr, 1, Size, stdout);
 	fflush(stdout);
-	return(1);
+	return (1);
 }
+
 tpRAROpenArchive* lpRAROpenArchive = NULL;
 tpRARCloseArchive* lpRARCloseArchive = NULL;
 tpRARReadHeader* lpRARReadHeader = NULL;
@@ -251,24 +254,38 @@ tpRARProcessFile* lpRARProcessFile = NULL;
 tpRARSetChangeVolProc* lpRARSetChangeVolProc = NULL;
 tpRARSetProcessDataProc* lpRARSetProcessDataProc = NULL;
 tpRARSetPassword* lpRARSetPassword = NULL;
-HANDLE PASCAL RAROpenArchive(struct RAROpenArchiveData *ArchiveData) {
+
+HANDLE PASCAL RAROpenArchive(struct RAROpenArchiveData* ArchiveData)
+{
 	return lpRAROpenArchive(ArchiveData);
 };
-int PASCAL RARCloseArchive(HANDLE hArcData) {
+
+int PASCAL RARCloseArchive(HANDLE hArcData)
+{
 	return lpRARCloseArchive(hArcData);
 };
-int PASCAL RARReadHeader(HANDLE hArcData, struct RARHeaderData *HeaderData) {
+
+int PASCAL RARReadHeader(HANDLE hArcData, struct RARHeaderData* HeaderData)
+{
 	return lpRARReadHeader(hArcData, HeaderData);
 };
-int PASCAL RARProcessFile(HANDLE hArcData, int Operation, char *DestPath, char *DestName) {
+
+int PASCAL RARProcessFile(HANDLE hArcData, int Operation, char* DestPath, char* DestName)
+{
 	return lpRARProcessFile(hArcData, Operation, DestPath, DestName);
 };
-void PASCAL RARSetChangeVolProc(HANDLE hArcData, int(*ChangeVolProc)(char *ArcName, int Mode)) {
+
+void PASCAL RARSetChangeVolProc(HANDLE hArcData, int (*ChangeVolProc)(char* ArcName, int Mode))
+{
 	lpRARSetChangeVolProc(hArcData, ChangeVolProc);
 };
-void PASCAL RARSetProcessDataProc(HANDLE hArcData, int(*ProcessDataProc)(unsigned char *Addr, int Size)) {
+
+void PASCAL RARSetProcessDataProc(HANDLE hArcData, int (*ProcessDataProc)(unsigned char* Addr, int Size))
+{
 	lpRARSetProcessDataProc(hArcData, ProcessDataProc);
 };
-void PASCAL RARSetPassword(HANDLE hArcData, char *Password) {
+
+void PASCAL RARSetPassword(HANDLE hArcData, char* Password)
+{
 	lpRARSetPassword(hArcData, Password);
 };

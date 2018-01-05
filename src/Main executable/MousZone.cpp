@@ -8,7 +8,7 @@
 
 void AssignHintLo(char* s, int time);
 
-class MouseZone 
+class MouseZone
 {
 public:
 	int x, y, x1, y1, Index, MoveIndex;
@@ -24,7 +24,8 @@ public:
 };
 
 extern bool LockMouse;
-MouseZone::MouseZone() 
+
+MouseZone::MouseZone()
 {
 	Index = -1;
 	Hint = NULL;
@@ -32,25 +33,26 @@ MouseZone::MouseZone()
 
 #define NZones 64
 MouseZone Zones[NZones];
-void InitZones() 
+
+void InitZones()
 {
-	for (int i = 0; i < NZones; i++) 
+	for (int i = 0; i < NZones; i++)
 	{
 		Zones[i].Index = -1;
 	}
 }
 
-int CreateRZone(int x, int y, int lx, int ly, HandlePro* HPro, HandlePro* RHPro, int Index, char* Hint) 
+int CreateRZone(int x, int y, int lx, int ly, HandlePro* HPro, HandlePro* RHPro, int Index, char* Hint)
 {
 	int i;
-	for (i = 0; i < NZones; i++) 
+	for (i = 0; i < NZones; i++)
 	{
 		if (Zones[i].Index == -1)
 		{
 			break;
 		}
 	}
-	if (i < NZones) 
+	if (i < NZones)
 	{
 		MouseZone* Z = &(Zones[i]);
 		Z->x = x;
@@ -77,15 +79,15 @@ int CreateRZone(
 	int x, int y, int lx, int ly,
 	HandlePro* HPro, HandlePro* RHPro,
 	int Index, char* Hint, char* HintLo
-) 
+)
 {
 	int i;
-	for (i = 0; i < NZones; i++) 
+	for (i = 0; i < NZones; i++)
 	{
 		if (Zones[i].Index == -1)
 			break;
 	}
-	if (i < NZones) 
+	if (i < NZones)
 	{
 		MouseZone* Z = &(Zones[i]);
 
@@ -101,22 +103,22 @@ int CreateRZone(
 		Z->KeyState = 0;
 		Z->ScanCode = 0xFF;
 
-		if (Z->Hint) 
+		if (Z->Hint)
 		{
 			free(Z->Hint);
 			Z->Hint = NULL;
 		}
-		if (Z->HintLo) 
+		if (Z->HintLo)
 		{
 			free(Z->HintLo);
 			Z->HintLo = NULL;
 		}
-		if (Hint) 
+		if (Hint)
 		{
 			Z->Hint = new char[strlen(Hint) + 1];
 			strcpy(Z->Hint, Hint);
 		}
-		if (HintLo) 
+		if (HintLo)
 		{
 			Z->HintLo = new char[strlen(HintLo) + 1];
 			strcpy(Z->Hint, Hint);
@@ -126,14 +128,14 @@ int CreateRZone(
 	return -1;
 }
 
-int CreateZone(int x, int y, int lx, int ly, HandlePro* HPro, int Index, char* Hint) 
+int CreateZone(int x, int y, int lx, int ly, HandlePro* HPro, int Index, char* Hint)
 {
 	int i;
-	for (i = 0; i < NZones; i++) 
+	for (i = 0; i < NZones; i++)
 	{
 		if (Zones[i].Index == -1)break;
 	}
-	if (i < NZones) 
+	if (i < NZones)
 	{
 		MouseZone* Z = &(Zones[i]);
 		Z->x = x;
@@ -155,30 +157,33 @@ int CreateZone(int x, int y, int lx, int ly, HandlePro* HPro, int Index, char* H
 	return -1;
 }
 
-void AssignMovePro(int i, HandlePro* HPro, int id) 
+void AssignMovePro(int i, HandlePro* HPro, int id)
 {
-	if (i != -1) 
+	if (i != -1)
 	{
 		Zones[i].MoveOver = HPro;
 		Zones[i].MoveIndex = id;
 	}
 }
 
-void AssignKeys(int i, byte Scan, byte State) 
+void AssignKeys(int i, byte Scan, byte State)
 {
-	if (i != -1) 
+	if (i != -1)
 	{
 		Zones[i].ScanCode = Scan;
 		Zones[i].KeyState = State;
 	}
 }
 
-int CreateZone(int x, int y, int lx, int ly, HandlePro* HPro, int Index, char* Hint, char* HintLo) {
+int CreateZone(int x, int y, int lx, int ly, HandlePro* HPro, int Index, char* Hint, char* HintLo)
+{
 	int i;
-	for (i = 0; i < NZones; i++) {
+	for (i = 0; i < NZones; i++)
+	{
 		if (Zones[i].Index == -1)break;
 	};
-	if (i < NZones) {
+	if (i < NZones)
+	{
 		MouseZone* Z = &(Zones[i]);
 		Z->x = x;
 		Z->y = y;
@@ -191,19 +196,23 @@ int CreateZone(int x, int y, int lx, int ly, HandlePro* HPro, int Index, char* H
 		Z->Pressed = false;
 		Z->KeyState = 0;
 		Z->ScanCode = 0xFF;
-		if (int(Z->Hint)) {
+		if (int(Z->Hint))
+		{
 			free(Z->Hint);
 			Z->Hint = NULL;
 		};
-		if (int(Z->HintLo)) {
+		if (int(Z->HintLo))
+		{
 			free(Z->HintLo);
 			Z->HintLo = NULL;
 		};
-		if (Hint) {
+		if (Hint)
+		{
 			Z->Hint = new char[strlen(Hint) + 1];
 			strcpy(Z->Hint, Hint);
 		};
-		if (HintLo) {
+		if (HintLo)
+		{
 			Z->HintLo = new char[strlen(HintLo) + 1];
 			strcpy(Z->HintLo, HintLo);
 		};
@@ -213,39 +222,51 @@ int CreateZone(int x, int y, int lx, int ly, HandlePro* HPro, int Index, char* H
 };
 bool MouseOverZone = 0;
 extern byte SpecCmd;
-byte LastPressedCodes[8] = { 0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF };
+byte LastPressedCodes[8] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 extern bool EnterChatMode;
 extern bool EditMapMode;
 byte ScanPressed[256];
-int CheckZonePressed(int i) {
+
+int CheckZonePressed(int i)
+{
 	if (EnterChatMode || EditMapMode)return false;
-	for (int j = 0; j < 8; j++)if (LastPressedCodes[j] != 0xFF) {
-		if (!(GetKeyState(LastPressedCodes[j]) & 0x8000))LastPressedCodes[j] = 0xFF;
-	};
-	if (i < NZones&&Zones[i].Index != -1) {
-		if (Zones[i].ScanCode != 0xFF) {
-			if ((GetKeyState(Zones[i].ScanCode) & 0x8000) || ScanPressed[Zones[i].ScanCode]) {
+	for (int j = 0; j < 8; j++)
+		if (LastPressedCodes[j] != 0xFF)
+		{
+			if (!(GetKeyState(LastPressedCodes[j]) & 0x8000))LastPressedCodes[j] = 0xFF;
+		};
+	if (i < NZones && Zones[i].Index != -1)
+	{
+		if (Zones[i].ScanCode != 0xFF)
+		{
+			if ((GetKeyState(Zones[i].ScanCode) & 0x8000) || ScanPressed[Zones[i].ScanCode])
+			{
 				byte State = Zones[i].KeyState;
 				byte Scan = Zones[i].ScanCode;
 
-				if (State & 1) {
+				if (State & 1)
+				{
 					if (!(GetKeyState(VK_CONTROL) & 0x8000))return false;
 				}
 				else if (GetKeyState(VK_CONTROL) & 0x8000)return false;
-				if (State & 2) {
+				if (State & 2)
+				{
 					if (!(GetKeyState(VK_MENU) & 0x8000))return false;
 				}
 				else if (GetKeyState(VK_MENU) & 0x8000)return false;
-				if (State & 4) {
+				if (State & 4)
+				{
 					if (!(GetKeyState(VK_SHIFT) & 0x8000))return false;
 				}
 				else if (GetKeyState(VK_SHIFT) & 0x8000)return false;
 
 				for (int j = 0; j < 8; j++)if (LastPressedCodes[j] == Scan)return 1;
-				for (int j = 0; j < 8; j++)if (LastPressedCodes[j] == 0xFF) {
-					LastPressedCodes[j] = Scan;
-					return 2;
-				};
+				for (int j = 0; j < 8; j++)
+					if (LastPressedCodes[j] == 0xFF)
+					{
+						LastPressedCodes[j] = Scan;
+						return 2;
+					};
 				return 2;
 			}
 			else return false;
@@ -257,21 +278,28 @@ int CheckZonePressed(int i) {
 extern byte KeyCodes[512][2];
 #define NKEYS 61
 extern byte ScanKeys[NKEYS];
-bool CheckSpritePressed(int sp) {
+
+bool CheckSpritePressed(int sp)
+{
 	if (sp < 0 || sp >= 512 || EnterChatMode || EditMapMode)return false;
-	if (KeyCodes[sp][0]) {
-		if ((GetKeyState(ScanKeys[KeyCodes[sp][0]]) & 0x8000) || ScanPressed[ScanKeys[KeyCodes[sp][0]]]) {
+	if (KeyCodes[sp][0])
+	{
+		if ((GetKeyState(ScanKeys[KeyCodes[sp][0]]) & 0x8000) || ScanPressed[ScanKeys[KeyCodes[sp][0]]])
+		{
 			byte State = KeyCodes[sp][1];
 			byte Scan = ScanKeys[KeyCodes[sp][0]];
-			if (State & 1) {
+			if (State & 1)
+			{
 				if (!(GetKeyState(VK_CONTROL) & 0x8000))return false;
 			}
 			else if (GetKeyState(VK_CONTROL) & 0x8000)return false;
-			if (State & 2) {
+			if (State & 2)
+			{
 				if (!(GetKeyState(VK_MENU) & 0x8000))return false;
 			}
 			else if (GetKeyState(VK_MENU) & 0x8000)return false;
-			if (State & 4) {
+			if (State & 4)
+			{
 				if (!(GetKeyState(VK_SHIFT) & 0x8000))return false;
 			}
 			else if (GetKeyState(VK_SHIFT) & 0x8000)return false;
@@ -300,8 +328,8 @@ void ControlZones()
 	for (i = 0; i < NZones; i++)
 	{
 		Z = &(Zones[i]);
-		if ((Z->Index != -1 && mouseX >= Z->x&&mouseX <= Z->x1
-			&& mouseY >= Z->y&&mouseY <= Z->y1)
+		if ((Z->Index != -1 && mouseX >= Z->x && mouseX <= Z->x1
+				&& mouseY >= Z->y && mouseY <= Z->y1)
 			|| Z->Pressed)
 		{
 			break;
@@ -329,11 +357,12 @@ void ControlZones()
 				AssignHintLo(Z->HintLo, 3);
 			}
 			if ((Lpressed || Z->Pressed == 2) && int(Z->Pro))
-			{//Handle mouse clicks?
+			{
+				//Handle mouse clicks?
 				(*Z->Pro)(Z->Index);
 			}
 			Lpressed = false;
-			if (Rpressed&&Z->RPro)
+			if (Rpressed && Z->RPro)
 			{
 				(*Z->RPro)(Z->Index);
 			}
@@ -357,7 +386,7 @@ void ControlZones()
 
 void DeleteZone(int i)
 {
-	if (i < NZones&&i >= 0)
+	if (i < NZones && i >= 0)
 	{
 		Zones[i].Index = -1;
 	}

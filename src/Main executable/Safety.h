@@ -6,13 +6,16 @@
 #define SafeSX (TopSH-SafeCellSH)
 #define SafeSize (SafeLX*SafeLX)
 extern int CurRStage;
-struct SafeCellInfo{
-	word Index,SN;
-	word Prio,BusyIndex,BusySN;
+
+struct SafeCellInfo
+{
+	word Index, SN;
+	word Prio, BusyIndex, BusySN;
 };
-void ResearchSafeCells(int MinR,int MaxR);
+
+void ResearchSafeCells(int MinR, int MaxR);
 void InitResearchSafeCell();
-SafeCellInfo* GetCellInfo(int x,int y);
+SafeCellInfo* GetCellInfo(int x, int y);
 void InitSafeInfo();
 void CloseSafeInfo();
 void GrenaderSuperman(OneObject* OB);

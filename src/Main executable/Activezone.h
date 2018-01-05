@@ -1,22 +1,26 @@
-class ActiveZone{
+class ActiveZone
+{
 public:
-	int x,y,R;
+	int x, y, R;
 	char* Name;
 	byte Dir;
-//--------------------//
+	//--------------------//
 	void Draw();
 };
-class ActiveGroup{
+
+class ActiveGroup
+{
 public:
 	word* Units;
 	word* Serials;
 	int N;
 	char* Name;
-	int MinX,MinY,MaxX,MaxY;
-	int AminX,AminY,AmaxX,AmaxY;
+	int MinX, MinY, MaxX, MaxY;
+	int AminX, AminY, AmaxX, AmaxY;
 	bool Visible;
 	void Draw(byte c);
 };
+
 extern ActiveGroup* AGroups;
 extern int NAGroups;
 extern int MaxAGroups;

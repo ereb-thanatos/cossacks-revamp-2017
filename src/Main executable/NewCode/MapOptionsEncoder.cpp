@@ -1,6 +1,6 @@
 //Encodes 10 given option values into a 7-digit number for map name
 //Reason: fixed network buffer size with limited mapname space
-int EncodeOptionsInNumber( int *selected_opt_values )
+int EncodeOptionsInNumber(int* selected_opt_values)
 {
 	int result = 0;
 	int temp_digit = 0;
@@ -18,16 +18,17 @@ int EncodeOptionsInNumber( int *selected_opt_values )
 
 	bool no_artillery = false;
 	if (3 == cannons_opts)
-	{//Will be encoded together with shipyard options
+	{
+		//Will be encoded together with shipyard options
 		no_artillery = true;
-		cannons_opts = 1;//'No Cannons...'
+		cannons_opts = 1; //'No Cannons...'
 	}
 
 	result += start_opts;
-	result += 10 * ( 3 * balloon_opts + cannons_opts );
+	result += 10 * (3 * balloon_opts + cannons_opts);
 	result += 100 * peace_opts;
-	result += 1000 * ( 3 * century_opts + market_opts );
-	result += 10000 * ( 4 * dip_opts + capture_opts );
+	result += 1000 * (3 * century_opts + market_opts);
+	result += 10000 * (4 * dip_opts + capture_opts);
 	result += 100000 * save_opts;
 	result += 1000000 * shipyard_opts;
 	if (no_artillery)
@@ -41,14 +42,14 @@ int EncodeOptionsInNumber( int *selected_opt_values )
 //Decodes 7-digit number into game settings
 //Saves settings values in result[10]
 //Returns 'Start options' value
-int DecodeOptionsFromNumber( const int number, int *result )
+int DecodeOptionsFromNumber(const int number, int* result)
 {
 	//Separate digits in number (starting with last)
-	int digits[7] = { 0 };
+	int digits[7] = {0};
 	digits[0] = number % 10;
 	for (int i = 1, divisor = 10; i < 7; i++)
 	{
-		digits[i] = ( number / divisor ) % 10;
+		digits[i] = (number / divisor) % 10;
 		divisor *= 10;
 	}
 

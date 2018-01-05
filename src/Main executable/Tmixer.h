@@ -20,7 +20,7 @@ protected:
 	BOOL m_bSuccess;
 	void ZeroAll();
 public:
-	BOOL IsOk() {return m_bSuccess;};
+	BOOL IsOk() { return m_bSuccess; };
 	BOOL On();
 	BOOL Off();
 	DWORD GetControlValue();

@@ -36,13 +36,15 @@
 #include "Recorder.h"
 #include "GSINC.H"
 #define NOGRAF
-class  OneGraph {
+
+class OneGraph
+{
 public:
 	int Color;
 	int* T;
 	int* V;
-	int  N;
-	int  NMax;
+	int N;
+	int NMax;
 	//------------
 	int MinT;
 	int MaxT;
@@ -52,9 +54,10 @@ public:
 	~OneGraph();
 	void AddTV(int T, int V);
 	void Clear();
-
 };
-class Graph {
+
+class Graph
+{
 public:
 	char* Header;
 	OneGraph GRP[16];
@@ -63,20 +66,27 @@ public:
 	void Clear();
 	void Draw(int x0, int y0, int Lx, int Ly);
 };
-Graph::Graph() {
+
+Graph::Graph()
+{
 	Header = NULL;
 };
-OneGraph::OneGraph() {
+
+OneGraph::OneGraph()
+{
 	T = NULL;
 	V = NULL;
 	NMax = 0;
 	N = 0;
 	Color = -1;
 };
-void OneGraph::Clear() {
+
+void OneGraph::Clear()
+{
 	N = 0;
 	Color = -1;
-	if (NMax) {
+	if (NMax)
+	{
 		free(T);
 		free(V);
 	};
@@ -84,24 +94,31 @@ void OneGraph::Clear() {
 	V = NULL;
 	NMax = 0;
 };
-OneGraph::~OneGraph() {
+
+OneGraph::~OneGraph()
+{
 	Clear();
 };
-void OneGraph::AddTV(int t, int v) {
-	if (N >= NMax) {
+
+void OneGraph::AddTV(int t, int v)
+{
+	if (N >= NMax)
+	{
 		NMax += 1024;
 		T = (int*)realloc(T, NMax * 4);
 		V = (int*)realloc(V, NMax * 4);
 	};
 	T[N] = t;
 	V[N] = v;
-	if (!N) {
+	if (!N)
+	{
 		MinT = t;
 		MaxT = t;
 		MinV = v;
 		MaxV = v;
 	}
-	else {
+	else
+	{
 		if (t < MinT)MinT = t;
 		if (t > MaxT)MaxT = t;
 		if (v < MinV)MinV = v;
@@ -109,48 +126,65 @@ void OneGraph::AddTV(int t, int v) {
 	};
 	N++;
 };
-void Graph::Add(int t, int v, byte c) {
-	for (int i = 0; i < 16; i++)if (GRP[i].Color == c) {
-		GRP[i].AddTV(t, v);
-		return;
-	};
-	for (int i = 0; i < 16; i++)if (GRP[i].Color == -1) {
-		GRP[i].Color = c;
-		GRP[i].AddTV(t, v);
-		return;
-	};
+
+void Graph::Add(int t, int v, byte c)
+{
+	for (int i = 0; i < 16; i++)
+		if (GRP[i].Color == c)
+		{
+			GRP[i].AddTV(t, v);
+			return;
+		};
+	for (int i = 0; i < 16; i++)
+		if (GRP[i].Color == -1)
+		{
+			GRP[i].Color = c;
+			GRP[i].AddTV(t, v);
+			return;
+		};
 };
-void Graph::Clear() {
+
+void Graph::Clear()
+{
 	for (int i = 0; i < 16; i++)GRP[i].Clear();
 };
 void xLine(int x, int y, int x1, int y1, byte c);
-void Graph::Draw(int x0, int y0, int Lx, int Ly) {
+
+void Graph::Draw(int x0, int y0, int Lx, int Ly)
+{
 	int MaxT = -2147483647; //BUGFIX: -2147483648 causes C4146
 	int MinT = 2147483647;
 	int MaxV = -2147483647;
 	int MinV = 2147483647;
-	for (int i = 0; i < 16; i++) {
+	for (int i = 0; i < 16; i++)
+	{
 		OneGraph* OG = GRP + i;
-		if (OG->N) {
+		if (OG->N)
+		{
 			if (OG->MinT < MinT)MinT = OG->MinT;
 			if (OG->MaxT > MaxT)MaxT = OG->MaxT;
 			if (OG->MinV < MinV)MinV = OG->MinV;
 			if (OG->MaxV > MaxV)MaxV = OG->MaxV;
 		};
 	};
-	if (MinT < MaxT && MinV < MaxV) {
+	if (MinT < MaxT && MinV < MaxV)
+	{
 		OneGraph* OG = GRP;
-		for (int i = 0; i < 16; i++) {
-			if (OG->N) {
+		for (int i = 0; i < 16; i++)
+		{
+			if (OG->N)
+			{
 				int NP = OG->N;
 				int* V = OG->V;
 				int* T = OG->T;
 				int px = 0;
 				int py = 0;
-				for (int j = 0; j < NP; j++) {
-					int x = x0 + ((T[j] - MinT)*Lx) / (MaxT - MinT);
-					int y = y0 + Ly - ((V[j] - MinV)*Ly) / (MaxV - MinV);
-					if (j) {
+				for (int j = 0; j < NP; j++)
+				{
+					int x = x0 + ((T[j] - MinT) * Lx) / (MaxT - MinT);
+					int y = y0 + Ly - ((V[j] - MinV) * Ly) / (MaxV - MinV);
+					if (j)
+					{
 						xLine(px, py, x, y, OG->Color);
 					};
 					px = x;
@@ -170,8 +204,12 @@ void Graph::Draw(int x0, int y0, int Lx, int Ly) {
 	};
 };
 extern int RealLx;
-char* GHDR[10] = { "Add Time","Current Step Time","Ping","Input stream","Output stream","Execute Buffer Size","Max send block","Send Frequency","MaxPingTime","?" };
+char* GHDR[10] = {
+	"Add Time", "Current Step Time", "Ping", "Input stream", "Output stream", "Execute Buffer Size", "Max send block",
+	"Send Frequency", "MaxPingTime", "?"
+};
 Graph GRPS[10];
+
 void DrawAllGrp()
 {
 #ifndef NOGRAF

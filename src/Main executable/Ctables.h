@@ -1,4 +1,4 @@
-extern byte fog[8192+1024];
+extern byte fog[8192 + 1024];
 extern byte wfog[8192];
 extern byte yfog1[8192];
 extern byte rfog[8192];

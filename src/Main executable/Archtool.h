@@ -24,5 +24,5 @@
 //    %%%%%%%% - Lo part of KeyColor
 // };
 //
-bool SaveArch24(char* Name,byte* Data,int Lx,int Ly);
-bool ReadArch24(char* Name,BMPformat* BM,byte** data);
+bool SaveArch24(char* Name, byte* Data, int Lx, int Ly);
+bool ReadArch24(char* Name, BMPformat* BM, byte** data);

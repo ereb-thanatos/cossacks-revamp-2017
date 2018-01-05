@@ -16,10 +16,10 @@ BOOL CCommCore::QueuePacketExists(u_long lStamp)
 
 // ---------------------------------------------------------------------------------------------
 
-BOOL CCommCore::QueueAddPacket(PEER_ADDR			PeerAddr,
-	PEER_PORT			PeerPort,
-	LPCC_PK_RAW_FRAME	lpRawFrame,
-	u_short				uSize)
+BOOL CCommCore::QueueAddPacket(PEER_ADDR PeerAddr,
+                               PEER_PORT PeerPort,
+                               LPCC_PK_RAW_FRAME lpRawFrame,
+                               u_short uSize)
 {
 	//	_log_message("QueueAddPacket()");
 
@@ -46,8 +46,8 @@ BOOL CCommCore::QueueDropPacket(int iFrameNum)
 	free(m_FrameList[iFrameNum].m_lpFrame);
 
 	memmove(&m_FrameList[iFrameNum],
-		&m_FrameList[iFrameNum + 1],
-		(m_uFrameCount - iFrameNum - 1) * sizeof(FRAME_ENTRY));
+	        &m_FrameList[iFrameNum + 1],
+	        (m_uFrameCount - iFrameNum - 1) * sizeof(FRAME_ENTRY));
 
 	m_uFrameCount--;
 
@@ -61,7 +61,8 @@ BOOL CCommCore::QueueDropConfirmedPacket(u_long lStamp)
 	//	_log_message("QueueDropConfirmedPacket()");
 
 	for (int i = 0; i < m_uFrameCount; i++)
-		if (m_FrameList[i].m_lpFrame->m_lStamp == lStamp) {
+		if (m_FrameList[i].m_lpFrame->m_lStamp == lStamp)
+		{
 			return QueueDropPacket(i);
 			break;
 		};
@@ -76,12 +77,12 @@ BOOL CCommCore::QueueProcess()
 	BOOL bDrops;
 
 	int j = 0;
-	do 
+	do
 	{
 		bDrops = FALSE;
-		for (int i = j; i < m_uFrameCount; i++) 
+		for (int i = j; i < m_uFrameCount; i++)
 		{
-			if (m_FrameList[i].m_uRetrCount > RETRY_COUNT) 
+			if (m_FrameList[i].m_uRetrCount > RETRY_COUNT)
 			{
 				QueueDropPacket(i);
 				bDrops = TRUE;
@@ -89,7 +90,8 @@ BOOL CCommCore::QueueProcess()
 				break;
 			}
 		}
-	} while (bDrops);
+	}
+	while (bDrops);
 
 	dwTime = GetTickCount();
 

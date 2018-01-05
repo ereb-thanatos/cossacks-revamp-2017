@@ -27,16 +27,17 @@
 #endif  /* _CRTBLD */
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif  /* __cplusplus */
 
-/* Additional _iobuf[]._flag values
- *
- *  _IOSETVBUF - Indicates file was buffered via a setvbuf (or setbuf call).
- *               Currently used ONLY in _filbuf.c, _getbuf.c, fseek.c and
- *               setvbuf.c, to disable buffer resizing on "random access"
- *               files if the buffer was user-installed.
- */
+	/* Additional _iobuf[]._flag values
+	 *
+	 *  _IOSETVBUF - Indicates file was buffered via a setvbuf (or setbuf call).
+	 *               Currently used ONLY in _filbuf.c, _getbuf.c, fseek.c and
+	 *               setvbuf.c, to disable buffer resizing on "random access"
+	 *               files if the buffer was user-installed.
+	 */
 
 #define _IOYOURBUF      0x0100
 #define _IOSETVBUF      0x0400
@@ -46,7 +47,7 @@ extern "C" {
 #define _IOCOMMIT       0x4000
 
 
-/* General use macros */
+	/* General use macros */
 
 #define inuse(s)        ((s)->_flag & (_IOREAD|_IOWRT|_IORW))
 #define mbuf(s)         ((s)->_flag & _IOMYBUF)

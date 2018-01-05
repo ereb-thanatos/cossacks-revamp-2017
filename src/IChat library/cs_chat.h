@@ -1,4 +1,5 @@
-struct OneChatPlayer{
+struct OneChatPlayer
+{
 	char Nick[32];
 	char Info[64];
 	char mail[64];
@@ -8,7 +9,9 @@ struct OneChatPlayer{
 	bool ValidMail:1;
 	bool Muted:1;
 };
-class ChatMsg{
+
+class ChatMsg
+{
 public:
 	char** Nick;
 	char** Message;
@@ -16,17 +19,22 @@ public:
 	int MaxMsg;
 	ChatMsg();
 	~ChatMsg();
-	void Add(char* nick,char* msg);
-	bool RemoveOne(char* nick,char* buf,int Len);
+	void Add(char* nick, char* msg);
+	bool RemoveOne(char* nick, char* buf, int Len);
 };
-class OneChannel{
+
+class OneChannel
+{
 public:
 	int NPlayers;
 	int MaxPlayers;
 	OneChatPlayer* Players;
 };
+
 #define NCHNL 2
-class ChatSystem{
+
+class ChatSystem
+{
 public:
 	CHAT chat;
 	chatGlobalCallbacks globalCallbacks;
@@ -36,7 +44,7 @@ public:
 	CHATBool enterChannelSuccess[NCHNL];
 	//CHATBool enterChannelSuccess;
 	char serverAddress[128];
-	int  port;
+	int port;
 	char chatNick[128];
 	char chatUser[128];
 	char chatName[128];
@@ -49,7 +57,7 @@ public:
 
 	int NPlayers();
 	OneChatPlayer* Players();
-	
+
 	int NAbsPlayers;
 	int MaxAbsPlayers;
 	OneChatPlayer* AbsPlayers;
@@ -59,15 +67,16 @@ public:
 	//------------------//
 	ChatSystem();
 	~ChatSystem();
-	void AddPlayer(char* Nick,int c);
-	void DelPlayer(char* Nick,int c);
+	void AddPlayer(char* Nick, int c);
+	void DelPlayer(char* Nick, int c);
 	void AddAbsentPlayer(char* Nick);
 	void DelAbsentPlayer(char* Nick);
 	void CheckMessage(char* message);
 	void Setup();
-	bool ConnectToChat(char* Nick,char* Info,char* mail,char* Serv);
+	bool ConnectToChat(char* Nick, char* Info, char* mail, char* Serv);
 	void Disconnect();
 	void Process();
-	void SortPlayers(OneChatPlayer* PL,int N);
+	void SortPlayers(OneChatPlayer* PL, int N);
 };
+
 extern ChatSystem CSYS;

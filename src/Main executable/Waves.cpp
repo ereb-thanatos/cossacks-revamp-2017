@@ -21,7 +21,9 @@
 #include "3DGraph.h"
 #include "MapSprites.h"
 void ErrM(char* s);
-class WaveFrame {
+
+class WaveFrame
+{
 public:
 	bool Enabled;
 	int x;
@@ -34,6 +36,7 @@ public:
 	char CheckShiftY;
 	byte Direction;
 };
+
 #define MaxWFrames  512
 WaveFrame WAVES[MaxWFrames];
 int NWaves;
@@ -46,17 +49,21 @@ int MaxX;
 int MaxY;
 byte WSET[256];
 NewAnimation* GetNewAnimationByName(char* Name);
-void InitWaves() {
+
+void InitWaves()
+{
 	for (int i = 0; i < MaxWFrames; i++)WAVES[i].Enabled = false;
 };
-void LoadWaveAnimations() {
+
+void LoadWaveAnimations()
+{
 	ResFile ff = RReset("water.set");
 	RBlockRead(ff, WSET, 256);
 	RClose(ff);
 	char gx[128];
 	char ann[64];
 	GFILE* f1 = Gopen("WaveList.lst", "r");
-	
+
 	if (f1)
 	{
 		Gscanf(f1, "%d", &NWaves);
@@ -82,8 +89,8 @@ inline bool CheckColor(int x, int y)
 {
 	if (x >= 0 && y >= 0 && x <= MaxX && y <= MaxY)
 	{
-		byte c = ((byte*)(ScreenPtr))[smapx + x + (smapy + y)*SCRSizeX];
-		return(0 != WSET[c]);
+		byte c = ((byte*)(ScreenPtr))[smapx + x + (smapy + y) * SCRSizeX];
+		return (0 != WSET[c]);
 	}
 	else
 	{
@@ -93,6 +100,7 @@ inline bool CheckColor(int x, int y)
 
 void ShowRLCItemBlue(int x, int y, lpRLCTable lprt, int n);
 int mul3(int);
+
 void ProcessWaveFrames()
 {
 	MaxX = (smaplx << Shifter) - 1;
@@ -104,14 +112,15 @@ void ProcessWaveFrames()
 	for (int i = 0; i < MaxWFrames; i++)
 	{
 		WaveFrame* WF = &WAVES[i];
-		if (WF->Enabled) {
+		if (WF->Enabled)
+		{
 			NFram++;
 			scx = (WF->x >> 2) - dx;
 			scy = (mul3(WF->y) >> 4) - dy;
 			if (!(CheckColor(scx, scy) &&
-				CheckColor(scx + WF->CheckShiftX, scy + WF->CheckShiftY) &&
-				CheckColor(scx + WF->CheckShiftX, scy + WF->CheckShiftY))
-				)
+					CheckColor(scx + WF->CheckShiftX, scy + WF->CheckShiftY) &&
+					CheckColor(scx + WF->CheckShiftX, scy + WF->CheckShiftY))
+			)
 			{
 				WF->vx = 0;
 				WF->vy = 0;
@@ -121,15 +130,18 @@ void ProcessWaveFrames()
 	//processing creation new waves
 	int cfm = 0;
 	int NAttempt = 60;
-	do {
+	do
+	{
 		//search for empty frame
-		while (cfm < MaxWFrames&&WAVES[cfm].Enabled)cfm++;
-		if (cfm < MaxWFrames) {
-			int x1 = (rand()*MaxX) >> 15;
-			int y1 = (rand()*MaxY) >> 15;
+		while (cfm < MaxWFrames && WAVES[cfm].Enabled)cfm++;
+		if (cfm < MaxWFrames)
+		{
+			int x1 = (rand() * MaxX) >> 15;
+			int y1 = (rand() * MaxY) >> 15;
 			if (CheckColor(x1, y1) &&
 				CheckColor(x1 + 16, y1 + 16) &&
-				CheckColor(x1 - 16, y1 - 16)) {
+				CheckColor(x1 - 16, y1 - 16))
+			{
 				//Creating wave
 				WaveFrame* WF = &WAVES[cfm];
 				WF->Enabled = true;
@@ -141,16 +153,19 @@ void ProcessWaveFrames()
 				WF->CheckShiftY = -16;
 				WF->Enabled = true;
 				WF->CurSprite = 0;
-				WF->WAnm = WaveAnm[(rand()*NWaves) >> 15];
+				WF->WAnm = WaveAnm[(rand() * NWaves) >> 15];
 				cfm++;
 			};
 		};
 		NAttempt--;
-	} while (NAttempt&&cfm < MaxWFrames);
+	}
+	while (NAttempt && cfm < MaxWFrames);
 	//Processing motion
-	for (int i = 0; i < MaxWFrames; i++) {
+	for (int i = 0; i < MaxWFrames; i++)
+	{
 		WaveFrame* WF = &WAVES[i];
-		if (WF->Enabled) {
+		if (WF->Enabled)
+		{
 			WF->x += WF->vx;
 			WF->y += WF->vy;
 			scx = smapx + (WF->x >> 2) - dx;

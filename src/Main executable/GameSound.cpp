@@ -32,6 +32,7 @@ byte SnDanger[MaxSnd];
 word NSnd[MaxSnd];
 word NSounds;
 int NoMineSound = -1;
+
 void Errs(LPCSTR s)
 {
 	MessageBox(hwnd, s, "Sound loading failed...", MB_ICONWARNING | MB_OK);
@@ -39,7 +40,9 @@ void Errs(LPCSTR s)
 };
 extern short randoma[8192];
 int srpos;
-int srando() {
+
+int srando()
+{
 	srpos++;
 	srpos &= 8191;
 	return randoma[srpos];
@@ -47,7 +50,9 @@ int srando() {
 bool IsSound;
 void normstr(char* str);
 void NLine(GFILE* f);
-void LoadSounds(char* fn) {
+
+void LoadSounds(char* fn)
+{
 	char sss[128];
 	char idn[128];
 	int srpos = 0;
@@ -58,11 +63,14 @@ void LoadSounds(char* fn) {
 
 	char ccpr[128];
 	ccpr[0] = 0;
-	if (f1 != INVALID_HANDLE_VALUE) {
-		do {
-		uuux:	int Extent = 0;
+	if (f1 != INVALID_HANDLE_VALUE)
+	{
+		do
+		{
+		uuux: int Extent = 0;
 			z = Gscanf(f1, "%s", idn);
-			if (idn[0] == '/') {
+			if (idn[0] == '/')
+			{
 				NLine(f1);
 				goto uuux;
 			};
@@ -71,63 +79,78 @@ void LoadSounds(char* fn) {
 			NSnd[NSounds] = nsn;
 			SoundID[NSounds] = new char[strlen(idn) + 1 - Extent];
 			strcpy(SoundID[NSounds], idn + Extent);
-			if (z) {
+			if (z)
+			{
 				NLine(f1);
 				SnDanger[NSounds] = 0;
-				for (int i = 0; i < nsn; i++) {
+				for (int i = 0; i < nsn; i++)
+				{
 					int Vol = 0;
-				uuu:			if (Extent) {
-					z = Gscanf(f1, "%s%d", sss, &Vol);
-				}
-								else {
-									z = Gscanf(f1, "%s", sss);
-								};
-								if (sss[0] == '/') {
-									NLine(f1);
-									goto uuu;
-								};
-								if (!strcmp(sss, "DANGER")) {
-									SnDanger[NSounds] = 1;
-									goto uuu;
-								};
-								normstr(sss);
-								if (SoundOK) {
-									if (!strcmp(ccpr, sss)) {
-										SndTable[NSounds][i] = CDS->DuplicateSoundBuffer(CDS->m_currentBufferNum);
-										CDS->SetLastVolume(Vol);
-									}
-									else {
-										CWave CW(sss);
+				uuu: if (Extent)
+					{
+						z = Gscanf(f1, "%s%d", sss, &Vol);
+					}
+					else
+					{
+						z = Gscanf(f1, "%s", sss);
+					};
+					if (sss[0] == '/')
+					{
+						NLine(f1);
+						goto uuu;
+					};
+					if (!strcmp(sss, "DANGER"))
+					{
+						SnDanger[NSounds] = 1;
+						goto uuu;
+					};
+					normstr(sss);
+					if (SoundOK)
+					{
+						if (!strcmp(ccpr, sss))
+						{
+							SndTable[NSounds][i] = CDS->DuplicateSoundBuffer(CDS->m_currentBufferNum);
+							CDS->SetLastVolume(Vol);
+						}
+						else
+						{
+							CWave CW(sss);
 
-										int sdid;
-										if (CW.WaveOK()) {
-											sdid = CDS->CreateSoundBuffer(&CW);
-											CDS->SetLastVolume(Vol);
-											if (CDS->DirectSoundOK()) {
-												CDS->CopyWaveToBuffer(&CW, sdid);
-											}
-											else {
-												sprintf(idn, "Could not create sound buffer : %s", sss);
-												Errs(idn);
-											};
-											SndTable[NSounds][i] = sdid;
-											strcpy(ccpr, sss);
-										}
-										else {
-											//sprintf(idn,"Could not load sound : %s",sss);
-											//Errs(idn);
-											nsn--;
-											NSnd[NSounds]--;
-											i--;
-										};
-									};
+							int sdid;
+							if (CW.WaveOK())
+							{
+								sdid = CDS->CreateSoundBuffer(&CW);
+								CDS->SetLastVolume(Vol);
+								if (CDS->DirectSoundOK())
+								{
+									CDS->CopyWaveToBuffer(&CW, sdid);
+								}
+								else
+								{
+									sprintf(idn, "Could not create sound buffer : %s", sss);
+									Errs(idn);
 								};
+								SndTable[NSounds][i] = sdid;
+								strcpy(ccpr, sss);
+							}
+							else
+							{
+								//sprintf(idn,"Could not load sound : %s",sss);
+								//Errs(idn);
+								nsn--;
+								NSnd[NSounds]--;
+								i--;
+							};
+						};
+					};
 				};
 			};
 			NSounds++;
-		} while (z);
+		}
+		while (z);
 	}
-	else {
+	else
+	{
 		sprintf(sss, "Could not open sounds list : %s", fn);
 		Errs(sss);
 	};
@@ -138,32 +161,40 @@ void LoadSounds(char* fn) {
 	//};
 	//NoMineSound=GetSound("NOFREEMINES");
 };
+
 __declspec(dllexport)
-void PlayEffect(int n, int pan, int vol) {
+void PlayEffect(int n, int pan, int vol)
+{
 	if (!SoundOK)return;
 	vol -= (100 - WarSound) * 40;
-	if (n < NSounds) {
+	if (n < NSounds)
+	{
 		if (SnDanger[n])FieldDelay = 400;
-		if (NSnd[n] > 0) {
+		if (NSnd[n] > 0)
+		{
 			int maxsnd = NSnd[n];
 			int u = maxsnd;
-			int nnn = (srando()*maxsnd) >> 15;
+			int nnn = (srando() * maxsnd) >> 15;
 			bool sndmade = true;
-			do {
+			do
+			{
 				int sid = SndTable[n][nnn];
 				bool poss = CDS->IsPlaying(sid);
-				if (!poss) {
+				if (!poss)
+				{
 					CDS->SetVolume(sid, vol/*+CDS->Volume[sid]*/);
 					CDS->SetPan(sid, pan);
 					CDS->PlaySound(sid);
 					sndmade = false;
 				}
-				else {
+				else
+				{
 					u--;
 					nnn++;
 					if (nnn >= maxsnd)nnn = 0;
 				};
-			} while (sndmade&&u);
+			}
+			while (sndmade && u);
 			/*
 			if(sndmade&&srando()<200){
 				int nnn=(srando()*maxsnd)>>15;
@@ -175,31 +206,39 @@ void PlayEffect(int n, int pan, int vol) {
 		};
 	};
 };
-void PlayCoorEffect(int n, int x, int y, int pan, int vol) {
+
+void PlayCoorEffect(int n, int x, int y, int pan, int vol)
+{
 	if (!SoundOK)return;
 	vol -= (100 - WarSound) * 40;
-	if (n < NSounds) {
+	if (n < NSounds)
+	{
 		if (SnDanger[n])FieldDelay = 400;
-		if (NSnd[n] > 0) {
+		if (NSnd[n] > 0)
+		{
 			int maxsnd = NSnd[n];
 			int u = maxsnd;
-			int nnn = (srando()*maxsnd) >> 15;
+			int nnn = (srando() * maxsnd) >> 15;
 			bool sndmade = true;
-			do {
+			do
+			{
 				int sid = SndTable[n][nnn];
 				bool poss = CDS->IsPlaying(sid);
-				if (!poss) {
+				if (!poss)
+				{
 					CDS->SetVolume(sid, vol/*+CDS->Volume[sid]*/);
 					CDS->SetPan(sid, pan);
 					CDS->PlayCoorSound(sid, x, y);
 					sndmade = false;
 				}
-				else {
+				else
+				{
 					u--;
 					nnn++;
 					if (nnn >= maxsnd)nnn = 0;
 				};
-			} while (sndmade&&u);
+			}
+			while (sndmade && u);
 			/*
 			if(sndmade&&srando()<200){
 				int nnn=(srando()*maxsnd)>>15;
@@ -211,36 +250,45 @@ void PlayCoorEffect(int n, int x, int y, int pan, int vol) {
 		};
 	};
 };
-void PlaySingleEffect(int n, int pan, int vol) {
+
+void PlaySingleEffect(int n, int pan, int vol)
+{
 	if (!SoundOK)return;
 	vol -= (100 - WarSound) * 40;
-	if (n < NSounds) {
+	if (n < NSounds)
+	{
 		if (SnDanger[n])FieldDelay = 400;
-		if (NSnd[n] > 0) {
+		if (NSnd[n] > 0)
+		{
 			int maxsnd = NSnd[n];
-			for (int i = 0; i < maxsnd; i++) {
+			for (int i = 0; i < maxsnd; i++)
+			{
 				int sid = SndTable[n][i];
 				if (CDS->IsPlaying(sid))return;
 			};
 
 			int u = maxsnd;
-			int nnn = (srando()*maxsnd) >> 15;
+			int nnn = (srando() * maxsnd) >> 15;
 			bool sndmade = true;
-			do {
+			do
+			{
 				int sid = SndTable[n][nnn];
 				bool poss = CDS->IsPlaying(sid);
-				if (!poss) {
+				if (!poss)
+				{
 					CDS->SetVolume(sid, vol);
 					CDS->SetPan(sid, pan);
 					CDS->PlaySound(sid);
 					sndmade = false;
 				}
-				else {
+				else
+				{
 					u--;
 					nnn++;
 					if (nnn >= maxsnd)nnn = 0;
 				};
-			} while (sndmade&&u);
+			}
+			while (sndmade && u);
 			/*
 			if(sndmade&&srando()<200){
 				int nnn=(srando()*maxsnd)>>15;
@@ -255,7 +303,9 @@ void PlaySingleEffect(int n, int pan, int vol) {
 
 int SMinX, SMaxX, LoMinX, LoMaxX, SMinY, SMaxY, LoMinY, LoMaxY, CenterY;
 int CenterX;
-void PrepareSound() {
+
+void PrepareSound()
+{
 	if (FieldDelay)FieldDelay--;
 	SMinX = mapx << 5;
 	SMaxX = (mapx + smaplx) << 5;
@@ -273,10 +323,11 @@ void PrepareSound() {
 extern int FogMode;
 word GetFog(int x, int y);
 
-void AddEffectV(int x, int y, int vx, int id) {
+void AddEffectV(int x, int y, int vx, int id)
+{
 	if (!SoundOK)return;
 	if (id < 0)return;
-	if (x<LoMinX || x>LoMaxX || y<LoMinY || y>LoMaxY)return;
+	if (x < LoMinX || x > LoMaxX || y < LoMinY || y > LoMaxY)return;
 	//fog checking;
 	if (FogMode && (!NATIONS[MyNation].Vision) && GetFog(x, y << 1) < 900)return;
 
@@ -289,17 +340,23 @@ void AddEffectV(int x, int y, int vx, int id) {
 	if (pan < -4000)pan = -4000;
 	if (pan > 4000)pan = 4000;
 	//int pan=-9999;
-	if (x >= SMinX&&y >= SMinY&&x < SMaxX&&y < SMaxY) {
+	if (x >= SMinX && y >= SMinY && x < SMaxX && y < SMaxY)
+	{
 		PlayCoorEffect(id, x, vx, pan, 0);
 	}
-	else {
+	else
+	{
 		PlayCoorEffect(id, x, vx, pan, -800);
 	};
 };
-void AddEffect(int x, int y, int id) {
+
+void AddEffect(int x, int y, int id)
+{
 	AddEffectV(x, y, 0, id);
 };
-void AddUnlimitedEffect(int x, int y, int id) {
+
+void AddUnlimitedEffect(int x, int y, int id)
+{
 	if (!SoundOK)return;
 	if (id < 0)return;
 	//fog checking;
@@ -316,10 +373,12 @@ void AddUnlimitedEffect(int x, int y, int id) {
 	//int pan=-9999;
 	PlayEffect(id, pan, 0);
 };
-void AddSingleEffect(int x, int y, int id) {
+
+void AddSingleEffect(int x, int y, int id)
+{
 	if (!SoundOK)return;
 	if (id < 0)return;
-	if (x<LoMinX || x>LoMaxX || y<LoMinY || y>LoMaxY)return;
+	if (x < LoMinX || x > LoMaxX || y < LoMinY || y > LoMaxY)return;
 	//fog checking;
 	if (GetFog(x, y << 1) < 900 && FogMode)return;
 
@@ -332,14 +391,18 @@ void AddSingleEffect(int x, int y, int id) {
 	if (pan < -4000)pan = -4000;
 	if (pan > 4000)pan = 4000;
 	//int pan=-9999;
-	if (x >= SMinX&&y >= SMinY&&x < SMaxX&&y < SMaxY) {
+	if (x >= SMinX && y >= SMinY && x < SMaxX && y < SMaxY)
+	{
 		PlaySingleEffect(id, pan, 0);
 	}
-	else {
+	else
+	{
 		PlaySingleEffect(id, pan, -800);
 	};
 };
-void AddWarEffect(int x, int y, int id) {
+
+void AddWarEffect(int x, int y, int id)
+{
 	if (!SoundOK)return;
 	if (GetV_fmap(x, y) < 2000)return;
 	if (id < 0)return;
@@ -348,20 +411,25 @@ void AddWarEffect(int x, int y, int id) {
 	int mx1 = mapx + smaplx + 16;
 	int my1 = mapy + smaply + 16;
 	int maxp = div(8000, smaplx).quot;
-	int pan = (x - (smaplx >> 1) - mapx)*maxp;
+	int pan = (x - (smaplx >> 1) - mapx) * maxp;
 	if (pan < -4000)pan = -4000;
 	if (pan > 4000)pan = 4000;
 	//int pan=-9999;
-	if (x >= mapx&&y >= mapy&&x < mapx + smaplx&&y < mapy + smaply) {
+	if (x >= mapx && y >= mapy && x < mapx + smaplx && y < mapy + smaply)
+	{
 		PlayEffect(id, pan, WarSound);
 	}
-	else {
-		if (x > mx0&&y > my0&&x < mx1&&y < my1) {
+	else
+	{
+		if (x > mx0 && y > my0 && x < mx1 && y < my1)
+		{
 			PlayEffect(id, pan, WarSound - 400);
 		};
 	};
 };
-void AddWorkEffect(int x, int y, int id) {
+
+void AddWorkEffect(int x, int y, int id)
+{
 	if (!SoundOK)return;
 	if (GetV_fmap(x, y) < 2000)return;
 	if (id < 0)return;
@@ -370,21 +438,24 @@ void AddWorkEffect(int x, int y, int id) {
 	int mx1 = mapx + smaplx + 16;
 	int my1 = mapy + smaply + 16;
 	int maxp = div(8000, smaplx).quot;
-	int pan = (x - (smaplx >> 1) - mapx)*maxp;
+	int pan = (x - (smaplx >> 1) - mapx) * maxp;
 	if (pan < -4000)pan = -4000;
 	if (pan > 4000)pan = 4000;
 	//int pan=-9999;
-	if (x >= mapx&&y >= mapy&&x < mapx + smaplx&&y < mapy + smaply) {
+	if (x >= mapx && y >= mapy && x < mapx + smaplx && y < mapy + smaply)
+	{
 		PlayEffect(id, pan, WorkSound - 200);
 	}
-	else {
-		if (x > mx0&&y > my0&&x < mx1&&y < my1) {
+	else
+	{
+		if (x > mx0 && y > my0 && x < mx1 && y < my1)
+		{
 			PlayEffect(id, pan, WorkSound - 600);
 		};
 	};
 }
 
-void AddOrderEffect(int x, int y, int id) 
+void AddOrderEffect(int x, int y, int id)
 {
 	if (!SoundOK)
 	{
@@ -405,7 +476,7 @@ void AddOrderEffect(int x, int y, int id)
 	int mx1 = mapx + smaplx + 16;
 	int my1 = mapy + smaply + 16;
 	int maxp = div(8000, smaplx).quot;
-	int pan = (x - (smaplx / 2) - mapx)*maxp;
+	int pan = (x - (smaplx / 2) - mapx) * maxp;
 
 	if (pan < -4000)
 	{
@@ -417,12 +488,13 @@ void AddOrderEffect(int x, int y, int id)
 		pan = 4000;
 	}
 
-	if (x >= mapx && y >= mapy && x < mapx + smaplx && y < mapy + smaply) {
+	if (x >= mapx && y >= mapy && x < mapx + smaplx && y < mapy + smaply)
+	{
 		PlayEffect(id, pan, OrderSound);
 	}
-	else 
+	else
 	{
-		if (x > mx0 && y > my0 && x < mx1 && y < my1) 
+		if (x > mx0 && y > my0 && x < mx1 && y < my1)
 		{
 			PlayEffect(id, pan, OrderSound - 400);
 		}

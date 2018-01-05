@@ -12,7 +12,7 @@
 #endif // _MSC_VER > 1000
 
 
-class GFILE_API CGSCset  
+class GFILE_API CGSCset
 {
 public:
 	LPGSCfile gWriteOpen(LPCSTR lpcsFileName);
@@ -27,11 +27,11 @@ public:
 	VOID gSeekFile(LPGSCfile gFile, DWORD dwPosition);
 	VOID gReadFile(LPGSCfile gFile, LPBYTE lpbBuffer, DWORD dwSize);
 	VOID gCloseFile(LPGSCfile gFile);
-	LPGSCfile gOpenFile(LPCSTR lpcsFileName,bool Only);
+	LPGSCfile gOpenFile(LPCSTR lpcsFileName, bool Only);
 	CGSCset();
 	virtual ~CGSCset();
 
-//private:
+	//private:
 	LPGSCArchList m_ArchList;
 };
 

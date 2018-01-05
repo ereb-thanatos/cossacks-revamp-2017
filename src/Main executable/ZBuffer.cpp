@@ -20,7 +20,7 @@
 
 byte CurDrawNation = 0;
 
-class ZElement//28 bytes
+class ZElement //28 bytes
 {
 public:
 	word FileID;
@@ -37,7 +37,7 @@ public:
 extern bool CINFMOD;
 
 //Global limit for ZCache, made to prevent access violations
-const int kZCacheMaxElements = 4096;//TODO: increase? disappearing trees etc. if buffer too small?
+const int kZCacheMaxElements = 4096; //TODO: increase? disappearing trees etc. if buffer too small?
 //beware: simple multiplying won't work - buildings will partly disappear at some point...
 
 //Array of classes, 114688 bytes
@@ -52,28 +52,29 @@ int NZElm;
 #define ZBFNX (1<<ZSHF)//64
 
 byte ZBFCounter[NYLines];
-word ZBUF[NYLines*ZBFNX];
+word ZBUF[NYLines * ZBFNX];
 word LOLAYER[1024];
 int NLOITEMS;
 word HILAYER[1024];
 int NHIITEMS;
-short ZBUFX[NYLines*ZBFNX];
+short ZBUFX[NYLines * ZBFNX];
 //debug only!
-word ZBUF_OLD[NYLines*ZBFNX];
-word ZBUFX_OLD[NYLines*ZBFNX];
+word ZBUF_OLD[NYLines * ZBFNX];
+word ZBUFX_OLD[NYLines * ZBFNX];
 //-----------
 word BRSel[256];
 int NBSel;
+
 void ClearZBuffer()
 {
-	memset( ZBFCounter, 0, NYLines );
+	memset(ZBFCounter, 0, NYLines);
 	NZElm = 0;
 	NLOITEMS = 0;
 	NHIITEMS = 0;
 	NBSel = 0;
 }
 
-void AddHiPoint( short x, short y, OneObject* OB, word FileID, word SpriteID, int Param1, int Param2 )
+void AddHiPoint(short x, short y, OneObject* OB, word FileID, word SpriteID, int Param1, int Param2)
 {
 	if (NHIITEMS >= 1024)
 	{
@@ -100,7 +101,7 @@ void AddHiPoint( short x, short y, OneObject* OB, word FileID, word SpriteID, in
 	NZElm++;
 }
 
-void AddSuperLoPoint( short x, short y, OneObject* OB, word FileID, word SpriteID, int Param1, int Param2 )
+void AddSuperLoPoint(short x, short y, OneObject* OB, word FileID, word SpriteID, int Param1, int Param2)
 {
 	if (NLOITEMS >= 1024)
 	{
@@ -108,7 +109,8 @@ void AddSuperLoPoint( short x, short y, OneObject* OB, word FileID, word SpriteI
 	}
 
 	if (kZCacheMaxElements <= NZElm)
-	{//BUGFIX: prevent access violation
+	{
+		//BUGFIX: prevent access violation
 		return;
 	}
 
@@ -128,7 +130,7 @@ void AddSuperLoPoint( short x, short y, OneObject* OB, word FileID, word SpriteI
 	NZElm++;
 }
 
-void AddLoPoint( short x, short y, OneObject* OB, word FileID, word SpriteID, int Param1, int Param2 )
+void AddLoPoint(short x, short y, OneObject* OB, word FileID, word SpriteID, int Param1, int Param2)
 {
 	if (NLOITEMS >= 1024)
 	{
@@ -136,7 +138,8 @@ void AddLoPoint( short x, short y, OneObject* OB, word FileID, word SpriteID, in
 	}
 
 	if (kZCacheMaxElements <= NZElm)
-	{//BUGFIX: prevent access violation
+	{
+		//BUGFIX: prevent access violation
 		return;
 	}
 
@@ -163,7 +166,7 @@ void AddLoPoint( short x, short y, OneObject* OB, word FileID, word SpriteID, in
 //2-transparent(Param2-pointer to transparency data)
 //3-encoded with palette(Param2-pointer to palette)
 //4-shading with mask(Param2-pointer to gradient data)
-void AddPoint( short XL, short YL, short x, short y, OneObject* OB, word FileID, word SpriteID, int Param1, int Param2 )
+void AddPoint(short XL, short YL, short x, short y, OneObject* OB, word FileID, word SpriteID, int Param1, int Param2)
 {
 	if (kZCacheMaxElements <= NZElm)
 	{
@@ -204,7 +207,7 @@ void AddPoint( short XL, short YL, short x, short y, OneObject* OB, word FileID,
 	ZEL->NPoints = 0;
 
 	//adding to Z-Buffer
-	int zz = ( YL << ZSHF ) + zb;
+	int zz = (YL << ZSHF) + zb;
 	ZBUF[zz] = NZElm;
 	ZBUFX[zz] = XL;
 	ZBFCounter[YL]++;
@@ -218,7 +221,8 @@ extern byte darkfog[40960];
 extern byte yfog[8192];
 extern byte trans8[65536];
 
-void AddOptPoint( byte Method, short XL, short YL, short x, short y, OneObject* OB, word FileID, word Sprite, int Options )
+void AddOptPoint(byte Method, short XL, short YL, short x, short y, OneObject* OB, word FileID, word Sprite,
+                 int Options)
 {
 	int CType = Options & 0x0F;
 	int CProp = Options & 0xF0;
@@ -230,13 +234,13 @@ void AddOptPoint( byte Method, short XL, short YL, short x, short y, OneObject* 
 		switch (CProp)
 		{
 		case AV_RED:
-			Param2 = int( yfog );
+			Param2 = int(yfog);
 			break;
 		case AV_WHITE:
-			Param2 = int( wfog );
+			Param2 = int(wfog);
 			break;
 		case AV_DARK:
-			Param2 = int( fog + 1024 );
+			Param2 = int(fog + 1024);
 			break;
 		default:
 			Param1 = 0;
@@ -248,13 +252,13 @@ void AddOptPoint( byte Method, short XL, short YL, short x, short y, OneObject* 
 		switch (CProp)
 		{
 		case AV_RED:
-			Param2 = int( yfog + 2048 );
+			Param2 = int(yfog + 2048);
 			break;
 		case AV_WHITE:
-			Param2 = int( wfog + 2048 );
+			Param2 = int(wfog + 2048);
 			break;
 		case AV_DARK:
-			Param2 = int( fog + 1024 + 2048 );
+			Param2 = int(fog + 1024 + 2048);
 			break;
 		default:
 			Param1 = 0;
@@ -264,13 +268,13 @@ void AddOptPoint( byte Method, short XL, short YL, short x, short y, OneObject* 
 		switch (CProp)
 		{
 		case AV_RED:
-			Param2 = int( yfog );
+			Param2 = int(yfog);
 			break;
 		case AV_WHITE:
-			Param2 = int( wfog );
+			Param2 = int(wfog);
 			break;
 		case AV_DARK:
-			Param2 = int( fog + 1024 );
+			Param2 = int(fog + 1024);
 			break;
 		default:
 			Param1 = 0;
@@ -281,18 +285,22 @@ void AddOptPoint( byte Method, short XL, short YL, short x, short y, OneObject* 
 	switch (Method)
 	{
 	case 1:
-		AddLoPoint( x, y, OB, FileID, Sprite, Param1, Param2 );
+		AddLoPoint(x, y, OB, FileID, Sprite, Param1, Param2);
 		break;
 	case 2:
-		AddHiPoint( x, y, OB, FileID, Sprite, Param1, Param2 );
+		AddHiPoint(x, y, OB, FileID, Sprite, Param1, Param2);
 		break;
 	default:
-		AddPoint( XL, YL, x, y, OB, FileID, Sprite, Param1, Param2 );
+		AddPoint(XL, YL, x, y, OB, FileID, Sprite, Param1, Param2);
 		break;
 	}
 }
-void AddLine( short X1, short Y1, short X2, short Y2, short x, short y, OneObject* OB, word FileID, word SpriteID, int Param1, int Param2 );
-void AddOptLine( short X1, short Y1, short X2, short Y2, short x, short y, OneObject* OB, word FileID, word SpriteID, int Options )
+
+void AddLine(short X1, short Y1, short X2, short Y2, short x, short y, OneObject* OB, word FileID, word SpriteID,
+             int Param1, int Param2);
+
+void AddOptLine(short X1, short Y1, short X2, short Y2, short x, short y, OneObject* OB, word FileID, word SpriteID,
+                int Options)
 {
 	int CType = Options & 0x0F;
 	int CProp = Options & 0xF0;
@@ -304,13 +312,13 @@ void AddOptLine( short X1, short Y1, short X2, short Y2, short x, short y, OneOb
 		switch (CProp)
 		{
 		case AV_RED:
-			Param2 = int( yfog );
+			Param2 = int(yfog);
 			break;
 		case AV_WHITE:
-			Param2 = int( wfog );
+			Param2 = int(wfog);
 			break;
 		case AV_DARK:
-			Param2 = int( fog + 1024 );
+			Param2 = int(fog + 1024);
 			break;
 		default:
 			Param1 = 0;
@@ -322,13 +330,13 @@ void AddOptLine( short X1, short Y1, short X2, short Y2, short x, short y, OneOb
 		switch (CProp)
 		{
 		case AV_RED:
-			Param2 = int( yfog + 2048 );
+			Param2 = int(yfog + 2048);
 			break;
 		case AV_WHITE:
-			Param2 = int( wfog + 2048 );
+			Param2 = int(wfog + 2048);
 			break;
 		case AV_DARK:
-			Param2 = int( fog + 1024 + 2048 );
+			Param2 = int(fog + 1024 + 2048);
 			break;
 		default:
 			Param1 = 0;
@@ -338,32 +346,34 @@ void AddOptLine( short X1, short Y1, short X2, short Y2, short x, short y, OneOb
 		switch (CProp)
 		{
 		case AV_RED:
-			Param2 = int( yfog );
+			Param2 = int(yfog);
 			break;
 		case AV_WHITE:
-			Param2 = int( wfog );
+			Param2 = int(wfog);
 			break;
 		case AV_DARK:
-			Param2 = int( fog + 1024 );
+			Param2 = int(fog + 1024);
 			break;
 		default:
 			Param1 = 0;
 		};
 		break;
 	};
-	AddLine( X1, Y1, X2, Y2, x, y, OB, FileID, SpriteID, Param1, Param2 );
+	AddLine(X1, Y1, X2, Y2, x, y, OB, FileID, SpriteID, Param1, Param2);
 };
-void AddLine( short X1, short Y1, short X2, short Y2, short x, short y, OneObject* OB, word FileID, word SpriteID, int Param1, int Param2 )
+
+void AddLine(short X1, short Y1, short X2, short Y2, short x, short y, OneObject* OB, word FileID, word SpriteID,
+             int Param1, int Param2)
 {
 	if (Y1 == Y2)
 	{
-		AddPoint( X1, Y1, x, y, OB, FileID, SpriteID, Param1, Param2 );
+		AddPoint(X1, Y1, x, y, OB, FileID, SpriteID, Param1, Param2);
 		return;
 	}
 
-	if (abs( X1 - X2 ) < 4)
+	if (abs(X1 - X2) < 4)
 	{
-		AddPoint( ( X1 + X2 ) >> 1, ( Y1 + Y2 ) >> 1, x, y, OB, FileID, SpriteID, Param1, Param2 );
+		AddPoint((X1 + X2) >> 1, (Y1 + Y2) >> 1, x, y, OB, FileID, SpriteID, Param1, Param2);
 		return;
 	}
 
@@ -380,8 +390,12 @@ void AddLine( short X1, short Y1, short X2, short Y2, short x, short y, OneObjec
 	if (Y2 >= NYLines)Y2 = NYLines - 1;
 	if (X1 > X2)
 	{
-		X1 += X2; X2 = X1 - X2; X1 -= X2;
-		Y1 += Y2; Y2 = Y1 - Y2; Y1 -= Y2;
+		X1 += X2;
+		X2 = X1 - X2;
+		X1 -= X2;
+		Y1 += Y2;
+		Y2 = Y1 - Y2;
+		Y1 -= Y2;
 	};
 	ZElement* ZEL = ZCache + NZElm;
 	ZEL->x = x;
@@ -401,7 +415,7 @@ void AddLine( short X1, short Y1, short X2, short Y2, short x, short y, OneObjec
 	else Mas |= 0x4000;
 	int X0 = X1 << 16;
 	int DX = div( ( X2 - X1 ) << 16, abs( Y2 - Y1 + 1 ) ).quot;
-	int zz = ( Y1 << ZSHF );
+	int zz = (Y1 << ZSHF);
 	if (Y2 > Y1)
 	{
 		int NPT = 0;
@@ -441,7 +455,7 @@ void AddLine( short X1, short Y1, short X2, short Y2, short x, short y, OneObjec
 	NZElm++;
 }
 
-void SortWords( int NWords, word* Data, short* Factor )
+void SortWords(int NWords, word* Data, short* Factor)
 {
 	if (NWords < 2)
 	{
@@ -450,32 +464,32 @@ void SortWords( int NWords, word* Data, short* Factor )
 
 	__asm
 	{
-		push	esi
-		push	edi
-		SW0 : mov		edi, Data
-			  mov		esi, Factor
-			  mov		ebx, 1
-			  mov		ecx, NWords;
-		dec		ecx
-			SW1 : mov		ax, [esi + 2]
-			cmp		ax, [esi]
-			jge		SW3
-			mov		dx, [esi]
-			mov[esi + 2], dx
-			mov[esi], ax
-			mov		ax, [edi]
-			mov		dx, [edi + 2]
-			mov[edi], dx
-			mov[edi + 2], ax
-			xor		ebx, ebx
-			SW3 : add		esi, 2
-			add		edi, 2
-			dec		ecx
-			jnz		SW1
-			or ebx, ebx
-			jz		SW0
-			pop		edi
-			pop		esi
+		push esi
+		push edi
+		SW0 : mov edi, Data
+		mov esi, Factor
+		mov ebx, 1
+		mov ecx, NWords;
+		dec ecx
+		SW1 : mov ax, [esi + 2]
+		cmp ax, [esi]
+		jge SW3
+		mov dx, [esi]
+		mov[esi + 2], dx
+		mov[esi], ax
+		mov ax, [edi]
+		mov dx, [edi + 2]
+		mov[edi], dx
+		mov[edi + 2], ax
+		xor ebx, ebx
+		SW3 : add esi, 2
+		add edi, 2
+		dec ecx
+		jnz SW1
+		or ebx, ebx
+		jz SW0
+		pop edi
+		pop esi
 	}
 }
 
@@ -483,14 +497,14 @@ void SortZBuffer()
 {
 	int pos = 0;
 	short TEMPLINE[64];
-	int tofs = int( TEMPLINE );
+	int tofs = int(TEMPLINE);
 	for (int i = 0; i < NYLines; i++)
 	{
 		int N = ZBFCounter[i];
 		if (N > 1)
 		{
 			word* ZPOS = ZBUF + pos;
-			SortWords( N, ZBUF + pos, ZBUFX + pos );
+			SortWords(N, ZBUF + pos, ZBUFX + pos);
 		};
 		pos += ZBFNX;
 	}
@@ -498,47 +512,47 @@ void SortZBuffer()
 
 extern bool TransMode;
 
-void DrawMarker( OneObject* OB );
+void DrawMarker(OneObject* OB);
 
-void DrawImMarker( OneObject* OB );
+void DrawImMarker(OneObject* OB);
 
-void PtLine( int x, int y, int x1, int y1, byte c )
+void PtLine(int x, int y, int x1, int y1, byte c)
 {
-	int DD = int( sqrt( ( x - x1 )*( x - x1 ) + ( y - y1 )*( y - y1 ) ) );
+	int DD = int(sqrt((x - x1) * (x - x1) + (y - y1) * (y - y1)));
 	if (!DD)return;
-	int NP = ( DD >> 5 ) + 1;
+	int NP = (DD >> 5) + 1;
 	for (int i = 0; i <= NP; i++)
 	{
-		Xbar( x + div( ( x1 - x )*i, NP ).quot - 1, y + div( ( y1 - y )*i, NP ).quot - 1, 3, 3, c );
+		Xbar(x + div( ( x1 - x )*i, NP ).quot - 1, y + div( ( y1 - y )*i, NP ).quot - 1, 3, 3, c);
 	}
 }
 
-void DrawColorMarker( OneObject* OB, byte cl );
+void DrawColorMarker(OneObject* OB, byte cl);
 
-void DrawBorder( Brigade* BR );
+void DrawBorder(Brigade* BR);
 
-void DrawHealth( OneObject* OB );
+void DrawHealth(OneObject* OB);
 
 extern bool HealthMode;
 
-void DrawGrassNearUnit( int x, int y );
+void DrawGrassNearUnit(int x, int y);
 
-void RegisterVisibleGP( word Index, int FileIndex, int SprIndex, int x, int y );
+void RegisterVisibleGP(word Index, int FileIndex, int SprIndex, int x, int y);
 
-void ShowZElement( ZElement* ZEL )
+void ShowZElement(ZElement* ZEL)
 {
 	ZEL->IsDrawn = true;
 
 	if (ZEL->Param1 == 0xFFFF && ZEL->Param2 == 0xFFFF)
 	{
-		DrawTriangleElement( ZEL->FileID, ZEL->SpriteID );
+		DrawTriangleElement(ZEL->FileID, ZEL->SpriteID);
 		return;
 	}
 
 	int par1 = ZEL->Param1 & 0xF;
 	int mask = ZEL->Param1 >> 9;
 
-	if (!( ZEL->Param1 & 256 ))
+	if (!(ZEL->Param1 & 256))
 	{
 		mask = 0xFFFF;
 	}
@@ -551,7 +565,7 @@ void ShowZElement( ZElement* ZEL )
 	OneObject* OB = ZEL->OB;
 	if (OB)
 	{
-		RegisterVisibleGP( OB->Index, ZEL->FileID, ZEL->SpriteID, ZEL->x, ZEL->y );
+		RegisterVisibleGP(OB->Index, ZEL->FileID, ZEL->SpriteID, ZEL->x, ZEL->y);
 		nat = OB->NNUM;
 
 		if (OB->ImSelected & GM( MyNation ))
@@ -561,7 +575,7 @@ void ShowZElement( ZElement* ZEL )
 				Brigade* BR = OB->Nat->CITY->Brigs + OB->BrigadeID;
 				if (!BR->WarType)
 				{
-					DrawMarker( OB );
+					DrawMarker(OB);
 				}
 			}
 			else
@@ -572,7 +586,7 @@ void ShowZElement( ZElement* ZEL )
 				}
 				else
 				{
-					DrawMarker( OB );
+					DrawMarker(OB);
 				}
 			}
 		}
@@ -586,18 +600,20 @@ void ShowZElement( ZElement* ZEL )
 			int Y0 = CY + NM->BuildY0;
 			int X1 = CX + NM->BuildX1;
 			int Y1 = CY + NM->BuildY1;
-			int D = ( Y1 - Y0 + X1 - X0 ) >> 1;
+			int D = (Y1 - Y0 + X1 - X0) >> 1;
 			int D2 = D >> 1;
 			int mpdx = mapx << 5;
-			int mpdy = ( mapy << 4 ) + OB->RZ;
+			int mpdy = (mapy << 4) + OB->RZ;
 			Y0 >>= 1;
 			Y1 >>= 1;
-			X0 -= mpdx; Y0 -= mpdy;
-			X1 -= mpdx; Y1 -= mpdy;
-			PtLine( X0, Y0, X0 + D, Y0 + D2, clrRed );
-			PtLine( X0, Y0, X1 - D, Y1 - D2, clrRed );
-			PtLine( X1, Y1, X0 + D, Y0 + D2, clrRed );
-			PtLine( X1, Y1, X1 - D, Y1 - D2, clrRed );
+			X0 -= mpdx;
+			Y0 -= mpdy;
+			X1 -= mpdx;
+			Y1 -= mpdy;
+			PtLine(X0, Y0, X0 + D, Y0 + D2, clrRed);
+			PtLine(X0, Y0, X1 - D, Y1 - D2, clrRed);
+			PtLine(X1, Y1, X0 + D, Y0 + D2, clrRed);
+			PtLine(X1, Y1, X1 - D, Y1 - D2, clrRed);
 		}
 	}
 
@@ -612,81 +628,81 @@ void ShowZElement( ZElement* ZEL )
 		if (par2 > 64)
 		{
 			if (LocTrans)
-				GPS.ShowGPTransparentLayers( smapx + ZEL->x, smapy + ZEL->y, ZEL->FileID, ZEL->SpriteID, par2 - 64, mask );
+				GPS.ShowGPTransparentLayers(smapx + ZEL->x, smapy + ZEL->y, ZEL->FileID, ZEL->SpriteID, par2 - 64, mask);
 			else
-				GPS.ShowGPLayers( smapx + ZEL->x, smapy + ZEL->y, ZEL->FileID, ZEL->SpriteID, par2 - 64, mask );
+				GPS.ShowGPLayers(smapx + ZEL->x, smapy + ZEL->y, ZEL->FileID, ZEL->SpriteID, par2 - 64, mask);
 		}
 		else
 		{
 			if (LocTrans)
-				GPS.ShowGPTransparentLayers( smapx + ZEL->x, smapy + ZEL->y, ZEL->FileID, ZEL->SpriteID, nat, mask );
+				GPS.ShowGPTransparentLayers(smapx + ZEL->x, smapy + ZEL->y, ZEL->FileID, ZEL->SpriteID, nat, mask);
 			else
-				GPS.ShowGPLayers( smapx + ZEL->x, smapy + ZEL->y, ZEL->FileID, ZEL->SpriteID, nat, mask );
+				GPS.ShowGPLayers(smapx + ZEL->x, smapy + ZEL->y, ZEL->FileID, ZEL->SpriteID, nat, mask);
 		}
 		break;
 
 	case 7432:
-	{
-		int NNN = 6 + int( 3 * ( sin( double( GetTickCount() ) / 114 ) ) );
-		GPS.ShowGPPalLayers( smapx + ZEL->x, smapy + ZEL->y, ZEL->FileID, ZEL->SpriteID, nat, wfog + ( NNN << 8 ), mask );
-	}
-	break;
+		{
+			int NNN = 6 + int(3 * (sin(double(GetTickCount()) / 114)));
+			GPS.ShowGPPalLayers(smapx + ZEL->x, smapy + ZEL->y, ZEL->FileID, ZEL->SpriteID, nat, wfog + (NNN << 8), mask);
+		}
+		break;
 
 	case AV_PULSING:
-	{
-		int NNN = 5 + int( 8 * ( sin( double( GetTickCount() ) / 100 ) + 2 ) );
-		GPS.ShowGPPalLayers( smapx + ZEL->x, smapy + ZEL->y, ZEL->FileID, ZEL->SpriteID, nat, (byte*) par2 + ( NNN << 8 ), mask );
-	}
-	break;
+		{
+			int NNN = 5 + int(8 * (sin(double(GetTickCount()) / 100) + 2));
+			GPS.ShowGPPalLayers(smapx + ZEL->x, smapy + ZEL->y, ZEL->FileID, ZEL->SpriteID, nat, (byte*)par2 + (NNN << 8), mask);
+		}
+		break;
 
 	case AV_TRANSPARENT:
-		GPS.ShowGPTransparentLayers( smapx + ZEL->x, smapy + ZEL->y, ZEL->FileID, ZEL->SpriteID, nat, mask );
+		GPS.ShowGPTransparentLayers(smapx + ZEL->x, smapy + ZEL->y, ZEL->FileID, ZEL->SpriteID, nat, mask);
 		break;
 
 	case AV_PALETTE:
-		GPS.ShowGPPalLayers( smapx + ZEL->x, smapy + ZEL->y, ZEL->FileID, ZEL->SpriteID, nat, (byte*) par2, mask );
+		GPS.ShowGPPalLayers(smapx + ZEL->x, smapy + ZEL->y, ZEL->FileID, ZEL->SpriteID, nat, (byte*)par2, mask);
 		break;
 
 	case AV_GRADIENT:
-		GPS.ShowGPGrad( smapx + ZEL->x, smapy + ZEL->y, ZEL->FileID, ZEL->SpriteID, nat, (byte*) par2 );
+		GPS.ShowGPGrad(smapx + ZEL->x, smapy + ZEL->y, ZEL->FileID, ZEL->SpriteID, nat, (byte*)par2);
 		break;
 	}
 
 	if (OB && HealthMode)
 	{
-		DrawHealth( OB );
+		DrawHealth(OB);
 	}
 
 	if (OB && !OB->NewBuilding)
 	{
-		int xx = ( OB->RealX >> 4 ) - ( mapx << 5 );
-		int yy = ( OB->RealY >> 5 ) - ( mapy << 4 ) - OB->RZ;
-		DrawGrassNearUnit( xx, yy );
+		int xx = (OB->RealX >> 4) - (mapx << 5);
+		int yy = (OB->RealY >> 5) - (mapy << 4) - OB->RZ;
+		DrawGrassNearUnit(xx, yy);
 	}
 }
 
-int mul3( int );
+int mul3(int);
 
 void Clean_GP_IMG();
 
 void ShowZBuffer()
 {
 	Clean_GP_IMG();
-	memcpy( ZBUF_OLD, ZBUF, sizeof( ZBUF ) );
-	memcpy( ZBUFX_OLD, ZBUFX, sizeof( ZBUFX ) );
+	memcpy(ZBUF_OLD, ZBUF, sizeof(ZBUF));
+	memcpy(ZBUFX_OLD, ZBUFX, sizeof(ZBUFX));
 	SortZBuffer();
 	int Lx1 = smaplx << Shifter;
-	int Ly1 = mul3( smaply ) << ( Shifter - 2 );
-	SetRLCWindow( smapx, smapy, Lx1, Ly1, SCRSizeX );
+	int Ly1 = mul3(smaply) << (Shifter - 2);
+	SetRLCWindow(smapx, smapy, Lx1, Ly1, SCRSizeX);
 	for (int i = 0; i < NLOITEMS; i++)
 	{
 		ZElement* ZEL = ZCache + LOLAYER[i];
-		if (ZEL->IsDrawn)ShowZElement( ZEL );
+		if (ZEL->IsDrawn)ShowZElement(ZEL);
 	};
 	for (int i = 0; i < NLOITEMS; i++)
 	{
 		ZElement* ZEL = ZCache + LOLAYER[i];
-		if (!ZEL->IsDrawn)ShowZElement( ZEL );
+		if (!ZEL->IsDrawn)ShowZElement(ZEL);
 	};
 	int NITR = 0;
 	bool Done;
@@ -705,8 +721,8 @@ void ShowZBuffer()
 			int nn = ZBFCounter[YMIN];
 			if (nn)
 			{
-				word* OIND = ZBUF + YMIN*ZBFNX;
-				short* OINDX = ZBUFX + YMIN*ZBFNX;
+				word* OIND = ZBUF + YMIN * ZBFNX;
+				short* OINDX = ZBUFX + YMIN * ZBFNX;
 				if (FindXMin)
 				{
 					for (int j = 0; j < nn; j++)
@@ -714,10 +730,10 @@ void ShowZBuffer()
 						word SOBJ = OIND[j];
 						if (SOBJ != 0xFFFF)
 						{
-							ZElement* ZEL = ZCache + ( SOBJ % kZCacheMaxElements );
+							ZElement* ZEL = ZCache + (SOBJ % kZCacheMaxElements);
 							if (!ZEL->IsDrawn)
 							{
-								if (OINDX/*ZBUFX*/[j] < XMIN && ( SOBJ & 0x6000 ) == 0x2000)
+								if (OINDX/*ZBUFX*/[j] < XMIN && (SOBJ & 0x6000) == 0x2000)
 								{
 									XMIN = OINDX/*ZBUFX*/[j];
 									FindXMin = 0;
@@ -739,10 +755,10 @@ void ShowZBuffer()
 						word SOBJ = OIND[j];
 						if (SOBJ != 0xFFFF)
 						{
-							ZElement* ZEL = ZCache + ( SOBJ % kZCacheMaxElements );
+							ZElement* ZEL = ZCache + (SOBJ % kZCacheMaxElements);
 							if (!ZEL->IsDrawn)
 							{
-								if (OINDX/*ZBUFX*/[j] > XMAX && ( SOBJ & 0x6000 ) == 0x4000)
+								if (OINDX/*ZBUFX*/[j] > XMAX && (SOBJ & 0x6000) == 0x4000)
 								{
 									XMAX = OINDX/*ZBUFX*/[j];
 									FindXMax = 0;
@@ -763,7 +779,7 @@ void ShowZBuffer()
 					word SOBJ = OIND[j];
 					if (SOBJ != 0xFFFF)
 					{
-						ZElement* ZEL = ZCache + ( SOBJ % kZCacheMaxElements );
+						ZElement* ZEL = ZCache + (SOBJ % kZCacheMaxElements);
 						if (!ZEL->IsDrawn)
 						{
 							int xx = OINDX[j];
@@ -773,7 +789,7 @@ void ShowZBuffer()
 								XMIN = XMAX - XMIN;
 								XMAX = XMAX - XMIN;
 							}
-							if (xx >= XMIN&&xx <= XMAX)
+							if (xx >= XMIN && xx <= XMAX)
 							{
 								if (SOBJ & 0x6000)
 								{
@@ -784,7 +800,7 @@ void ShowZBuffer()
 										if (ZEL->NPoints > 1)ZEL->NPoints--;
 										else
 										{
-											ShowZElement( ZEL );
+											ShowZElement(ZEL);
 											ZEL->IsDrawn = 1;
 											OIND[j] = 0xFFFF;
 											YMIN = ZEL->YL - 1;
@@ -795,28 +811,27 @@ void ShowZBuffer()
 											OIND[j] = 0xFFFF;
 										};
 									}
-									else
-										if (w == 0x4000)
+									else if (w == 0x4000)
+									{
+										XMAX = xx;
+										if (ZEL->NPoints > 1)ZEL->NPoints--;
+										else
 										{
-											XMAX = xx;
-											if (ZEL->NPoints > 1)ZEL->NPoints--;
-											else
-											{
-												ShowZElement( ZEL );
-												ZEL->IsDrawn = 1;
-												OIND[j] = 0xFFFF;
-												YMIN = ZEL->YL - 1;
-												XMIN = ZEL->XL;
-												XMAX = ZEL->XL;
-												FindXMin = true;
-												FindXMax = true;
-												OIND[j] = 0xFFFF;
-											};
+											ShowZElement(ZEL);
+											ZEL->IsDrawn = 1;
+											OIND[j] = 0xFFFF;
+											YMIN = ZEL->YL - 1;
+											XMIN = ZEL->XL;
+											XMAX = ZEL->XL;
+											FindXMin = true;
+											FindXMax = true;
+											OIND[j] = 0xFFFF;
 										};
+									};
 								}
 								else
 								{
-									ShowZElement( ZEL );
+									ShowZElement(ZEL);
 									ZEL->IsDrawn = 1;
 									OIND[j] = 0xFFFF;
 								};
@@ -840,13 +855,14 @@ void ShowZBuffer()
 				};
 			};
 			YMIN++;
-		} while (YMIN < YMAX);
+		}
+		while (YMIN < YMAX);
 		YMIN = 10000;
 		ZElement* ZEL = ZCache;
 		int MinIdx = 0;
 		for (int j = 0; j < NZElm; j++)
 		{
-			if (( !ZEL->IsDrawn ) && ZEL->NPoints)
+			if ((!ZEL->IsDrawn) && ZEL->NPoints)
 			{
 				if (YMIN > ZEL->YL)
 				{
@@ -860,15 +876,16 @@ void ShowZBuffer()
 		{
 			Done = false;
 			ZElement* ZEL = ZCache + MinIdx;
-			ShowZElement( ZEL );
+			ShowZElement(ZEL);
 			ZEL->NPoints = 0;
 			ZEL->IsDrawn = 1;
 		};
-	} while (NITR < 15 && !Done);
+	}
+	while (NITR < 15 && !Done);
 
 	for (int i = 0; i < NHIITEMS; i++)
 	{
-		ShowZElement( ZCache + HILAYER[i] );
+		ShowZElement(ZCache + HILAYER[i]);
 	}
 
 	if (!CINFMOD)
@@ -890,13 +907,13 @@ void ShowZBuffer()
 				switch (ZT)
 				{
 				case 0:
-					Xbar( xx - 1, yy - 1, 3, 3, 0xFE );
+					Xbar(xx - 1, yy - 1, 3, 3, 0xFE);
 					break;
 				case 0x2000:
-					Xbar( xx - 1, yy - 1, 3, 3, 0xFD );//clrBlue);
+					Xbar(xx - 1, yy - 1, 3, 3, 0xFD); //clrBlue);
 					break;
 				case 0x4000:
-					Xbar( xx - 1, yy - 1, 3, 3, 0xF9 );
+					Xbar(xx - 1, yy - 1, 3, 3, 0xF9);
 					break;
 				};
 			};

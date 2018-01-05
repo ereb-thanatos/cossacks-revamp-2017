@@ -93,25 +93,31 @@ void SelGroup::SelectMembers(byte NI, bool Shift)
 	word* ser = SerN[NI];
 	word NR = 0;
 	byte NeedNI = NatRefTBL[NI];
-	if (!Shift) {
-		for (int i = 0; i < Nsel; i++) {
+	if (!Shift)
+	{
+		for (int i = 0; i < Nsel; i++)
+		{
 			MID = SMon[i];
-			if (MID != 0xFFFF) {
+			if (MID != 0xFFFF)
+			{
 				OB = Group[MID];
-				if (OB&&OB->Serial == ser[i] && !OB->Sdoxlo) {
+				if (OB && OB->Serial == ser[i] && !OB->Sdoxlo)
+				{
 					//OB->Egoist=false;
 					OB->Selected &= ~GM(NI);
 				};
 			};
 		};
-		if (Nsel) {
+		if (Nsel)
+		{
 			free(SMon);
 			free(ser);
 		};
 		SMon = new word[NMemb];
 		ser = new word[NMemb];
 	}
-	else {
+	else
+	{
 		NR = NSL[NI];
 		int N1 = NMemb + NR;
 		SMon = (word*)realloc(SMon, N1 << 1);
@@ -119,12 +125,16 @@ void SelGroup::SelectMembers(byte NI, bool Shift)
 	};
 	Selm[NI] = SMon;
 	SerN[NI] = ser;
-	for (int i = 0; i < NMemb; i++) {
+	for (int i = 0; i < NMemb; i++)
+	{
 		MID = Member[i];
-		if (MID != 0xFFFF) {
+		if (MID != 0xFFFF)
+		{
 			OB = Group[MID];
-			if (int(OB) && OB->Serial == SerialN[i] && OB->NNUM == NeedNI && !OB->Sdoxlo) {
-				if (!(OB->Selected&GM(NI))) {
+			if (int(OB) && OB->Serial == SerialN[i] && OB->NNUM == NeedNI && !OB->Sdoxlo)
+			{
+				if (!(OB->Selected & GM(NI)))
+				{
 					SMon[NR] = MID;
 					ser[NR] = SerialN[i];
 					OB->Selected |= GM(NI);
@@ -135,7 +145,9 @@ void SelGroup::SelectMembers(byte NI, bool Shift)
 	};
 	NSL[NI] = NR;
 };
-void SelGroup::ImSelectMembers(byte NI, bool Shift) {
+
+void SelGroup::ImSelectMembers(byte NI, bool Shift)
+{
 	SelCenter[NI] = 0;
 	word MID;
 	OneObject* OB;
@@ -144,25 +156,31 @@ void SelGroup::ImSelectMembers(byte NI, bool Shift) {
 	word* ser = ImSerN[NI];
 	word NR = 0;
 	byte NeedNI = NatRefTBL[NI];
-	if (!Shift) {
-		for (int i = 0; i < Nsel; i++) {
+	if (!Shift)
+	{
+		for (int i = 0; i < Nsel; i++)
+		{
 			MID = SMon[i];
-			if (MID != 0xFFFF) {
+			if (MID != 0xFFFF)
+			{
 				OB = Group[MID];
-				if (OB&&OB->Serial == ser[i] && !OB->Sdoxlo) {
+				if (OB && OB->Serial == ser[i] && !OB->Sdoxlo)
+				{
 					//OB->Egoist=false;
 					OB->ImSelected &= ~GM(NI);
 				};
 			};
 		};
-		if (Nsel) {
+		if (Nsel)
+		{
 			free(SMon);
 			free(ser);
 		};
 		SMon = new word[NMemb];
 		ser = new word[NMemb];
 	}
-	else {
+	else
+	{
 		NR = ImNSL[NI];
 		int N1 = NMemb + NR;
 		SMon = (word*)realloc(SMon, N1 << 1);
@@ -170,12 +188,16 @@ void SelGroup::ImSelectMembers(byte NI, bool Shift) {
 	}
 	ImSelm[NI] = SMon;
 	ImSerN[NI] = ser;
-	for (int i = 0; i < NMemb; i++) {
+	for (int i = 0; i < NMemb; i++)
+	{
 		MID = Member[i];
-		if (MID != 0xFFFF) {
+		if (MID != 0xFFFF)
+		{
 			OB = Group[MID];
-			if (OB&&OB->Serial == SerialN[i] && OB->NNUM == NeedNI && !OB->Sdoxlo) {
-				if (!(OB->ImSelected&GM(NI))) {
+			if (OB && OB->Serial == SerialN[i] && OB->NNUM == NeedNI && !OB->Sdoxlo)
+			{
+				if (!(OB->ImSelected & GM(NI)))
+				{
 					SMon[NR] = MID;
 					ser[NR] = SerialN[i];
 					OB->ImSelected |= GM(NI);
@@ -186,7 +208,9 @@ void SelGroup::ImSelectMembers(byte NI, bool Shift) {
 	};
 	ImNSL[NI] = NR;
 };
-inline bool PxInside(int x, int y, int x1, int y1, int xp, int yp) {
-	if (xp >= x&&xp <= x1&&yp >= y&&yp <= y1)return true;
+
+inline bool PxInside(int x, int y, int x1, int y1, int xp, int yp)
+{
+	if (xp >= x && xp <= x1 && yp >= y && yp <= y1)return true;
 	else return false;
 };

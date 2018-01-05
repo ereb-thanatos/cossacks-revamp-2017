@@ -30,7 +30,7 @@ void CDirSound::CreateDirSound(HWND hWnd)
 	{
 		// Set the priority level.
 		result = m_pDirectSoundObj->
-			SetCooperativeLevel(m_hWindow, DSSCL_EXCLUSIVE);//NORMAL);
+			SetCooperativeLevel(m_hWindow, DSSCL_EXCLUSIVE); //NORMAL);
 		if (result != DS_OK)
 			m_pDirectSoundObj = NULL;
 		// Set up DSBUFFERDESC structure. 
@@ -83,9 +83,7 @@ void CDirSound::CreateDirSound(HWND hWnd)
 		FR.nSamplesPerSec = 22050;
 		hr = lpDsb->SetFormat(&FR);
 		memset(BufIsRun, 0, sizeof BufIsRun);
-
 	}
-
 }
 
 ///////////////////////////////////////////////////////////
@@ -145,7 +143,7 @@ UINT CDirSound::CreateSoundBuffer(CWave* pWave)
 
 	// Create the secondary sound buffer.
 	hResult = m_pDirectSoundObj->CreateSoundBuffer(&dsBufferDesc,
-		&m_bufferPointers[m_currentBufferNum], NULL);
+	                                               &m_bufferPointers[m_currentBufferNum], NULL);
 	if (hResult != DS_OK)
 		return 0;
 
@@ -154,6 +152,7 @@ UINT CDirSound::CreateSoundBuffer(CWave* pWave)
 
 	return m_currentBufferNum;
 }
+
 ///////////////////////////////////////////////////////////
 // CDirSound::DuplicateSoundBuffer()
 //
@@ -177,6 +176,7 @@ UINT CDirSound::DuplicateSoundBuffer(UINT bufferNum)
 
 	return m_currentBufferNum;
 }
+
 ///////////////////////////////////////////////////////////
 // CDirSound::CopyWaveToBuffer()
 //
@@ -200,8 +200,8 @@ BOOL CDirSound::CopyWaveToBuffer(CWave* pWave, UINT bufferNum)
 
 	// Lock the buffer.
 	result = pSoundBuffer->Lock(0, m_bufferSizes[bufferNum],
-		&pSoundBlock1, &bytesSoundBlock1,
-		&pSoundBlock2, &bytesSoundBlock2, 0);
+	                            &pSoundBlock1, &bytesSoundBlock1,
+	                            &pSoundBlock2, &bytesSoundBlock2, 0);
 	if (result != DS_OK)
 		return FALSE;
 
@@ -212,7 +212,7 @@ BOOL CDirSound::CopyWaveToBuffer(CWave* pWave, UINT bufferNum)
 
 	// Unlock the buffer.
 	pSoundBuffer->Unlock(pSoundBlock1, bytesSoundBlock1,
-		pSoundBlock2, bytesSoundBlock2);
+	                     pSoundBlock2, bytesSoundBlock2);
 
 	return TRUE;
 }
@@ -261,6 +261,7 @@ BOOL CDirSound::PlaySound(UINT bufferNum)
 	BufIsRun[bufferNum] = 0;
 	return TRUE;
 }
+
 BOOL CDirSound::PlayCoorSound(UINT bufferNum, int x, int vx)
 {
 	HRESULT result;
@@ -289,9 +290,9 @@ BOOL CDirSound::PlayCoorSound(UINT bufferNum, int x, int vx)
 
 extern int CenterX;
 
-void CDirSound::ControlPan(UINT bufferNum) 
+void CDirSound::ControlPan(UINT bufferNum)
 {
-	if (BufIsRun[bufferNum]) 
+	if (BufIsRun[bufferNum])
 	{
 		SrcX[bufferNum] += SrcY[bufferNum];
 		int pan = (SrcX[bufferNum] - CenterX) << 1;
@@ -315,7 +316,8 @@ void CDirSound::ControlPan(UINT bufferNum)
 	}
 }
 
-void CDirSound::SetVolume(UINT bufferNum, int vol) {
+void CDirSound::SetVolume(UINT bufferNum, int vol)
+{
 	// Check for a valid buffer number.
 	if ((bufferNum > m_currentBufferNum) || (bufferNum == 0))
 		return;
@@ -326,7 +328,9 @@ void CDirSound::SetVolume(UINT bufferNum, int vol) {
 	// Make sure the buffer is set to play from the beginning.
 	pSoundBuffer->SetVolume(vol);
 };
-void CDirSound::SetPan(UINT bufferNum, int pan) {
+
+void CDirSound::SetPan(UINT bufferNum, int pan)
+{
 	// Check for a valid buffer number.
 	if ((bufferNum > m_currentBufferNum) || (bufferNum == 0))
 		return;
@@ -373,6 +377,7 @@ BOOL CDirSound::StopSound(UINT bufferNum)
 
 	return TRUE;
 }
+
 int CDirSound::GetPos(UINT bufferNum)
 {
 	HRESULT result;
@@ -388,7 +393,6 @@ int CDirSound::GetPos(UINT bufferNum)
 	DWORD pos;
 	result = pSoundBuffer->GetCurrentPosition(&pos, NULL);
 	return pos;
-
 }
 
 bool CDirSound::IsPlaying(UINT bufferNum)
@@ -416,4 +420,3 @@ bool CDirSound::IsPlaying(UINT bufferNum)
 
 	return play;
 }
-
