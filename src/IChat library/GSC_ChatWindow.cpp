@@ -1524,7 +1524,7 @@ __declspec( dllexport ) int Process_GSC_ChatWindow( bool Active, RoomInfo* RIF )
 							{
 								char *end;
 								const long player_id = std::strtol( player_id_str, &end, 10 );
-								if (player_id && '\0' == end)
+								if (player_id && '\0' == end[0])
 								{//Conversion successful, string countained one number only
 									RIF->player_id = player_id;
 								}
@@ -1536,7 +1536,7 @@ __declspec( dllexport ) int Process_GSC_ChatWindow( bool Active, RoomInfo* RIF )
 							{
 								char *end;
 								const unsigned long port = std::strtoul( hole_port_str, &end, 10 );
-								if (port && '\0' == end)
+								if (port && '\0' == end[0])
 								{//Conversion successful, string countained one number only
 									RIF->port = (unsigned short) port;
 								}
@@ -1554,7 +1554,7 @@ __declspec( dllexport ) int Process_GSC_ChatWindow( bool Active, RoomInfo* RIF )
 							{
 								char *end;
 								const long interval = std::strtol( hole_interval_str, &end, 10 );
-								if (interval && '\0' == end)
+								if (interval && '\0' == end[0])
 								{//Conversion successful, string countained one number only
 									RIF->udp_interval = interval;
 								}
@@ -1604,7 +1604,7 @@ __declspec( dllexport ) int Process_GSC_ChatWindow( bool Active, RoomInfo* RIF )
 									{
 										char *end;
 										const unsigned long port = std::strtoul( port_str, &end, 10 );
-										if (port && '\0' == end)
+										if (port && '\0' == end[0])
 										{//Conversion successful, string countained one number only
 											RIF->port = (unsigned short) port;
 										}
