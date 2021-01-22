@@ -68,6 +68,14 @@ resources.gsc|243,724,485|7522480fd6ccbffc1e5298b29fb7b12b5a54d9a0
 You should also get the [Microsoft Visual C++ 2015 Redistributable (x86)](https://www.microsoft.com/en-us/download/details.aspx?id=53587) package.
 
 <br/>
+
+### Translation Patches
+KaesDingeling kindly uploaded a [German translation patch](https://github.com/KaesDingeling/cossacks-revamp-2017/blob/master/override.zip).
+Place the extracted **override.gsc** file in your game folder to activate it.
+
+See [#19](https://github.com/ereb-thanatos/cossacks-revamp-2017/issues/19) for details on how to create your own translations.
+
+<br/>
 <br/>
 <br/>
 
