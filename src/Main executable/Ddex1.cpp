@@ -93,8 +93,8 @@ bool fixed;
 //Timespan in ms after last LastCTRLPressTime which allows setting unit control groups
 const int kCtrlStickyTime = 50;
 
-//Minimal delay between two PostDrawGameProcess() returns, in ms
-const unsigned int kPostDrawInterval = 16;//~60 Hz
+//Fine-tunable single-player delay. The options slider stores half this interval.
+extern int FPSTime;
 
 //Time of the last PostDrawGameProcess() return
 unsigned long prev_postdraw_time = 0;
@@ -116,7 +116,7 @@ int DrawGroundMode = 0;
 int DrawPixMode = 0;
 int Flips;
 int FoodID;
-int FrmDec = 2;
+int FrmDec = 1;
 int GoldID;
 int HeightEditMode;
 int HiStyle;
@@ -134,7 +134,7 @@ int REALTIME;
 int Shifter;
 
 //Game speed mode dependent SpeedShift variable. Used for controlling animations etc
-int SpeedSh = 1;
+int SpeedSh = 0;
 
 int StoneID;
 int TreeID;
@@ -143,7 +143,7 @@ int WaterEditMode;
 //Game speed mode
 //0: Slow mode
 //1: Fast mode
-int exFMode = 1;
+int exFMode = 0;
 
 //Timer Callback
 int cadr;
@@ -2998,7 +2998,7 @@ void PostDrawGameProcess()
 			GameKeyCheck();
 		}
 		time_since_last_call = GetRealTime() - prev_postdraw_time;
-	} while (PauseMode || time_since_last_call < kPostDrawInterval);
+	} while (PauseMode || ( NPlayers < 2 && time_since_last_call < unsigned( FPSTime + FPSTime ) ));
 
 	prev_postdraw_time = GetRealTime();
 }
@@ -3329,16 +3329,20 @@ int PASCAL WinMain(
 	//Load settings
 	GFILE* fff = Gopen( "mode.dat", "rt" );
 	ScrollSpeed = 5;
+	FPSTime = 8;//Preserve the revamp's ~60 Hz default until changed by the user.
 	if (fff)
 	{
 		//Distinguish between last window adn fullscreen resolutions
 		int ex_window_x, ex_window_y, ex_x, ex_y;
-		int dummy;
-		//7th value was FPSTime
+		int saved_fps_time;
 		Gscanf( fff, "%d%d%d%d%d%d%d%d%d%d%d%d",
 			&ex_window_x, &ex_window_y, &ex_x, &ex_y,
 			&WarSound, &OrderSound, &OrderSound, &MidiSound,
-			&dummy, &ScrollSpeed, &exFMode, &PlayMode );
+			&saved_fps_time, &ScrollSpeed, &exFMode, &PlayMode );
+		//Version 1.42 wrote zero into this formerly unused slot. Migrate that
+		//value to the revamp's 16 ms default instead of accidentally selecting
+		//the old slider's unlimited-speed endpoint.
+		FPSTime = saved_fps_time ? saved_fps_time : 8;
 		Gclose( fff );
 
 		//Set last 'global resolution' according to current mode
@@ -3548,11 +3552,10 @@ int PASCAL WinMain(
 			GFILE *fff = Gopen( "mode.dat", "wt" );
 			if (fff)
 			{
-				//7th value was FPSTime
 				Gprintf( fff, "%d %d %d %d %d %d %d %d %d %d %d %d",
 					ex_window_x, ex_window_y, ex_x, ex_y,
 					WarSound, OrderSound, OrderSound,
-					MidiSound, 0, ScrollSpeed, exFMode, PlayMode );
+					MidiSound, FPSTime, ScrollSpeed, exFMode, PlayMode );
 				Gclose( fff );
 			}
 			GFILE *rec_settings_file = Gopen( "rec.dat", "wt" );

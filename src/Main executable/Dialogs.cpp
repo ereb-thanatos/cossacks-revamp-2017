@@ -1620,7 +1620,7 @@ VScrollBar* DialogsSystem::addGP_ScrollBar( SimpleDialog* Parent, int x, int y, 
 		tb->x = BaseX + x;
 		tb->y = BaseY + y;
 		tb->x1 = tb->x + GPS.GetGPWidth( GP_File, LineIndex ) - 1;
-		tb->y1 = tb->y1 + GPS.GetGPHeight( GP_File, LineIndex ) - 1;
+		tb->y1 = tb->y + GPS.GetGPHeight( GP_File, LineIndex ) - 1;
 		tb->LineLx = GPS.GetGPWidth( GP_File, LineIndex );
 		tb->LineLy = GPS.GetGPHeight( GP_File, LineIndex );
 		tb->ScrLx = GPS.GetGPWidth( GP_File, ScrIndex );
@@ -1777,7 +1777,7 @@ VScrollBar* DialogsSystem::addGP_ScrollBarL( SimpleDialog* Parent, int x, int y,
 		tb->x = BaseX + x;
 		tb->y = BaseY + y;
 		tb->x1 = tb->x + LineLx - 1;
-		tb->y1 = tb->y1 + LineLy - 1;
+		tb->y1 = tb->y + LineLy - 1;
 		tb->LineLx = LineLx;
 		tb->LineLy = LineLy;
 		tb->ScrLx = GPS.GetGPWidth( GP_File, ScrIndex );
