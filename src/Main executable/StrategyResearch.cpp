@@ -45,6 +45,25 @@ class DamageMap(){
 */
 extern int COUNTER;
 const byte StrCod[26] = { 0xFF,0xFF,0xFF,0xFF,0xFF,5,0xFF,0xFF,2,4,3,0,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0,1,2,2,0xFF,0xFF };
+
+//Keep a small persistent trace of rejected strategy-map data. These checks are
+//intended to catch the first bad index instead of letting it damage the heap and
+//only being detected later by realloc().
+static void ReportStrategyCorruption(const char* Reason, int Value1, int Value2, int Value3) {
+	static int ReportsWritten = 0;
+	if (ReportsWritten >= 32)return;
+	ReportsWritten++;
+
+	char Message[256];
+	sprintf(Message, "StrategyResearch: %s (%d, %d, %d)\r\n", Reason, Value1, Value2, Value3);
+	OutputDebugStringA(Message);
+
+	FILE* Log = fopen("StrategyResearch-errors.log", "a");
+	if (Log) {
+		fputs(Message, Log);
+		fclose(Log);
+	}
+}
 /*
 void GlobalArmyInfo::ResearchArmyDistribution(byte NI){
 #ifdef NOSTRATINF
@@ -209,12 +228,16 @@ void GlobalArmyInfo::ResearchArmyDistribution(byte NI) {
 #ifdef NOSTRATINF
 	return;
 #endif
+	if (NI >= 8 || !ArmDistr || StratLx <= 0 || StratLy <= 0) {
+		ReportStrategyCorruption("invalid map or nation", NI, StratLx, StratLy);
+		return;
+	}
 	byte ms = 1 << NI;
 	int tt = GetTickCount();
 	//int N=NtNUnits[NI];
 	//word* Units=NatList[NI];
 	memset(ArmDistr, 0xFF, StratLx*StratLy * 2);
-	if (!GNFO.EINF[NI])return;
+	if (!GNFO.EINF[NI] || !GNFO.EINF[NI]->InflMap)return;
 	NCIN = 0;
 	NArmy = 0;
 	DWORD* __InflMap = GNFO.EINF[NI]->InflMap;
@@ -222,26 +245,54 @@ void GlobalArmyInfo::ResearchArmyDistribution(byte NI) {
 	EnemyInfo* GN0 = GNFO.EINF[NI];
 	for (int MID = 0; MID < MAXOBJECT; MID++) {
 		OneObject* OB = Group[MID];
-		if (OB && (!OB->Sdoxlo) && GN0 != GNFO.EINF[OB->NNUM]) {
+		if (OB && (!OB->Sdoxlo) && OB->NNUM < 8 && GN0 != GNFO.EINF[OB->NNUM]) {
 			NewMonster* NM = OB->newMons;
+			if (!NM) {
+				ReportStrategyCorruption("object has no monster data", MID, OB->NNUM, 0);
+				continue;
+			}
+			if (NM->Usage >= sizeof StrCod) {
+				ReportStrategyCorruption("unit usage outside StrCod", MID, NM->Usage, sizeof StrCod);
+				continue;
+			}
 			byte ID = StrCod[NM->Usage];
 			if (ID != 0xFF) {
 				int xx1 = OB->RealX >> 10;
 				int yy1 = OB->RealY >> 10;
-				if (xx1 >= 0 && yy1 >= 0) {
+				if (xx1 >= 0 && yy1 >= 0 && xx1 < TopLx && yy1 < TopLy) {
 					int dang = 0;
 					if (xx1 > 0 && yy1 > 0) {
 						dang = __InflMap[xx1 + (yy1 << TopSH)];
 					};
 					int xx = xx1 >> 2;
 					int yy = yy1 >> 2;
+					if (xx >= StratLx || yy >= StratLy) {
+						ReportStrategyCorruption("strategy coordinate outside map", MID, xx, yy);
+						continue;
+					}
 					int SIDX = xx + (yy << StratSH);
 					int sdx = ArmDistr[SIDX];
+					if (sdx != 0xFFFF && sdx >= NCIN) {
+						ReportStrategyCorruption("ArmDistr contains invalid CIN index", SIDX, sdx, NCIN);
+						ArmDistr[SIDX] = 0xFFFF;
+						sdx = 0xFFFF;
+					}
 					CellInfo* SINFO;
 					if (sdx == 0xFFFF) {
+						//0xFFFF is reserved as the empty-cell marker in ArmDistr.
+						if (NCIN >= 0xFFFF) {
+							ReportStrategyCorruption("too many strategy cells", NCIN, StratLx, StratLy);
+							return;
+						}
 						if (NCIN >= MaxCIN) {
-							MaxCIN += 64;
-							CIN = (CellInfo*)realloc(CIN, MaxCIN * sizeof CellInfo);
+							int NewMaxCIN = MaxCIN + 64;
+							CellInfo* NewCIN = (CellInfo*)realloc(CIN, NewMaxCIN * sizeof CellInfo);
+							if (!NewCIN) {
+								ReportStrategyCorruption("CIN allocation failed", NewMaxCIN, sizeof CellInfo, NI);
+								return;
+							}
+							CIN = NewCIN;
+							MaxCIN = NewMaxCIN;
 						};
 						sdx = NCIN;
 						ArmDistr[SIDX] = sdx;
@@ -255,7 +306,10 @@ void GlobalArmyInfo::ResearchArmyDistribution(byte NI) {
 					((word*)SINFO)[ID]++;
 					SINFO->Total += NM->Force;//++
 				}
-				else OB->Die();
+				else {
+					ReportStrategyCorruption("object coordinate outside topology map", MID, xx1, yy1);
+					if (xx1 < 0 || yy1 < 0)OB->Die();
+				}
 			};
 		};
 	};
@@ -274,47 +328,28 @@ void GlobalArmyInfo::ResearchArmyDistribution(byte NI) {
 			for (int i = 0; i < NCIN; i++) {
 				word AID = CINFO->ArmyID;
 				if (AID != 0xFFFF) {
-					int cell = int(CINFO->x) + (int(CINFO->y) << StratSH);
-					word ARMD = ArmDistr[cell + 1];
-					if (ARMD != 0xFFFF) {
+					int CellX = int(CINFO->x);
+					int CellY = int(CINFO->y);
+					int cell = CellX + (CellY << StratSH);
+					auto MergeNeighbour = [&](int Neighbour) {
+						word ARMD = ArmDistr[Neighbour];
+						if (ARMD == 0xFFFF)return;
+						if (ARMD >= NCIN) {
+							ReportStrategyCorruption("neighbour has invalid CIN index", Neighbour, ARMD, NCIN);
+							ArmDistr[Neighbour] = 0xFFFF;
+							return;
+						}
 						CellInfo* CI1 = CIN + ARMD;
 						if (CI1->ArmyID > AID) {
 							CI1->ArmyID = AID;
 							change = true;
-							//CI1->Changed=1;
-						};
+						}
 					};
-					ARMD = ArmDistr[cell + StratLx];
-					if (ARMD != 0xFFFF) {
-						CellInfo* CI1 = CIN + ARMD;
-						if (CI1->ArmyID > AID) {
-							CI1->ArmyID = AID;
-							change = true;
-							//CI1->Changed=1;
-						};
-					};
-					if (cell > 1) {
-						ARMD = ArmDistr[cell - 1];
-						if (ARMD != 0xFFFF) {
-							CellInfo* CI1 = CIN + ARMD;
-							if (CI1->ArmyID > AID) {
-								CI1->ArmyID = AID;
-								change = true;
-								//CI1->Changed=1;
-							};
-						};
-					};
-					if (cell > StratLx) {
-						ARMD = ArmDistr[cell - StratLx];
-						if (ARMD != 0xFFFF) {
-							CellInfo* CI1 = CIN + ARMD;
-							if (CI1->ArmyID > AID) {
-								CI1->ArmyID = AID;
-								change = true;
-								//CI1->Changed=1;
-							};
-						};
-					};
+
+					if (CellX + 1 < StratLx)MergeNeighbour(cell + 1);
+					if (CellY + 1 < StratLy)MergeNeighbour(cell + StratLx);
+					if (CellX > 0)MergeNeighbour(cell - 1);
+					if (CellY > 0)MergeNeighbour(cell - StratLx);
 				};
 				CINFO++;
 			};
@@ -329,8 +364,14 @@ void GlobalArmyInfo::ResearchArmyDistribution(byte NI) {
 			word ARID = CIN[i].ArmyID;
 			if (ARID >= 8192) {
 				if (NArmy >= MaxArmy) {
-					MaxArmy += 32;
-					AINF = (ArmyInfo*)realloc(AINF, MaxArmy * sizeof ArmyInfo);
+					int NewMaxArmy = MaxArmy + 32;
+					ArmyInfo* NewAINF = (ArmyInfo*)realloc(AINF, NewMaxArmy * sizeof ArmyInfo);
+					if (!NewAINF) {
+						ReportStrategyCorruption("AINF allocation failed", NewMaxArmy, sizeof ArmyInfo, NI);
+						return;
+					}
+					AINF = NewAINF;
+					MaxArmy = NewMaxArmy;
 				};
 				ArmyInfo* Ari = AINF + CurArmy;
 				memset(Ari, 0, sizeof ArmyInfo);

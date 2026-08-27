@@ -11,5 +11,6 @@
     <LocalDebuggerWorkingDirectory>$(OutDir)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommandArguments>/borderless</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArgumentsHistory>/borderless|</LocalDebuggerCommandArgumentsHistory>
   </PropertyGroup>
 </Project>

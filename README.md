@@ -1,5 +1,15 @@
 *[Информация на русском языке](#rus)*
 
+# Cossacks: Back to War 1.43
+
+<br/>
+
+This is a modification of version 1.42, fixing some issues related to game speed slider, which was missing completely from the game settings.
+
+### Changelist
+  * Game Speed slider in options both in the start screen and in the game is reverted back from version 1.35 (although some artwork visuals might still be missing)
+  * Fixed currupted memory due to missing checks in indexing arrays during AI tactics calculation, which caused random game crashes.
+
 # Cossacks: Back to War 1.42
 
 <br/>

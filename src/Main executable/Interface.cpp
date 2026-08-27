@@ -6116,6 +6116,9 @@ void PlayRandomTrack();
 extern byte TracksMask[16];
 char RECFILE[128] = "";
 
+//Delay used to fine-tune single-player game speed (0..100, in half-ms units).
+int FPSTime = 8;
+
 extern int screen_width;
 extern int screen_height;
 extern double screen_ratio;
@@ -6150,6 +6153,8 @@ bool ProcessMenuOptions()
 	{
 		ScrollSpeed = 2;
 	}
+	if ( FPSTime < 0 )FPSTime = 0;
+	if ( FPSTime > 100 )FPSTime = 100;
 
 	int X0 = 244 - 2;
 	int LX = 484 - 244 + 20;
@@ -6158,9 +6163,16 @@ bool ProcessMenuOptions()
 	GPPicture* P1 = MMenu.addGPPicture( nullptr, 240, 317 + 10 - 13, BTNS.GPID, 13 );
 	GPPicture* P2 = MMenu.addGPPicture( nullptr, 240, 343 + 10 - 13, BTNS.GPID, 14 );
 	GPPicture* P3 = MMenu.addGPPicture( nullptr, 240, 447 + 10 - 13, BTNS.GPID, 15 );
+	GPPicture* P4 = MMenu.addGPPicture( nullptr, 240, 473 + 10 - 13, BTNS.GPID, 16 );
 	P1->Visible = 0;
 	P2->Visible = 0;
 	P3->Visible = 0;
+	//The 1.42 main-menu background has the normal Game Speed row removed.
+	//Keep its packed row artwork visible behind the restored slider.
+	P4->Visible = 1;
+
+	//Fine game speed (#3). Moving right reduces the delay and speeds up the game.
+	VScrollBar* HB = MMenu.addGP_ScrollBarL( nullptr, X0, 476 + DY + 10 - 13, 100, 100 - FPSTime, BTNS.GPID, 12, LX, 12, 0, 0 );
 
 	//sound volume (#1)
 	VScrollBar* SVL = MMenu.addGP_ScrollBarL( nullptr, X0, 346 + DY + 10 - 13, 100, WarSound, BTNS.GPID, 12, LX, 12, 0, 0 );
@@ -6279,6 +6291,7 @@ bool ProcessMenuOptions()
 	//Apply game settings
 	if ( ItemChoose == mcmOk )
 	{
+		FPSTime = 100 - HB->SPos;
 		ScrollSpeed = SSP->SPos + 2;
 		exRealLx = ModeLX[VMode->CurLine];
 		exRealLy = ModeLY[VMode->CurLine];
@@ -6338,6 +6351,8 @@ bool ProcessGameOptions()
 	{
 		ScrollSpeed = 2;
 	}
+	if ( FPSTime < 0 )FPSTime = 0;
+	if ( FPSTime > 100 )FPSTime = 100;
 
 	int X0 = 244 - 2;
 	int LX = 484 - 244 + 20;
@@ -6346,9 +6361,19 @@ bool ProcessGameOptions()
 	GPPicture* P1 = MMenu.addGPPicture( nullptr, 240, 317 + 11, BTNS.GPID, 15 );
 	GPPicture* P2 = MMenu.addGPPicture( nullptr, 240, 343 + 11, BTNS.GPID, 16 );
 	GPPicture* P3 = MMenu.addGPPicture( nullptr, 240, 447 + 11, BTNS.GPID, 17 );
+	GPPicture* P4 = MMenu.addGPPicture( nullptr, 240, 473 + 11, BTNS.GPID, 18 );
 	P1->Visible = 0;
 	P2->Visible = 0;
 	P3->Visible = 0;
+	P4->Visible = 0;
+
+	//Fine game speed (#3). Multiplayer timing must remain synchronized.
+	VScrollBar* HB = MMenu.addGP_ScrollBarL( nullptr, X0, 476 + DY + 11, 100, 100 - FPSTime, BTNS.GPID, 12, LX, 12, 0, 0 );
+	if ( 1 < NPlayers )
+	{
+		HB->Enabled = false;
+		HB->Active = false;
+	}
 
 	//sound volume (#1)
 	MidiSound = GetCDVolume();
@@ -6429,6 +6454,7 @@ bool ProcessGameOptions()
 		P1->Visible = P1->MouseOver;
 		P2->Visible = P2->MouseOver;
 		P3->Visible = P3->MouseOver;
+		P4->Visible = P4->MouseOver;
 		ProcessMessages();
 		StdKeys();
 		MMenu.MarkToDraw();
@@ -6452,6 +6478,7 @@ bool ProcessGameOptions()
 
 	if ( mcmOk == ItemChoose )
 	{
+		if ( 1 == NPlayers )FPSTime = 100 - HB->SPos;
 		ScrollSpeed = SSP->SPos + 2;
 
 		//Just in case
